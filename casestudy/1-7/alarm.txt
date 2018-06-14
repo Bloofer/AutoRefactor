@@ -1,0 +1,10 @@
+CLONESET #384
+
+1	dist:0	FILE ...nch/ePrint/ePrint.com.fasoo.util.FasooMessageParser.java LINE:19~54 NODE_KIND:113 nVARs:26 NUM_NODE:739 TBID:18 TEID:256
+call site # : 3
+
+2	dist:0	FILE ...nch/ePrint/ePrint.com.fasoo.util.FasooMessageParser.java LINE:57~92 NODE_KIND:113 nVARs:26 NUM_NODE:739 TBID:257 TEID:495
+call site # : 3
+
+EM(Extract Method) - 하나의 파일 내에 여러 개의 코드 클론이 존재합니다. 하나의 함수(혹은 모듈)로 추출하여 중복을 제거하십시오. 
+

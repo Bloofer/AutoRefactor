@@ -1,0 +1,76 @@
+private boolean initFSPClientProcess( FspClientPolicyXmlServiceID fspClientPolicyXmlServiceID, String message, HttpServletRequest request, String dsdCode, String userId ) {
+		
+		try {
+
+			Document document = XMLUtil.createDocument( message );
+
+			Element domainElement = XMLUtil.getElement( document, "DOMAIN" );
+			String domainCode = dsdCode;
+			String domainName = XMLUtil.getElementString( domainElement, "NAME" );
+			
+			String userID = userId;
+
+			String machineInfo = XMLUtil.getElementString( document, "MACHINEINFO" );
+
+			if( domainCode != null ) {
+				fspClientPolicyXmlServiceID.setDsdCode( domainCode );
+			}
+			if( domainName != null ) {
+				fspClientPolicyXmlServiceID.setDsdName( domainName );
+			}
+			if( machineInfo != null ) {
+				fspClientPolicyXmlServiceID.setMachineInfo( machineInfo );
+			}
+			if( userID != null ) {
+				fspClientPolicyXmlServiceID.setUserID( userID );
+			}
+
+			// 도메인이름만 있는 경우에 도메인코드 검색
+			if( fspClientPolicyXmlServiceID.getDsdCode() == null && fspClientPolicyXmlServiceID.getDsdName() != null ) {
+				ProductLicenseManager productLicenseManager = ProductLicenseManager.getInstance();
+				domainCode = productLicenseManager.getDSDCode( fspClientPolicyXmlServiceID.getDsdName() );
+
+				if( domainCode == null ) {
+					fspClientPolicyXmlServiceID.setMessageID( "error.NOT_FOUND_DOMAIN" );
+					logger.errorString( "error.NOT_FOUND_DOMAIN DomainName" , fspClientPolicyXmlServiceID.getDsdName() );
+				} else {
+					fspClientPolicyXmlServiceID.setDsdCode( domainCode );
+				}
+			}
+
+			// 도메인코드만 있는 경우에 도메인명 검색
+			if( fspClientPolicyXmlServiceID.getDsdCode() != null && ( fspClientPolicyXmlServiceID.getDsdName() != null && "".equals( fspClientPolicyXmlServiceID.getDsdName() ) ) ) {
+				ProductLicenseManager productLicenseManager = ProductLicenseManager.getInstance();
+				domainName = productLicenseManager.getDSDName( fspClientPolicyXmlServiceID.getDsdCode() );
+
+				if( domainName == null ) {
+					fspClientPolicyXmlServiceID.setMessageID( "error.NOT_FOUND_DOMAIN" );
+					logger.errorString( "error.NOT_FOUND_DOMAIN DomainCode" , fspClientPolicyXmlServiceID.getDsdCode() );
+				} else {
+					fspClientPolicyXmlServiceID.setDsdName( domainName );
+				}
+			}
+
+			// 도메인코드가 없는 경우 오류
+			if( fspClientPolicyXmlServiceID.getDsdCode() == null ) {
+				fspClientPolicyXmlServiceID.setMessageID( "error.NOT_FOUND_DOMAIN" );
+				logger.errorString( "error.NOT_FOUND_DOMAIN" );
+			}
+
+			if( fspClientPolicyXmlServiceID.getMessageID() != null && !"OK".equals( fspClientPolicyXmlServiceID.getMessageID() ) ) {
+				return false;
+			}
+			
+			fspClientPolicyXmlServiceID.setClientIP( request.getRemoteAddr() );
+
+		} catch( Exception e ) {
+
+			fspClientPolicyXmlServiceID.setMessageID( "error.CLIENTMESSAGE_PARSE_FAIL" );
+				logger.errorString( "ClientMessage", message );
+				logger.errorString( "initProcess", e.toString() );
+				logger.trace( "initProcess", e );
+		}
+
+		return true;
+		
+	}

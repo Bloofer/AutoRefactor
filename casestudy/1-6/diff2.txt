@@ -1,0 +1,12 @@
+1c1
+< public ActionForward statsDate( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+---
+> public ActionForward statsYear( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+30c30
+< 		List<TcoStatsDate> statsList = statsTcoApi.selectDateDay( searchMap );
+---
+> 		List<TcoStatsDate> statsList = statsTcoApi.selectDateYear( searchMap );
+35c35
+< 		return mapping.findForward( "fsp.motionstats.pp.date" );
+---
+> 		return mapping.findForward( "fsp.motionstats.pp.year" );

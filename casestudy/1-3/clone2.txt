@@ -1,0 +1,41 @@
+public List<LicenseStatsDoc> selectTopDoc( Map<String, Object> params )
+	{
+
+		//////////////////////////////////////////////////////////////////////
+		//
+		//////////////////////////////////////////////////////////////////////
+		String dsdCode = FutMapUtils.getString( params, "dsdCode", null );
+		String startDay = FutMapUtils.getString( params, "startDay", null );
+		String endDay = FutMapUtils.getString( params, "endDay", null );
+		
+		boolean groupByDocDsd = FutMapUtils.getBoolean( params, "groupByDocDsd", false );
+		String docCode = FutMapUtils.getString( params, "docCode", null );
+		String docName = FutMapUtils.getString( params, "docName", null );
+		String sortItem = FutMapUtils.getString( params, "sortItem", null );
+		int limitRowSize = FutMapUtils.getInt( params, "limitRowSize", 0 );
+
+		//////////////////////////////////////////////////////////////////////
+		//
+		//////////////////////////////////////////////////////////////////////
+		Connection connection = FutDataSourceUtils.getConnection();
+		try
+		{
+
+			FutDaoAdmin futDaoAdmin = FutDaoAdmin.getInstance();
+			FutLicenseStatsDao licenseStatsDao = (FutLicenseStatsDao)futDaoAdmin.get( "FutLicenseStatsDao" );
+
+			return licenseStatsDao.selectTopDoc( connection, dsdCode, startDay, endDay, groupByDocDsd, docCode, docName, sortItem, limitRowSize );
+		}
+		finally
+		{
+			try
+			{
+				if( connection != null )
+					connection.close();
+			}
+			catch( SQLException e )
+			{
+				e.printStackTrace();
+			}
+		}
+	}

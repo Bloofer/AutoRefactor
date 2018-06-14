@@ -1,0 +1,4 @@
+t1/t2/t3은 모두 일반적인 방법의 Extract Method로 적용되는 예시들.
+t4는 클래스 구조를 보고 Extract Method + @로 적용되는 예시.
+
+TODO: 좀 더 실제 코드에 가까운 예시 추가할 것  
