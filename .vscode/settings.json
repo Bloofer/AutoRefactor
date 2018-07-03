@@ -1,5 +1,11 @@
 {
     "files.associations": {
-        "functional": "cpp"
+        "functional": "cpp",
+        "chrono": "cpp",
+        "iostream": "cpp",
+        "vector": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "list": "cpp"
     }
 }

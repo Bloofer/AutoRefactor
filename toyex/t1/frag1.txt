@@ -1,0 +1,9 @@
+    public int f() {
+
+      System.out.println("Hello, World!");
+
+      // do something
+
+      return 0;
+
+    }
