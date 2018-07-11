@@ -7,9 +7,9 @@
 #include "dtl/dtl/dtl.hpp"
 using namespace std;
 
-// global varibles for auto clone refactor
-const int maxCloneLine = 300;
 int n; // number of clone sites
+
+// refactor data structures
 
 // TODO: to impl read meaningful callers to patch
 // struct type for caller datas
@@ -30,13 +30,18 @@ typedef struct{
 }CloneData;
 vector<CloneData> cloneDatas;
 
+typedef struct{
+    string returnType;
+    vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
+    string ftnName;
+}FtnType;
+
 typedef enum {
     T1,
     T2,
     T3,
     T4
 } clone_type;
-
 
 
 // temporary variable to save the clone code snippets
@@ -46,30 +51,34 @@ int tempCodeLine;
 string cloneFtnName = "cloneFtn";
 int cloneFtnNum = 1;
 
-
 void read_file(char* alarmFile); // reads input file including clone data
 void refactor(clone_type ct); // the main function for auto refactoror
 
 // method extraction for 4 types of code clones
-void em_type1();
-void em_type2();
+void em_type1n2();
 void em_type3();
 void em_type4();
 
-// diff two clone pair to get the common part
+// string utility functions
 bool are_same(string s1, string s2);
-pair<int, int> get_common_part();
 bool only_spaces(string str);
-void patch_code(string fileName); // replace code clone with new function
 bool contains(string str, string word);
+
+// functions for type 1 & 2
+void preprocess();
+void fetch_callers();
+vector<int> get_diff(CloneData &c1, CloneData &c2);
+void merge_clone_ftn(string fileName);
+
+// functions for type 3
+pair<int, int> get_common_part();
+void patch_code(string fileName); // replace code clone with new function
 void trim_code(int p, int q);
 
 // test functions
 void test_print(); // test printer for check cloneDatas
 void print_code();
 void test_diff();
-
-
 
 
 
@@ -108,6 +117,13 @@ void read_file(char* alarmFile){
 
 }
 
+
+/*
+ * ====================================================
+ * ============ STRING UTILITY FUNCTIONS ==============
+ * ====================================================
+ */
+
 bool are_same(string s1, string s2){
 
     if(only_spaces(s1) && only_spaces(s2)) return true;
@@ -120,11 +136,84 @@ bool are_same(string s1, string s2){
 }
 
 bool only_spaces(string str){
+// checks if certain string has only spaces
+// this function is for checking white space in the program code
 
     if(str.find_first_not_of(' ') != std::string::npos) return false;
     else return true;
     
 }
+
+bool contains(string str, string word){
+    // checks if str contains word
+    return (str.find(word) < str.size() && str.find(word) >= 0);
+
+}
+
+
+/*
+ * ====================================================
+ * ============ FUNCTIONS FOR TYPE 1 & 2 ==============
+ * ====================================================
+ */
+
+void preprocess(){
+    // function for preprocessing
+    // to get function type(return type & args), function name
+
+    // 1. analyze two clone parts(functions) to get the type datas
+
+    // 2. put type data in FtnType structure 
+}
+
+void fetch_callers(){
+    // function for fetching caller datas
+    // using data from the alarm file which are parsed from DOT file
+
+    // 1. read in the caller data from the input file
+
+    // 2. put caller data in Caller structure
+
+    // 3. get the call site code line too. to use for caller patching
+} 
+
+vector<int> get_diff(CloneData &c1, CloneData &c2){
+    // function for getting diff part of two clone datas
+
+    vector<int> diff_line;
+
+    // 1. compare two clone datas (function-wise)
+
+    // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
+
+    // 3. return the vector
+
+    return diff_line;
+}
+
+void merge_clone_ftn(string fileName){
+    
+    vector<int> diff_line_vec = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
+    // 1. insert procedure branches using if/else statements using flag.
+    // use diff_line_vec to get the diff lines
+    
+    // 2. insert flag at the ftn decl.
+    // use FtnType to not get new function name & arg name
+    
+
+    fetch_callers();
+    // 3. fetch caller datas
+    // 4. substitute caller function name with new one.
+
+}
+
+
+/*
+ * ====================================================
+ * =============== FUNCTIONS FOR TYPE 3 ===============
+ * ====================================================
+ */
+
 
 pair<int, int> get_common_part(CloneData &c1, CloneData &c2){
 
@@ -156,12 +245,6 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2){
     pair<int, int> p = pair<int, int>(from, to);
 
     return p;
-
-}
-
-bool contains(string str, string word){
-    // checks if str contains word
-    return (str.find(word) < str.size() && str.find(word) >= 0);
 
 }
 
@@ -232,12 +315,32 @@ void trim_code(int p, int q){
 
 /*
  * ====================================================
- * =============== REFACTOR FUNCTIONS =================
+ * =============== FUNCTIONS FOR TYPE 4 ===============
  * ====================================================
  */
 
-void em_type1(){
 
+// TODO: need to impl this
+
+
+
+
+
+
+/*
+ * ====================================================
+ * ============= MAIN REFACTOR FUNCTIONS ==============
+ * ====================================================
+ */
+
+void em_type1n2(){
+    
+    preprocess();
+    merge_clone_ftn(cloneDatas.front().fileName); // TODO: need to refactor?
+
+}
+
+void em_type3(){
     pair<int, int> p = get_common_part(cloneDatas.front(), cloneDatas.back());
     tempCodeLine = p.second - p.first + 1;
     trim_code(p.first, p.second);
@@ -247,15 +350,6 @@ void em_type1(){
     }
 
     patch_code(cloneDatas.front().fileName);
-
-}
-
-void em_type2(){
-
-}
-
-void em_type3(){
-
 }
 
 void em_type4(){
@@ -265,12 +359,9 @@ void em_type4(){
 void refactor(clone_type ct){
 
     switch(ct) {
-        case T1:
-            em_type1();
-            break;
-
+        case T1: 
         case T2:
-            em_type2();
+            em_type1n2();
             break;
 
         case T3:
@@ -316,31 +407,6 @@ void print_code(vector<string> code){
     }
 }
 
-void test_diff(){
-
-    typedef char elem;
-    typedef std::string sequence;
-    sequence A(cloneDatas.front().cloneSnippet.back());
-    sequence B(cloneDatas.back().cloneSnippet.back());
-    dtl::Diff< elem, sequence > d(A, B);
-    //d.onOnlyEditDistance();
-    d.compose();
-    
-    // editDistance
-    cout << "editDistance:" << d.getEditDistance() << endl;
-    
-    // Longest Common Subsequence
-    vector< elem > lcs_v = d.getLcsVec();
-    sequence       lcs_s(lcs_v.begin(), lcs_v.end());
-    cout << "LCS:" << lcs_s << endl;
-    
-    // Shortest Edit Script
-    cout << "SES" << endl;
-    d.printSES();
-
-}
-
-
 
 
 
@@ -359,12 +425,9 @@ int main(int argc, char** argv){
     }
 
     read_file(argv[1]); // 1. reads input data
-    test_print();
-    //get_common_part(cloneDatas.front(), cloneDatas.back());
     
-    refactor(T1); // 2. refactor the code according to the clone datas
+    refactor(T3); // 2. refactor the code according to the clone datas
     print_code(patchCode);
-    //patch_code();
 
     return 0;
 
