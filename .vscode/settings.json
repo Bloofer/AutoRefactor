@@ -6,6 +6,8 @@
         "vector": "cpp",
         "array": "cpp",
         "deque": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "*.tcc": "cpp",
+        "unordered_map": "cpp"
     }
 }

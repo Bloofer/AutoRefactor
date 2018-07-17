@@ -52,7 +52,7 @@ string cloneFtnName = "cloneFtn";
 int cloneFtnNum = 1;
 
 void read_file(char* alarmFile); // reads input file including clone data
-void refactor(clone_type ct); // the main function for auto refactoror
+void refactor(clone_type ct); // the main function for auto refactor
 
 // method extraction for 4 types of code clones
 void em_type1n2();
@@ -65,7 +65,8 @@ bool only_spaces(string str);
 bool contains(string str, string word);
 
 // functions for type 1 & 2
-void preprocess();
+void parse_ftn_type(string s, FtnType &ftype);
+void preprocess(CloneData &c1, CloneData &c2);
 void fetch_callers();
 vector<int> get_diff(CloneData &c1, CloneData &c2);
 void merge_clone_ftn(string fileName);
@@ -79,7 +80,7 @@ void trim_code(int p, int q);
 void test_print(); // test printer for check cloneDatas
 void print_code();
 void test_diff();
-
+void print_ftn_type(FtnType &f);
 
 
 /*
@@ -150,6 +151,11 @@ bool contains(string str, string word){
 
 }
 
+int min_pos(int a, int b){
+    if (a >= 0 && b >= 0) return a < b ? a : b;
+    else return a > b ? a : b;
+}
+
 
 /*
  * ====================================================
@@ -157,13 +163,89 @@ bool contains(string str, string word){
  * ====================================================
  */
 
-void preprocess(){
+void parse_ftn_type(string s, FtnType &ftype){
+    
+    if (s.find(')') == string::npos) { 
+        cerr << "Error : parse_ftn_type() cannot parse \"" << s << "\" without parentheses closure" << endl;
+        return;
+    }
+
+    vector<string> tokens;
+    string ns = s.substr(s.find_first_not_of(" \t\r\n"));
+    
+    int prevPos = s.find_first_of(" \t\r\n");
+    int emptyPoint = ns.find(' ');
+    string token;
+
+    // 1. parse ftn type and ftn name
+    while(emptyPoint <= ns.find('(')){
+        token = ns.substr(0, emptyPoint);
+        tokens.push_back(token);
+        ns = ns.substr(emptyPoint);
+        ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+        prevPos += (emptyPoint + 1);
+        emptyPoint = ns.find(' ');
+    }
+
+    if (ns.find('(') > 0) {
+        token = ns.substr(0, ns.find('('));
+        tokens.push_back(token);
+    }
+
+    reverse(tokens.begin(), tokens.end());
+    ftype.ftnName = tokens[0];
+    ftype.returnType = tokens[1];
+
+    ns = s.substr(s.find('(') + 1);
+    ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+    pair<string, string> argPair;
+
+    // 2. parse arg type and arg name
+    emptyPoint = ns.find(' ');
+    while(emptyPoint <= ns.find(')') && ns.find_first_of('{') != 0){
+        argPair.first = ns.substr(0, emptyPoint);
+        ns = ns.substr(emptyPoint);
+        ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+        
+        emptyPoint = min_pos(ns.find(' '), ns.find(','));
+        emptyPoint = min_pos(emptyPoint, ns.find(')'));
+        argPair.second = ns.substr(0, emptyPoint);
+        ns = ns.substr(emptyPoint + 1);
+
+        if(ns.find(',') > 0){
+            ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+            if(ns.find(',') == 0) {
+                ns = ns.substr(1);
+                if(ns.find_first_of(' ') == 0) ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+            }
+        } else {
+            ns = ns.substr(1);
+            ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
+        }
+
+        ftype.ftnArgs.push_back(argPair);
+        emptyPoint = ns.find(' ');
+    }
+
+}
+
+void preprocess(CloneData &c1, CloneData &c2){
     // function for preprocessing
     // to get function type(return type & args), function name
 
     // 1. analyze two clone parts(functions) to get the type datas
+    string s1 = c1.cloneSnippet.front();
+    string s2 = c2.cloneSnippet.front();
 
     // 2. put type data in FtnType structure 
+    FtnType f1, f2;
+    parse_ftn_type(s1, f1);
+    parse_ftn_type(s2, f2);
+
+    // TODO: for test remove this
+    // print_ftn_type(f1);
+    // print_ftn_type(f2);
+
 }
 
 void fetch_callers(){
@@ -335,7 +417,7 @@ void trim_code(int p, int q){
 
 void em_type1n2(){
     
-    preprocess();
+    preprocess(cloneDatas.front(), cloneDatas.back());
     merge_clone_ftn(cloneDatas.front().fileName); // TODO: need to refactor?
 
 }
@@ -407,6 +489,23 @@ void print_code(vector<string> code){
     }
 }
 
+void print_ftn_type(FtnType &f){
+    cout << " ===== Function type ===== " << endl;
+    cout << f.ftnName << " : ";
+    if (f.ftnArgs.size() > 0) {
+        cout << "( ";
+        for(int i=0; i<f.ftnArgs.size(); i++){
+            if(i == f.ftnArgs.size()-1) {
+                cout << f.ftnArgs.at(i).second << " : " << f.ftnArgs.at(i).first << " ) -> " << f.returnType << endl << endl;
+            } else {
+                cout << f.ftnArgs.at(i).second << " : " << f.ftnArgs.at(i).first << " * ";
+            }
+        }
+    } else {
+        cout << "void -> " << f.returnType << endl << endl;
+    }
+}
+
 
 
 
@@ -426,7 +525,7 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
     
-    refactor(T3); // 2. refactor the code according to the clone datas
+    refactor(T1); // 2. refactor the code according to the clone datas
     print_code(patchCode);
 
     return 0;
