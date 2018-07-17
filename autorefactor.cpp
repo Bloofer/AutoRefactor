@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 #include "dtl/dtl/dtl.hpp"
 using namespace std;
 
@@ -31,6 +32,7 @@ typedef struct{
 vector<CloneData> cloneDatas;
 
 typedef struct{
+    vector<string> keywords;
     string returnType;
     vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
     string ftnName;
@@ -69,7 +71,8 @@ void parse_ftn_type(string s, FtnType &ftype);
 void preprocess(CloneData &c1, CloneData &c2);
 void fetch_callers();
 vector<int> get_diff(CloneData &c1, CloneData &c2);
-void merge_clone_ftn(string fileName);
+bool int_vec_contains(vector<int> &iv, int i);
+void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
 
 // functions for type 3
 pair<int, int> get_common_part();
@@ -196,6 +199,11 @@ void parse_ftn_type(string s, FtnType &ftype){
     ftype.ftnName = tokens[0];
     ftype.returnType = tokens[1];
 
+    if(tokens.size() > 2){
+        for(int i=tokens.size()-1; i>=2; i--)
+        ftype.keywords.push_back(tokens[i]);
+    }
+
     ns = s.substr(s.find('(') + 1);
     ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
     pair<string, string> argPair;
@@ -229,25 +237,6 @@ void parse_ftn_type(string s, FtnType &ftype){
 
 }
 
-void preprocess(CloneData &c1, CloneData &c2){
-    // function for preprocessing
-    // to get function type(return type & args), function name
-
-    // 1. analyze two clone parts(functions) to get the type datas
-    string s1 = c1.cloneSnippet.front();
-    string s2 = c2.cloneSnippet.front();
-
-    // 2. put type data in FtnType structure 
-    FtnType f1, f2;
-    parse_ftn_type(s1, f1);
-    parse_ftn_type(s2, f2);
-
-    // TODO: for test remove this
-    // print_ftn_type(f1);
-    // print_ftn_type(f2);
-
-}
-
 void fetch_callers(){
     // function for fetching caller datas
     // using data from the alarm file which are parsed from DOT file
@@ -261,27 +250,63 @@ void fetch_callers(){
 
 vector<int> get_diff(CloneData &c1, CloneData &c2){
     // function for getting diff part of two clone datas
-
-    vector<int> diff_line;
+    vector<int> diffLine;
 
     // 1. compare two clone datas (function-wise)
+    vector<string>::iterator it1 = c1.cloneSnippet.begin();
+    vector<string>::iterator it2 = c2.cloneSnippet.begin();
+    int idx = 0;
 
     // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
+    for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
+        if (!are_same((*it1), (*it2)) && idx != 0) diffLine.push_back(idx);
+        idx++;
+    }
 
     // 3. return the vector
-
-    return diff_line;
+    return diffLine;
 }
 
-void merge_clone_ftn(string fileName){
+bool int_vec_contains(vector<int> &iv, int i){
+    return ( find(iv.begin(), iv.end(), i) != iv.end() );
+}
+
+void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     
-    vector<int> diff_line_vec = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
+    vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
     // 1. insert procedure branches using if/else statements using flag.
-    // use diff_line_vec to get the diff lines
-    
+    // use diffLine to get the diff lines
+    int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
+    string tabStr = "";
+    for(int i=0; i<tabIdx; i++){
+        tabStr += ' ';
+    }
+
     // 2. insert flag at the ftn decl.
     // use FtnType to not get new function name & arg name
-    
+    string ftnDecl = tabStr;
+    for(int i=0; i<f1.keywords.size(); i++){
+        ftnDecl += (f1.keywords[i] + " ");
+    }
+
+    string newFtnName = f1.ftnName + f2.ftnName;
+    ftnDecl += (f1.returnType + " " + newFtnName + "(");
+    for(int i=0; i<f1.ftnArgs.size(); i++){
+        ftnDecl += f1.ftnArgs[i].first;
+        ftnDecl += " ";
+        ftnDecl += f1.ftnArgs[i].second;
+        if (i != f1.ftnArgs.size()-1) ftnDecl += ", ";
+    }
+    ftnDecl += ") {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
+    tempClone.push_back(ftnDecl);
+
+    for(int i=1; i<c1.cloneSize; i++){
+        if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
+        else {
+            tempClone.push_back(tabStr + "if(flag == 0)" + c1.cloneSnippet[i]);
+            tempClone.push_back(tabStr + "else if(flag == 1)" + c2.cloneSnippet[i]);
+        }
+    }
 
     fetch_callers();
     // 3. fetch caller datas
@@ -417,8 +442,16 @@ void trim_code(int p, int q){
 
 void em_type1n2(){
     
-    preprocess(cloneDatas.front(), cloneDatas.back());
-    merge_clone_ftn(cloneDatas.front().fileName); // TODO: need to refactor?
+    //preprocess(cloneDatas.front(), cloneDatas.back());
+    CloneData c1, c2;
+    c1 = cloneDatas.front();
+    c2 = cloneDatas.back();
+
+    FtnType f1, f2;
+    parse_ftn_type(c1.cloneSnippet.front(), f1);
+    parse_ftn_type(c2.cloneSnippet.front(), f2);
+
+    merge_clone_ftn(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
 
 }
 
@@ -491,6 +524,9 @@ void print_code(vector<string> code){
 
 void print_ftn_type(FtnType &f){
     cout << " ===== Function type ===== " << endl;
+    for(int p=0; p<f.keywords.size(); p++){
+        cout << f.keywords[p] << " ";
+    }
     cout << f.ftnName << " : ";
     if (f.ftnArgs.size() > 0) {
         cout << "( ";
@@ -526,7 +562,7 @@ int main(int argc, char** argv){
     read_file(argv[1]); // 1. reads input data
     
     refactor(T1); // 2. refactor the code according to the clone datas
-    print_code(patchCode);
+    print_code(tempClone);
 
     return 0;
 
