@@ -1,9 +1,0 @@
-CLONESET #298
-
-0	dist:0	FILE ...rint.com.fasoo.drmone.usage.struts.HistoryLogAction.java LINE:145~188 NODE_KIND:113 nVARs:44 NUM_NODE:753 TBID:667 TEID:923
-call site # : 4
-
-1	dist:0	FILE ...rint.com.fasoo.drmone.usage.struts.HistoryLogAction.java LINE:190~233 NODE_KIND:113 nVARs:45 NUM_NODE:753 TBID:924 TEID:1180
-call site # : 4
-
-EM(Extract Method) - 하나의 파일 내에 여러 개의 코드 클론이 존재합니다. 하나의 함수(혹은 모듈)로 추출하여 중복을 제거하십시오. 

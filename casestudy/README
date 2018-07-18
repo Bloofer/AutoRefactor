@@ -1,8 +1,0 @@
-dir 1-*
-ePrint benchmark clones
-dir 2-*
-risk_view benchmark clones
-
-현재 dp_server / risk_view에서 실험이 안되는 이유.
-ePrint 벤치마크 대상으로 코드 작성되어 dot파일(CallGraph) 및 경로 수정해줘야함.(06/08)
-
