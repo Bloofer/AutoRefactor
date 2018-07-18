@@ -18,7 +18,7 @@ typedef struct{
     string filename;
     string callname;
     vector<string> callargs;
-    int callsite;
+    int linenum;
 }Caller;
 
 // struct type for clone datas
@@ -277,10 +277,7 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     // 1. insert procedure branches using if/else statements using flag.
     // use diffLine to get the diff lines
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
-    string tabStr = "";
-    for(int i=0; i<tabIdx; i++){
-        tabStr += ' ';
-    }
+    string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
 
     // 2. insert flag at the ftn decl.
     // use FtnType to not get new function name & arg name
@@ -295,16 +292,18 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
         ftnDecl += f1.ftnArgs[i].first;
         ftnDecl += " ";
         ftnDecl += f1.ftnArgs[i].second;
-        if (i != f1.ftnArgs.size()-1) ftnDecl += ", ";
+        ftnDecl += ", ";
     }
-    ftnDecl += ") {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
+    ftnDecl += "int flag) {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
     tempClone.push_back(ftnDecl);
 
     for(int i=1; i<c1.cloneSize; i++){
         if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
         else {
-            tempClone.push_back(tabStr + "if(flag == 0)" + c1.cloneSnippet[i]);
-            tempClone.push_back(tabStr + "else if(flag == 1)" + c2.cloneSnippet[i]);
+            tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
+            tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
+            tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
+            tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));
         }
     }
 

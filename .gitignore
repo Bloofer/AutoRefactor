@@ -1,0 +1,6 @@
+# out file
+*.out
+
+# directories
+casestudy
+test
