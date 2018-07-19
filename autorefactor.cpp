@@ -15,10 +15,13 @@ int n; // number of clone sites
 // TODO: to impl read meaningful callers to patch
 // struct type for caller datas
 typedef struct{
-    string filename;
-    string callname;
-    vector<string> callargs;
-    int linenum;
+    string fileName;
+    string callerObjectName;
+    string callerObjectFtnName;
+    int argNum;
+    string originalFtnName;
+    vector<string> callArgs;
+    int lineNum;
 }Caller;
 
 // struct type for clone datas
@@ -27,7 +30,7 @@ typedef struct{
     int from, to;
     vector<string> cloneSnippet;
     int cloneSize;
-    // vector<Caller> callers; // TODO: maybe need to add caller datas?
+    vector<Caller> callers;
 }CloneData;
 vector<CloneData> cloneDatas;
 
@@ -65,11 +68,12 @@ void em_type4();
 bool are_same(string s1, string s2);
 bool only_spaces(string str);
 bool contains(string str, string word);
+int min_pos(int a, int b);
+string itos(int n);
 
 // functions for type 1 & 2
 void parse_ftn_type(string s, FtnType &ftype);
-void preprocess(CloneData &c1, CloneData &c2);
-void fetch_callers();
+void patch_callers(Caller c, string newFname, int flag);
 vector<int> get_diff(CloneData &c1, CloneData &c2);
 bool int_vec_contains(vector<int> &iv, int i);
 void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
@@ -81,7 +85,7 @@ void trim_code(int p, int q);
 
 // test functions
 void test_print(); // test printer for check cloneDatas
-void print_code();
+void print_code(vector<string> code);
 void test_diff();
 void print_ftn_type(FtnType &f);
 
@@ -98,25 +102,47 @@ void read_file(char* alarmFile){
     ifstream cfile(alarmFile);
     cfile >> n;
 
-    CloneData temp_cd;
+    CloneData tmpCdata;
 
     for(int i=0; i<n; i++){
-        cfile >> temp_cd.fileName >> temp_cd.from >> temp_cd.to;
-        temp_cd.cloneSize = temp_cd.to - temp_cd.from + 1;
+        cfile >> tmpCdata.fileName >> tmpCdata.from >> tmpCdata.to;
+        tmpCdata.cloneSize = tmpCdata.to - tmpCdata.from + 1;
 
-        ifstream ccode(temp_cd.fileName.c_str());
+        ifstream ccode(tmpCdata.fileName.c_str());
         int line = 1;
         string temp;
-        while (line <= temp_cd.to) {
+        while (line <= tmpCdata.to) {
             getline(ccode, temp);
-            if (line >= temp_cd.from) temp_cd.cloneSnippet.push_back(temp);
+            if (line >= tmpCdata.from) tmpCdata.cloneSnippet.push_back(temp);
             line++; 
         }
 
-        cloneDatas.push_back(temp_cd);
-        temp_cd.fileName = "";
-        temp_cd.from = temp_cd.to = temp_cd.cloneSize = 0;
-        temp_cd.cloneSnippet.clear();
+        cloneDatas.push_back(tmpCdata);
+        tmpCdata.fileName = "";
+        tmpCdata.from = tmpCdata.to = tmpCdata.cloneSize = 0;
+        tmpCdata.cloneSnippet.clear();
+    }
+
+    int callerNum;
+    Caller tmpCaller;
+
+    for(int i=0; i<n; i++){
+        cfile >> callerNum;
+        for(int j=0; j<callerNum; j++){
+            cfile >> tmpCaller.fileName;
+            cfile >> tmpCaller.callerObjectName >> tmpCaller.callerObjectFtnName >> tmpCaller.originalFtnName;
+            cfile >> tmpCaller.argNum;
+            for(int k=0; k<tmpCaller.argNum; k++){
+                string tmpStr;
+                cfile >> tmpStr;
+                tmpCaller.callArgs.push_back(tmpStr);
+            }
+            cfile >> tmpCaller.lineNum;
+            cloneDatas[i].callers.push_back(tmpCaller);
+            tmpCaller.fileName = tmpCaller.callerObjectName = tmpCaller.callerObjectFtnName = "";
+            tmpCaller.argNum = tmpCaller.lineNum = 0;
+            tmpCaller.callArgs.clear();
+        }
     }
 
 }
@@ -143,7 +169,7 @@ bool only_spaces(string str){
 // checks if certain string has only spaces
 // this function is for checking white space in the program code
 
-    if(str.find_first_not_of(' ') != std::string::npos) return false;
+    if(str.find_first_not_of(" \t\r\n") != std::string::npos) return false;
     else return true;
     
 }
@@ -157,6 +183,12 @@ bool contains(string str, string word){
 int min_pos(int a, int b){
     if (a >= 0 && b >= 0) return a < b ? a : b;
     else return a > b ? a : b;
+}
+
+string itos(int n){
+    ostringstream ss;
+    ss << n;
+    return ss.str();
 }
 
 
@@ -237,15 +269,56 @@ void parse_ftn_type(string s, FtnType &ftype){
 
 }
 
-void fetch_callers(){
+void patch_callers(Caller c, string newFname, int flag){
     // function for fetching caller datas
     // using data from the alarm file which are parsed from DOT file
 
-    // 1. read in the caller data from the input file
+    // Get the call site code line too. to use for caller patching
+    ifstream pfile(c.fileName.c_str());
+    string line;
+    vector<string> tempCode;
+    int callerLine = c.lineNum;
+    int lineCnt = 0; // line counter
+    while(getline(pfile, line)) {
+        tempCode.push_back(line);
+        lineCnt++;
+    }
 
-    // 2. put caller data in Caller structure
+    string patchLine = tempCode[c.lineNum-1];
+    bool found = false;
+    int ftnFront, ftnRear;
+    ftnFront = ftnRear = 0;
 
-    // 3. get the call site code line too. to use for caller patching
+    while(!found){
+        ftnFront = patchLine.find_first_of(c.originalFtnName, ftnFront);
+        if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(' && patchLine.at(ftnFront - 1) == '.') {
+            found = true;
+            ftnRear = patchLine.find_first_of(')', ftnFront);
+        } else if (patchLine.at(ftnFront + c.originalFtnName.size()) == ' '){
+            ftnFront += patchLine.substr(ftnFront).find_first_not_of(" \t\r\n");
+            if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(') {
+                found = true;
+                ftnRear = patchLine.find_first_of(')', ftnFront);
+            }
+        } else {
+            ftnFront++;
+        }
+    }
+    
+    string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
+    string strRear = itos(flag) + ")" + patchLine.substr(ftnRear + 1);
+
+    patchLine = strFront;
+    for(int i=0; i<c.argNum; i++){
+        patchLine += c.callArgs[i] + ", ";
+    }
+    patchLine += strRear;
+    tempCode[c.lineNum-1] = patchLine;    
+
+    cout << "Patching callers ...\n";
+    cout << "(This will be replaced with actual file write operations)\n";
+    print_code(tempCode); // TODO: need to replace this with file write operations
+
 } 
 
 vector<int> get_diff(CloneData &c1, CloneData &c2){
@@ -273,20 +346,32 @@ bool int_vec_contains(vector<int> &iv, int i){
 
 void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     
+    string newFtnName = f1.ftnName + f2.ftnName;
+    // 1. substitute caller function name with new one.
+
+    for(int i=0; i<c1.callers.size(); i++){
+        patch_callers(c1.callers[i], newFtnName, 0);
+    }
+
+    for(int i=0; i<c2.callers.size(); i++){
+        patch_callers(c2.callers[i], newFtnName, 1);
+    }
+    
+
     vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
-    // 1. insert procedure branches using if/else statements using flag.
+    // 2. insert procedure branches using if/else statements using flag.
     // use diffLine to get the diff lines
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
 
-    // 2. insert flag at the ftn decl.
+
+    // 3. insert flag at the ftn decl.
     // use FtnType to not get new function name & arg name
     string ftnDecl = tabStr;
     for(int i=0; i<f1.keywords.size(); i++){
         ftnDecl += (f1.keywords[i] + " ");
     }
 
-    string newFtnName = f1.ftnName + f2.ftnName;
     ftnDecl += (f1.returnType + " " + newFtnName + "(");
     for(int i=0; i<f1.ftnArgs.size(); i++){
         ftnDecl += f1.ftnArgs[i].first;
@@ -307,9 +392,26 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
         }
     }
 
-    fetch_callers();
-    // 3. fetch caller datas
-    // 4. substitute caller function name with new one.
+    ifstream pfile(c1.fileName.c_str());
+    string line;
+
+    int lineCnt = 1; // line counter
+    while(getline(pfile, line)) {
+        //if (lineCnt >= c1.from && lineCnt <= c1.to) continue;
+        //if (lineCnt >= c2.from && lineCnt <= c2.to) continue;
+        //cout << line << endl;
+        if(lineCnt == c1.from) patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
+        if(lineCnt == c2.to + 1) {
+            if(only_spaces(line)) { lineCnt++; continue; }
+        }
+        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
+        
+        lineCnt++;
+    }
+
+    cout << "Patching clones ...\n";
+    cout << "(This will be replaced with actual file write operations)\n";
+    print_code(patchCode); // TODO: need to replace this with file write operations
 
 }
 
@@ -441,7 +543,6 @@ void trim_code(int p, int q){
 
 void em_type1n2(){
     
-    //preprocess(cloneDatas.front(), cloneDatas.back());
     CloneData c1, c2;
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
@@ -515,6 +616,24 @@ void test_print(){
 
 }
 
+void print_caller(CloneData &cd){
+
+    cout << "Number of callers : " << cd.callers.size() << endl;
+    for(int i=0; i<cd.callers.size(); i++){
+        cout << "Caller at : " << cd.callers[i].fileName << endl;
+        cout << "Caller in : " << cd.callers[i].callerObjectName << "." << cd.callers[i].callerObjectFtnName << "()\n";
+        cout << "Ftn called args : " << cd.callers[i].originalFtnName << "(";
+        if(cd.callers[i].argNum == 0) cout << ")";
+        for(int j=0; j<cd.callers[i].argNum; j++){
+            cout << cd.callers[i].callArgs[j];
+            if(j==cd.callers[i].argNum-1) cout << ")";
+            else cout << ", ";
+        }
+        cout << "\nCalled line num : " << cd.callers[i].lineNum << endl;
+    }
+
+}
+
 void print_code(vector<string> code){
     for(vector<string>::iterator it = code.begin(); it != code.end(); ++it){
         cout << (*it) << endl;
@@ -561,7 +680,7 @@ int main(int argc, char** argv){
     read_file(argv[1]); // 1. reads input data
     
     refactor(T1); // 2. refactor the code according to the clone datas
-    print_code(tempClone);
+    //print_code(tempClone);
 
     return 0;
 
