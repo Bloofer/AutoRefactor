@@ -83,6 +83,9 @@ pair<int, int> get_common_part();
 void patch_code(string fileName); // replace code clone with new function
 void trim_code(int p, int q);
 
+// functions for type 4
+bool chk_sibling(string arg1, string arg2);
+
 // test functions
 void test_print(); // test printer for check cloneDatas
 void print_code(vector<string> code);
@@ -166,12 +169,10 @@ bool are_same(string s1, string s2){
 }
 
 bool only_spaces(string str){
-// checks if certain string has only spaces
-// this function is for checking white space in the program code
-
+    // checks if certain string has only spaces
+    // this function is for checking white space in the program code
     if(str.find_first_not_of(" \t\r\n") != std::string::npos) return false;
     else return true;
-    
 }
 
 bool contains(string str, string word){
@@ -530,7 +531,44 @@ void trim_code(int p, int q){
 
 // TODO: need to impl this
 
+    // 2. check clone ftn arg are sibling 
+    bool chk_sibling(string arg1, string arg2) {
 
+        // TODO: maybe need to get whole project class hierarchy?
+        // need to find out what to do ...
+
+        return false;
+
+    }
+
+    void pull_up_arg(){
+
+        // 5. pull up arg of the parent
+        // 6. check the call name in the parent class
+        // 7. pull up the ftn interface which are not in the parent class
+        // 8. ftn merge & arg type pull up
+
+    }
+
+    void merge_t4_clone_ftn(){
+
+        // preprocess and get ftn args
+        string s1, s2;
+
+        if (chk_sibling(s1, s2)) return;
+
+        // 3. diff code
+        // 4. get the diff part of the identical ftn calls
+        // * 3/4 will be processed in one action
+
+
+        // 5. pull up arg of the parent
+        // 6. check the call name in the parent class
+        // 7. pull up the ftn interface which are not in the parent class
+        // 8. ftn merge & arg type pull up
+        pull_up_arg();
+
+    }
 
 
 
@@ -556,6 +594,7 @@ void em_type1n2(){
 }
 
 void em_type3(){
+
     pair<int, int> p = get_common_part(cloneDatas.front(), cloneDatas.back());
     tempCodeLine = p.second - p.first + 1;
     trim_code(p.first, p.second);
@@ -565,9 +604,33 @@ void em_type3(){
     }
 
     patch_code(cloneDatas.front().fileName);
+
 }
 
 void em_type4(){
+
+    // 1. get ftn type of two clone snippets
+    CloneData c1, c2;
+    c1 = cloneDatas.front();
+    c2 = cloneDatas.back();
+
+    FtnType f1, f2;
+    parse_ftn_type(c1.cloneSnippet.front(), f1);
+    parse_ftn_type(c2.cloneSnippet.front(), f2);
+
+    // 2. check clone ftn arg are sibling 
+
+    // 3. diff code
+
+    // 4. get the diff part of the identical ftn calls
+
+    // 5. pull up arg of the parent
+
+    // 6. check the call name in the parent class
+
+    // 7. pull up the ftn interface which are not in the parent class
+
+    // 8. ftn merge & arg type pull up
 
 }
 
