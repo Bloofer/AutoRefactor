@@ -2,9 +2,11 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <map>
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <ctype.h>
 #include "dtl/dtl/dtl.hpp"
 using namespace std;
 
@@ -48,6 +50,15 @@ typedef enum {
     T4
 } clone_type;
 
+string typeArray[8] = {"byte", "short", "int", "long", 
+     "float", "double", "boolean", "char"};
+vector<string> javaPrimitiveDataTypes(&typeArray[0], &typeArray[0]+8); 
+// TODO: maybe need to update more java types?
+
+map<string, string> classHierarchy;
+// (child -> parent) map
+// class hierarchy of the whole project.
+// TODO: need to impl the ftn which gathers this data
 
 // temporary variable to save the clone code snippets
 vector<string> tempClone;
@@ -71,9 +82,11 @@ bool contains(string str, string word);
 int min_pos(int a, int b);
 string itos(int n);
 
-// functions for type 1 & 2
+// communal functions for all types
 void parse_ftn_type(string s, FtnType &ftype);
 void patch_callers(Caller c, string newFname, int flag);
+
+// functions for type 1 & 2
 vector<int> get_diff(CloneData &c1, CloneData &c2);
 bool int_vec_contains(vector<int> &iv, int i);
 void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
@@ -85,6 +98,8 @@ void trim_code(int p, int q);
 
 // functions for type 4
 bool chk_sibling(string arg1, string arg2);
+void pull_up_arg();
+void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2); 
 
 // test functions
 void test_print(); // test printer for check cloneDatas
@@ -193,9 +208,11 @@ string itos(int n){
 }
 
 
+
+
 /*
  * ====================================================
- * ============ FUNCTIONS FOR TYPE 1 & 2 ==============
+ * =========== COMMUNAL FUNCTIONS FOR ALL =============
  * ====================================================
  */
 
@@ -340,6 +357,15 @@ vector<int> get_diff(CloneData &c1, CloneData &c2){
     // 3. return the vector
     return diffLine;
 }
+
+
+
+
+/*
+ * ====================================================
+ * ============ FUNCTIONS FOR TYPE 1 & 2 ==============
+ * ====================================================
+ */
 
 bool int_vec_contains(vector<int> &iv, int i){
     return ( find(iv.begin(), iv.end(), i) != iv.end() );
@@ -531,13 +557,22 @@ void trim_code(int p, int q){
 
 // TODO: need to impl this
 
+    void get_class_hierarchy() {
+
+        // this is just for testing
+        // TODO: need to finish impl this
+        classHierarchy.insert(make_pair("Car", "Vehicle"));
+        classHierarchy.insert(make_pair("Truck", "Vehicle"));
+
+    }
+
     // 2. check clone ftn arg are sibling 
     bool chk_sibling(string arg1, string arg2) {
 
         // TODO: maybe need to get whole project class hierarchy?
         // need to find out what to do ...
 
-        return false;
+        return (classHierarchy.find(arg1)->second == classHierarchy.find(arg2)->second); 
 
     }
 
@@ -550,23 +585,47 @@ void trim_code(int p, int q){
 
     }
 
-    void merge_t4_clone_ftn(){
+    void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+
+        // 1. compare two clone arg types
+        vector< pair<string, string> >::iterator it1 = f1.ftnArgs.begin();
+        vector< pair<string, string> >::iterator it2 = f2.ftnArgs.begin();
+        int idx = 0;
+
+        // 2. compare arg types and find the diffrent arg type
+        for(; it1 != f1.ftnArgs.end() && it2 != f2.ftnArgs.end(); ++it1, ++it2){
+            if((*it1).first != (*it2).first) break;
+            idx++;
+        }
 
         // preprocess and get ftn args
-        string s1, s2;
+        string arg1 = f1.ftnArgs[idx].first;
+        string arg2 = f2.ftnArgs[idx].first;
+        string arg1Name = f1.ftnArgs[idx].second;
+        string arg2Name = f1.ftnArgs[idx].second;
 
-        if (chk_sibling(s1, s2)) return;
+        get_class_hierarchy();
+        if (chk_sibling(arg1, arg2)) {
 
-        // 3. diff code
-        // 4. get the diff part of the identical ftn calls
-        // * 3/4 will be processed in one action
+            string parentType = classHierarchy.find(arg1)->second;
+            string parentName = parentType;
+            parentName.at(0) = tolower(parentName.at(0));
+            // get new name of the parent object
 
+            // 3. diff code
+            // 4. get the diff part of the identical ftn calls
+            // * 3/4 will be processed in one action
+            vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
+            
+            // find the ftn call of the 
 
-        // 5. pull up arg of the parent
-        // 6. check the call name in the parent class
-        // 7. pull up the ftn interface which are not in the parent class
-        // 8. ftn merge & arg type pull up
-        pull_up_arg();
+            // 5. pull up arg of the parent
+            // 6. check the call name in the parent class
+            // 7. pull up the ftn interface which are not in the parent class
+            // 8. ftn merge & arg type pull up
+            pull_up_arg();
+
+        }
 
     }
 
@@ -619,6 +678,7 @@ void em_type4(){
     parse_ftn_type(c2.cloneSnippet.front(), f2);
 
     // 2. check clone ftn arg are sibling 
+    merge_t4_clone_ftn(c1.fileName, c1, c2, f1, f2);
 
     // 3. diff code
 
@@ -742,7 +802,7 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
     
-    refactor(T1); // 2. refactor the code according to the clone datas
+    refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
 
     return 0;
