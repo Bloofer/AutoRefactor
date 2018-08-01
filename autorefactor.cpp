@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include "dtl/dtl/dtl.hpp"
+#include "ptree.h"
 using namespace std;
 
 int n; // number of clone sites
@@ -58,6 +59,11 @@ vector<string> javaPrimitiveDataTypes(&typeArray[0], &typeArray[0]+8);
 map<string, string> classHierarchy;
 // (child -> parent) map
 // class hierarchy of the whole project.
+// TODO: need to impl the ftn which gathers this data
+
+map<string, string> classToFileMap;
+// (class name -> file location) map
+// this directs the exact location of the class file
 // TODO: need to impl the ftn which gathers this data
 
 // temporary variable to save the clone code snippets
@@ -563,6 +569,10 @@ void trim_code(int p, int q){
         // TODO: need to finish impl this
         classHierarchy.insert(make_pair("Car", "Vehicle"));
         classHierarchy.insert(make_pair("Truck", "Vehicle"));
+        classToFileMap.insert(make_pair("Car", "/home/yang/Sources/AutoRefactor/toyex/t4/Car.java"));
+        classToFileMap.insert(make_pair("Truck", "/home/yang/Sources/AutoRefactor/toyex/t4/Truck.java"));
+        classToFileMap.insert(make_pair("Vehicle", "/home/yang/Sources/AutoRefactor/toyex/t4/Vehicle.java"));
+        classToFileMap.insert(make_pair("HelloWorld", "/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java"));
 
     }
 
@@ -802,7 +812,10 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
     
-    refactor(T4); // 2. refactor the code according to the clone datas
+    ParseTree* pt = parseFile("/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java");
+    
+
+    //refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
 
     return 0;

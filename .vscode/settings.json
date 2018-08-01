@@ -8,6 +8,13 @@
         "deque": "cpp",
         "list": "cpp",
         "*.tcc": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "istream": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "map": "cpp",
+        "fstream": "cpp",
+        "exception": "cpp",
+        "algorithm": "cpp"
     }
 }
