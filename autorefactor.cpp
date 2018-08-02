@@ -9,6 +9,8 @@
 #include <ctype.h>
 #include "dtl/dtl/dtl.hpp"
 #include "include/ptree.h"
+#include "include/refactorguide.h"
+#include "treeTra/token-tree-map.h"
 using namespace std;
 
 int n; // number of clone sites
@@ -804,12 +806,7 @@ void print_ftn_type(FtnType &f){
 
 map<string,int> name2id;
 map<int,string> id2name;
-
-/* int yyparse();
-
-extern Tree *root;
-
-void id_init(); */
+//Tree *root;
 
 int main(int argc, char** argv){
 
@@ -821,18 +818,10 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
 
-    /* id_init();
-    yyparse();
-    if (!root) {
-        cerr << "failed to parse file" << endl;
-        return 1;
-    }
-
-    root->printTok();
-    //root->print(); */
-
-    ParseTree* pt = parseFile("/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java");
-    
+    string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/Truck.java";
+    string a, b, c;
+    fetchClassHierarchy(filename, a, b, c);
+    cout << a << " " << b << " " << c << endl;
 
     //refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);

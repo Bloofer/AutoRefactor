@@ -7,7 +7,7 @@ IS			(u|U|l|L)*
 
 %{
 #include <stdio.h>
-#include "../include/ptree.h"
+#include <ptree.h>
 #include "pt_j.tab.hh"
 #include <map>
 #include <string>

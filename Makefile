@@ -1,21 +1,32 @@
 TREEHEADER=include/ptree.h
-TREESRC=include/ptree.cpp
-TREEOBJS=include/ptree.o
-PTOBJS=ptgen/javaptgen.a
+TREESRC=ptree.cc
+TREEOBJS=ptree.o
+PTOBJS=ptgen/java/javaptgen.a
 TTOBJS=treeTra/libvgen.a
 
 # VGENOBJS=${TREEOBJS} treeTra/libvgen.a
 
-OBJS=${VGENOBJS} ptgen/javaptgen.a
+OBJS=${VGENOBJS} ptgen/java/javaptgen.a
 
-HEADERS=ptgen/jrelevantNodes.h ptgen/jatomicNodes.h ptgen/jparentNodes.h ptgen/jcontextualNodes.h
+HEADERS=ptgen/java/jrelevantNodes.h ptgen/java/jatomicNodes.h ptgen/java/jparentNodes.h ptgen/java/jcontextualNodes.h
 
 CC=g++
 CXX=g++
-CPPFLAGS+=-Iinclude -ItreeTra
+CPPFLAGS+=-Iinclude -ItreeTra -Iptgen/java
 
 TARGET=autorefactor
 
-autorefactor:${OBJS} ${HEADERS} autorefactor.cpp
-	$(CXX) $(CPPFLAGS) -o $@ autorefactor.o $(TREEOBJS) $(PTOBJS) $(TTOBJS)
+${TREEOBJS}:${TREESRC} ${TREEHEADER}
+	$(CXX) -o $@ $(CPPFLAGS) -c -DJAVA ${TREESRC}
+
+vecgen:${OBJS} ${HEADERS} ptgen/java/main.cc
+	$(CXX) $(CPPFLAGS) -c -DJAVA ptgen/java/main.cc
+	$(CXX) -o $@ main.o $(OBJS) $(TREEOBJS) $(PTOBJS) $(TTOBJS)
+
+refactorguide:${OBJS} refactorguide.cpp
+	${CXX} $(CPPFLAGS) -c refactorguide.cpp -o refactorguide.o
+
+autorefactor:${OBJS} autorefactor.o refactorguide.o ${HEADERS} autorefactor.cpp
+	$(CXX) $(CPPFLAGS) -c autorefactor.cpp
+	$(CXX) $(CPPFLAGS) autorefactor.o refactorguide.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
 

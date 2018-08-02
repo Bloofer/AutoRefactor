@@ -33,7 +33,8 @@
 #include "vgen-config.h"
 
 using namespace std;
-extern string identifierTypeName;
+//extern string identifierTypeName;
+string identifierTypeName;
 
 #define VGDEBUG
 

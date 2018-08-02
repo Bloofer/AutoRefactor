@@ -33,14 +33,14 @@
 
 DEBUGFLAGS?=-O3
 
-CPPFLAGS+=-I../../include
+CPPFLAGS+=-I../include
 CC=gcc
 CXX=g++
 CFLAGS+=$(DEBUGFLAGS)
 CXXFLAGS+=$(DEBUGFLAGS)
 LDFLAGS+=$(DEBUGFLAGS)
 
-treeheaders = ../../include/ptree.h
+treeheaders = ../include/ptree.h
 traversalsrc = tree-traversal.C tra-gen.C vgen-utils.c tree-vector.C vgen-config.C \
 	token-counter.C sq-tree.C node-vec-gen.C vector-output.C vector-merger.C tree-accessor.C \
 	token-tree-map.C clone-context-php.C

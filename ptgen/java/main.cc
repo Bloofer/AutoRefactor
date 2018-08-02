@@ -30,31 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  */
-/* This file contains extensions for C strings, etc. */
+#include <ptree.h>
+#include <map>
+#include <string>
 
-#ifndef _VGEN_UTILS_H_
-#define _VGEN_UTILS_H_
+using namespace std;
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <string.h>
-#include <ctype.h>
+map<string,int> name2id;
+map<int,string> id2name;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+int yyparse();
 
-/****** String Utilities ******/
-char *stringclone(const char *var);
-char *stringnclone(const char *var, unsigned int len);
-int compare_string(const void *c1, const void *c2); /* a wrapper of strcmp. */
-int compare_string_nocase(const void *c1, const void *c2); /* ad-hoc comparison of strings without case; can't handle unicode etc. */
+extern Tree *root;
 
-#ifdef __cplusplus
+void id_init();
+
+int test()
+{
+    id_init();
+    yyparse();
+    if (!root) {
+        cerr << "failed to parse file" << endl;
+        return 1;
+    }
+
+    root->printTok();
+    //root->print();
+
+//    int c= root->countTerminals();
+
+//    cout << c << endl;
+
+    return 0;
 }
-#endif
-
-#endif
 

@@ -15,6 +15,12 @@
         "map": "cpp",
         "fstream": "cpp",
         "exception": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "ptree.h": "c",
+        "string.h": "c",
+        "string": "c",
+        "tree-traversal.c": "cpp",
+        "iomanip": "cpp",
+        "vgen-config.h": "c"
     }
 }

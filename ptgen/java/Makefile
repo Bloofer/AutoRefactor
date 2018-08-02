@@ -33,7 +33,7 @@
 
 DEBUGFLAGS?=-O3
 
-CPPFLAGS+=-I../include
+CPPFLAGS+=-I../../include
 CXX=g++
 CXXFLAGS+=$(DEBUGFLAGS)
 LDFLAGS+=$(DEBUGFLAGS)
