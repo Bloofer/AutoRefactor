@@ -32,8 +32,8 @@
  */
 #include "ptree.h"
 #include <assert.h>
-#include "vgen-config.h"
-#include "token-counter.h"
+#include "../treeTra/vgen-config.h"
+#include "../treeTra/token-counter.h"
 
 using namespace std;
 
@@ -505,13 +505,8 @@ ParseTree* parseFile(const char * fn)
 static vector<bool> ctxNodes; /* internal use only: ctxNodes[i]==true iff the node kind is considered as contexts */
 static const char * contextualNodes[] = {
 #ifdef JAVA 
-#include "../ptgen/java/jcontextualNodes.h"
+#include "jcontextualNodes.h"
 #else
-#ifdef PHP
-#include "../ptgen/php5/phpcontextualNodes.h"
-#else
-#include "../ptgen/gcc/ccontextualNodes.h"
-#endif
 #endif
 };
 

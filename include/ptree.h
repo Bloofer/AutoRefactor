@@ -44,7 +44,6 @@
 #include <list>
 #include <set>
 #include <limits.h>
-#include "pt_j.tab.hh"
 
 /** A Tree Node or a tree */
 class Tree;

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <ctype.h>
 #include "dtl/dtl/dtl.hpp"
-#include "ptree.h"
+#include "include/ptree.h"
 using namespace std;
 
 int n; // number of clone sites
@@ -802,6 +802,15 @@ void print_ftn_type(FtnType &f){
  * ====================================================
  */
 
+map<string,int> name2id;
+map<int,string> id2name;
+
+/* int yyparse();
+
+extern Tree *root;
+
+void id_init(); */
+
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor CLONEDATA
@@ -811,7 +820,17 @@ int main(int argc, char** argv){
     }
 
     read_file(argv[1]); // 1. reads input data
-    
+
+    /* id_init();
+    yyparse();
+    if (!root) {
+        cerr << "failed to parse file" << endl;
+        return 1;
+    }
+
+    root->printTok();
+    //root->print(); */
+
     ParseTree* pt = parseFile("/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java");
     
 
