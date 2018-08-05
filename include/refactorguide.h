@@ -53,3 +53,5 @@ typedef enum {
 } refactor_pattern_t;
 
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
+void printPtree(string &fileName);
+string getClassKeyword(string &file_name, string &class_type);

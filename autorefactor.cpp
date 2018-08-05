@@ -34,6 +34,7 @@ typedef struct{
     string fileName;
     int from, to;
     vector<string> cloneSnippet;
+    vector< pair<string, int> > argCalls; // for type4. <arg obj ftn call name, call line> vector
     int cloneSize;
     vector<Caller> callers;
 }CloneData;
@@ -52,6 +53,13 @@ typedef enum {
     T3,
     T4
 } clone_type;
+
+typedef enum {
+    CLASS,
+    ABSTRACT_CLASS,
+    INTERFACE,
+    DONT_KNOW
+} class_type;
 
 string typeArray[8] = {"byte", "short", "int", "long", 
      "float", "double", "boolean", "char"};
@@ -107,6 +115,7 @@ void trim_code(int p, int q);
 // functions for type 4
 bool chk_sibling(string arg1, string arg2);
 void pull_up_arg();
+class_type get_class_type(string c, int &classDefLine);
 void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2); 
 
 // test functions
@@ -114,6 +123,7 @@ void test_print(); // test printer for check cloneDatas
 void print_code(vector<string> code);
 void test_diff();
 void print_ftn_type(FtnType &f);
+void print_arg_calls(CloneData &cd);
 
 
 /*
@@ -588,6 +598,59 @@ void trim_code(int p, int q){
 
     }
 
+    class_type get_class_type(string c, int &classDefLine){
+
+        string fileName = classToFileMap.find(c)->second;
+        ifstream pfile(fileName.c_str());
+        string line;
+        int classLine;
+        int lineCnt = 0;
+        
+        while(getline(pfile, line)) {
+            if (contains(line, "public") || contains(line, "private") || contains(line, "protected")){
+                istringstream iss(line);
+                string t1, t2, t3;
+                iss >> t1 >> t2 >> t3;
+                if ((t1 != "public") && (t1 != "private") && (t1 != "protected")){
+                    lineCnt++;
+                    continue;        
+                } else {
+                    if (t2 == "class") {classDefLine = lineCnt; return CLASS;}
+                    else if (t2 == "interface") {classDefLine = lineCnt; return INTERFACE;}
+                    else if (t2 == "abstract") if (t3 == "class") {classDefLine = lineCnt; return ABSTRACT_CLASS;}
+                }
+            }
+            lineCnt++;
+        }
+
+        return DONT_KNOW;
+
+    }
+
+    void fetch_arg_calls(CloneData &c1, CloneData &c2, string arg1Name, string arg2Name, vector<int> diffLine){
+        
+        int callIdx;
+        string callStr;
+
+        for(vector<int>::iterator it = diffLine.begin(); it != diffLine.end(); ++it){
+            callIdx = c1.cloneSnippet[(*it)].find_first_of(arg1Name);
+            callStr = c1.cloneSnippet[(*it)].substr(callIdx+arg1Name.size()+1);
+            callIdx = callStr.find_first_of("(");
+            callStr = callStr.substr(0, callIdx);
+            c1.argCalls.push_back(pair<string, int>(callStr, (*it)));
+            //cout << callStr << endl;
+            callIdx = c2.cloneSnippet[(*it)].find_first_of(arg2Name);
+            callStr = c2.cloneSnippet[(*it)].substr(callIdx+arg2Name.size()+1);
+            callIdx = callStr.find_first_of("(");
+            callStr = callStr.substr(0, callIdx);
+            c2.argCalls.push_back(pair<string, int>(callStr, (*it)));
+            //cout << callStr << endl;
+        }
+
+    }
+
+    void gather_ftn_def();
+
     void pull_up_arg(){
 
         // 5. pull up arg of the parent
@@ -614,9 +677,11 @@ void trim_code(int p, int q){
         string arg1 = f1.ftnArgs[idx].first;
         string arg2 = f2.ftnArgs[idx].first;
         string arg1Name = f1.ftnArgs[idx].second;
-        string arg2Name = f1.ftnArgs[idx].second;
-
+        string arg2Name = f2.ftnArgs[idx].second;
         get_class_hierarchy();
+
+        string parent = classHierarchy.find(arg1)->second;
+
         if (chk_sibling(arg1, arg2)) {
 
             string parentType = classHierarchy.find(arg1)->second;
@@ -628,11 +693,19 @@ void trim_code(int p, int q){
             // 4. get the diff part of the identical ftn calls
             // * 3/4 will be processed in one action
             vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back()); // TODO: refactor this?
-            
+
             // find the ftn call of the 
 
             // 5. pull up arg of the parent
+            // 5-1. chk parent class type before pull-up
+            int pDefLine; // parent class def line
+            class_type ct = get_class_type(parent, pDefLine);
+            // 5-2. chk diff line obj calls. get obj calls and chk if parent class has those ftns.
+            fetch_arg_calls(c1, c2, arg1Name, arg2Name, diffLine);
+
             // 6. check the call name in the parent class
+            
+
             // 7. pull up the ftn interface which are not in the parent class
             // 8. ftn merge & arg type pull up
             pull_up_arg();
@@ -795,6 +868,15 @@ void print_ftn_type(FtnType &f){
     }
 }
 
+void print_arg_calls(CloneData &cd){
+    
+    cout << "# of arg calls : " << cd.argCalls.size() << endl;
+    vector< pair<string, int> >::iterator it = cd.argCalls.begin();
+    for(; it!=cd.argCalls.end(); ++it){
+        cout << (*it).first << " at line #" << (*it).second << endl;
+    }
+
+}
 
 
 
@@ -818,12 +900,15 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
 
-    string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/Truck.java";
+    /* string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java";
     string a, b, c;
     fetchClassHierarchy(filename, a, b, c);
     cout << a << " " << b << " " << c << endl;
 
-    //refactor(T4); // 2. refactor the code according to the clone datas
+    printPtree(filename); */
+
+
+    refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
 
     return 0;

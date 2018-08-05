@@ -108,6 +108,7 @@ class ParseTree {
      * The order number is based on depth-first traversal and starts with 1.
      * It's currently for use dumpParseTree. */
     long tree2sn(Tree* n);
+    void printNames();
 
   private:
     ParseTree();
@@ -213,11 +214,36 @@ class Tree {
         return found;
     }
 
+    virtual std::string findCnode(std::string s, std::string &ctype) {
+        std::string found, temp;
+        Tree *tt;
+        for (int i= 0; i < children.size(); i++) {
+            temp = children[i]->findCnode(s, ctype);
+            // if found s node, then get silbing of the node to fetch label
+            if ( !temp.empty() && i < (children.size()-1) ) {
+                if (temp.compare("class") == 0) ctype = children[i+1]->children[0]->getValue();
+                else if (temp.compare("extends") == 0) { 
+                    tt = children[i+1];
+                    while(!(*tt).isTerminal()) tt = (*tt).children[0];
+                    ctype = (*tt).getValue();
+                }
+                else if (temp.compare("implements") == 0) { 
+                    tt = children[i+1];
+                    while(!(*tt).isTerminal()) tt = (*tt).children[0];
+                    ctype = (*tt).getValue();
+                }
+            }
+        }
+        return found;
+    }
+
     virtual void printTok() {
         for (int i= 0; i < children.size(); i++) {
+            //if (children[i]->isTerminal()) std::cout << "#" << children[i]->getLine() << " ";
+            std::cout << children[i]->getValue() << " ";
             children[i]->printTok();
         }
-     }
+    }
 
     std::map<NodeAttributeName_t, void* > attributes;
 
@@ -308,6 +334,11 @@ public:
     }
 
     virtual std::string findNode(std::string s, std::string &cname, std::string &parent_cname, std::string &parent_iname) {
+        if (((*value).compare(s) == 0) || ((*value).compare("extends") == 0) || ((*value).compare("implements") == 0)) return (*value);
+        else return "";
+    }
+
+    virtual std::string findCnode(std::string s, std::string &ctype) {
         if (((*value).compare(s) == 0) || ((*value).compare("extends") == 0) || ((*value).compare("implements") == 0)) return (*value);
         else return "";
     }

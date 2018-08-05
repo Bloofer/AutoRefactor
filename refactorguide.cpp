@@ -65,3 +65,28 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
   string find = pt->getRoot()->findNode("class", classname, parent_classname, parent_intername);
 
 }
+
+void printPtree(string &fileName){
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+
+  pt->getRoot()->print();
+  pt->getRoot()->printTok();
+
+}
+
+string getClassKeyword(string &file_name, string &class_type){
+
+  ParseTree* pt = parseFile(file_name.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << file_name << endl;
+    return "";
+  }
+
+  string find = pt->getRoot()->findCnode("class", class_type);
+
+}

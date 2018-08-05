@@ -333,6 +333,15 @@ long ParseTree::tree2sn(Tree* nd)
     return n;
 }
 
+void ParseTree::printNames()
+{
+
+  for(map<int,string>::iterator it = typeNames->begin(); it != typeNames->end(); ++it) {
+    //typeNames.push_back(it->first);
+    cout << it->second << "\n";
+  }
+
+}
 
 /*******************************************
  * class Tree
