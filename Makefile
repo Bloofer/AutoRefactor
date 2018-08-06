@@ -19,6 +19,10 @@ TARGET=autorefactor
 ${TREEOBJS}:${TREESRC} ${TREEHEADER}
 	$(CXX) -o $@ $(CPPFLAGS) -c -DJAVA ${TREESRC}
 
+vecgen:${OBJS} ${HEADERS} ptgen/java/main.cc
+	$(CXX) $(CPPFLAGS) -c -DJAVA ptgen/java/main.cc
+	$(CXX) -o $@ main.o $(OBJS) $(TREEOBJS) $(PTOBJS) $(TTOBJS)
+
 refactorguide:${OBJS} refactorguide.cpp
 	${CXX} $(CPPFLAGS) -c refactorguide.cpp -o refactorguide.o
 

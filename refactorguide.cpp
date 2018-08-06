@@ -52,6 +52,15 @@ typedef enum {
   DONTKNOW
 } refactor_pattern_t;
 
+map<string,int> name2id;
+map<int,string> id2name;
+
+int yyparse();
+
+extern Tree *root;
+
+void id_init();
+
 // method for finding class label. works only on fetching class names
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername){
 
@@ -68,6 +77,8 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
 
 void printPtree(string &fileName){
 
+  id_init();
+
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
     cerr << "Error: no parse tree created for file: " << fileName << endl;
@@ -76,6 +87,20 @@ void printPtree(string &fileName){
 
   pt->getRoot()->print();
   pt->getRoot()->printTok();
+
+}
+
+void dumpPtree(string &fileName){
+
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+
+  pt->outputParseTree2Dot(fileName.c_str(), false);
 
 }
 

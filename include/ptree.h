@@ -178,6 +178,7 @@ class Tree {
 
     virtual void print() {
         std::cout << "[ " << type << " ";
+        //if (type == 113) std::cout << "\n===ftn decl===\n";
         for (int i= 0; i < children.size(); i++) {
             children[i]->print();
         }

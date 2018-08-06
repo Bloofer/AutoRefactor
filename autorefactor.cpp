@@ -886,10 +886,6 @@ void print_arg_calls(CloneData &cd){
  * ====================================================
  */
 
-map<string,int> name2id;
-map<int,string> id2name;
-//Tree *root;
-
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor CLONEDATA
@@ -900,13 +896,13 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
 
-    /* string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java";
+    string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java";
     string a, b, c;
     fetchClassHierarchy(filename, a, b, c);
     cout << a << " " << b << " " << c << endl;
 
-    printPtree(filename); */
-
+    printPtree(filename);
+    dumpPtree(filename);
 
     refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
