@@ -161,6 +161,7 @@ class Tree {
     virtual NonTerminal *toNonTerminal() {return NULL;}
 
     virtual std::string getValue() {return "";}
+    std::string getVal() {return "";}
     virtual int getType() {return type;}
 
     /** get the left most leaf node */
@@ -175,7 +176,9 @@ class Tree {
     virtual void addChild( Tree *t ) {
         children.push_back(t);
     }
-
+ 
+    //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
+    virtual void print2ss(std::stringstream &ss);
     virtual void print() {
         std::cout << "[ " << type << " ";
         //if (type == 113) std::cout << "\n===ftn decl===\n";
@@ -314,6 +317,7 @@ public:
         this->line= line;
     }
     int line;
+    int getLine();
 
     virtual ~Terminal() {
         delete value;
@@ -327,8 +331,11 @@ public:
     virtual Terminal *toTerminal() {return this;}
 
     virtual std::string getValue() {return (*value);}
+    void getVal(std::string &v){v = (*value);}
     virtual int getType() {return type;}
 
+    //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
+    virtual void print2ss(std::stringstream &ss);
     virtual void print()
     {
        std::cout << "<" << *value << ">";
@@ -361,6 +368,9 @@ public:
 
     virtual bool isNonTerminal() {return true;}
     virtual NonTerminal *toNonTerminal() {return this;}
+
+    virtual void print2ss(std::stringstream &ss);
+    //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
 };
 
 

@@ -8,7 +8,7 @@ TTOBJS=treeTra/libvgen.a
 
 OBJS=${VGENOBJS} ptgen/java/javaptgen.a
 
-HEADERS=ptgen/java/jrelevantNodes.h ptgen/java/jatomicNodes.h ptgen/java/jparentNodes.h ptgen/java/jcontextualNodes.h
+HEADERS=ptgen/java/jrelevantNodes.h ptgen/java/jatomicNodes.h ptgen/java/jparentNodes.h ptgen/java/jcontextualNodes.h autorefactor.h
 
 CC=g++
 CXX=g++
@@ -19,11 +19,7 @@ TARGET=autorefactor
 ${TREEOBJS}:${TREESRC} ${TREEHEADER}
 	$(CXX) -o $@ $(CPPFLAGS) -c -DJAVA ${TREESRC}
 
-vecgen:${OBJS} ${HEADERS} ptgen/java/main.cc
-	$(CXX) $(CPPFLAGS) -c -DJAVA ptgen/java/main.cc
-	$(CXX) -o $@ main.o $(OBJS) $(TREEOBJS) $(PTOBJS) $(TTOBJS)
-
-refactorguide:${OBJS} refactorguide.cpp
+refactorguide:${OBJS} ${HEADERS} refactorguide.cpp
 	${CXX} $(CPPFLAGS) -c refactorguide.cpp -o refactorguide.o
 
 autorefactor:${OBJS} autorefactor.o refactorguide.o ${HEADERS} autorefactor.cpp

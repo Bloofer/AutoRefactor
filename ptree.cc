@@ -403,6 +403,22 @@ long Tree::dumpTree(ofstream & out, long n)
     return n;
 }
 
+/* void Tree::fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk){
+    for (int i= 0; i < children.size(); i++) {
+        if (getType() == 113) chk = true;
+        children[i]->fetchFtnDef(ftnDefVec, tempVec, chk);
+    }
+} */
+
+void Tree::print2ss(std::stringstream &ss) {
+    ss << "[ " << type << " ";
+    //if (type == 113) std::cout << "\n===ftn decl===\n";
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->print2ss(ss);
+    }
+    ss << "]";
+}
+
 long Tree::outputTree2Dot(ofstream & out, long n)
 {
    long c = n++;
@@ -461,7 +477,6 @@ int getTypeID(map<string, int>& name2id, const string& name)
   }
 }
 
-
 bool compareTree(Tree* t1, Tree * t2)
 {
   if ( t1==NULL && t2==NULL )
@@ -481,6 +496,47 @@ bool compareTree(Tree* t1, Tree * t2)
     }
     return true;
   }
+}
+
+int Terminal::getLine()
+{
+  return this->line;
+}
+
+/* void Terminal::fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk){
+    string val = Terminal::getValue();
+    if (chk) { 
+      if (val == ")") {
+        ftnDefVec.push_back(tempVec);
+        tempVec.clear();  
+        chk = !chk
+      }
+      else {
+        tempVec.push_back(val);
+      }
+    }
+} */
+
+/* void NonTerminal::fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk){
+    for (int i= 0; i < children.size(); i++) {
+        if (getType() == 113) chk = true;
+        children[i]->fetchFtnDef(ftnDefVec, tempVec, chk);
+    }
+} */
+
+void Terminal::print2ss(std::stringstream &ss)
+{
+    ss << "<" << Terminal::getValue() << " at #" << Terminal::getLine() << " >";
+}
+
+void NonTerminal::print2ss(std::stringstream &ss)
+{
+    ss << "[ " << type << " ";
+    //if (type == 113) std::cout << "\n===ftn decl===\n";
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->print2ss(ss);
+    }
+    ss << "]";
 }
 
 ParseTree* parseFile(const char * fn)

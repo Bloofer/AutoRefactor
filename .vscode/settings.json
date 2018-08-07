@@ -48,6 +48,7 @@
         "system_error": "c",
         "thread": "c",
         "cinttypes": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "autorefactor.h": "c"
     }
 }

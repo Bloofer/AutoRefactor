@@ -85,9 +85,13 @@ void printPtree(string &fileName){
     return;
   }
 
-  pt->getRoot()->print();
-  pt->getRoot()->printTok();
-
+  ofstream out;
+  string outputfn = fileName + ".pt";
+  out.open(outputfn.c_str(), ofstream::out);
+  stringstream ss;
+  pt->getRoot()->print2ss(ss);
+  cout << "print ss\n" << ss.str() << endl;
+  
 }
 
 void dumpPtree(string &fileName){
@@ -101,7 +105,7 @@ void dumpPtree(string &fileName){
   }
 
   pt->outputParseTree2Dot(fileName.c_str(), false);
-
+  
 }
 
 string getClassKeyword(string &file_name, string &class_type){
