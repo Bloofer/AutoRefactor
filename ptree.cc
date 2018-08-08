@@ -411,12 +411,11 @@ long Tree::dumpTree(ofstream & out, long n)
 } */
 
 void Tree::print2ss(std::stringstream &ss) {
-    ss << "[ " << type << " ";
+    ss << type << " ";
     //if (type == 113) std::cout << "\n===ftn decl===\n";
     for (int i= 0; i < children.size(); i++) {
         children[i]->print2ss(ss);
     }
-    ss << "]";
 }
 
 long Tree::outputTree2Dot(ofstream & out, long n)
@@ -526,17 +525,16 @@ int Terminal::getLine()
 
 void Terminal::print2ss(std::stringstream &ss)
 {
-    ss << "<" << Terminal::getValue() << " at #" << Terminal::getLine() << " >";
+    ss << Terminal::getValue() << " #" << Terminal::getLine() << " ";
 }
 
 void NonTerminal::print2ss(std::stringstream &ss)
 {
-    ss << "[ " << type << " ";
+    ss << type << " ";
     //if (type == 113) std::cout << "\n===ftn decl===\n";
     for (int i= 0; i < children.size(); i++) {
         children[i]->print2ss(ss);
     }
-    ss << "]";
 }
 
 ParseTree* parseFile(const char * fn)

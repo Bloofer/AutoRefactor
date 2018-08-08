@@ -75,23 +75,17 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
 
 }
 
-void printPtree(string &fileName){
-
-  id_init();
+void getPtree(string &fileName, stringstream &ss){
 
   ParseTree* pt = parseFile(fileName.c_str());
+  
   if ( pt==NULL ) {
     cerr << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
 
-  ofstream out;
-  string outputfn = fileName + ".pt";
-  out.open(outputfn.c_str(), ofstream::out);
-  stringstream ss;
   pt->getRoot()->print2ss(ss);
-  cout << "print ss\n" << ss.str() << endl;
-  
+
 }
 
 void dumpPtree(string &fileName){

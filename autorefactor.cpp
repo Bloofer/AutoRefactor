@@ -93,12 +93,23 @@ int min_pos(int a, int b){
     else return a > b ? a : b;
 }
 
-string itos(int n){
+string int_to_str(int n){
     ostringstream ss;
     ss << n;
     return ss.str();
 }
 
+int str_to_int(const char *s)
+{
+    int i;
+    i = 0;
+    while(*s >= '0' && *s <= '9')
+    {
+        i = i * 10 + (*s - '0');
+        s++;
+    }
+    return i;
+}
 
 
 
@@ -216,7 +227,7 @@ void patch_callers(Caller c, string newFname, int flag){
     }
     
     string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
-    string strRear = itos(flag) + ")" + patchLine.substr(ftnRear + 1);
+    string strRear = int_to_str(flag) + ")" + patchLine.substr(ftnRear + 1);
 
     patchLine = strFront;
     for(int i=0; i<c.argNum; i++){
@@ -249,7 +260,6 @@ vector<int> get_diff(CloneData &c1, CloneData &c2){
     // 3. return the vector
     return diffLine;
 }
-
 
 
 
@@ -523,7 +533,56 @@ void trim_code(int p, int q){
 
     }
 
-    void gather_ftn_def();
+    bool is_alpha_or_parenthesis(char c) {
+
+        if ( isalpha(c) ) return true;
+        else if ( c == '(' || c == ')' || c == '{' || c == '}' ) return true;
+        else return false;
+
+    }
+
+    void gather_ftn_def(string fileName, vector< pair< vector<string>, int > > &classNftnTypeDef){
+
+        stringstream ss;
+        string tok;
+        getPtree(fileName, ss);
+        
+        bool found = false;
+        pair< vector<string>, int > typeDef;
+        typeDef.second = -1; // typeDef init
+        vector<string> tempVec;
+        // vector<str> : def tokens, int : def line
+
+        while(ss >> tok){
+            // parsing tokens and type ids one by one ...
+            // cout << tok << " ";
+
+            if ( is_alpha_or_parenthesis(tok.at(0)) ) {
+                // 1. tok is token
+                if (found && tok != "(" && tok != ")" && tok != "{") tempVec.push_back(tok);
+                else if (found && (tok == ")" || tok == "{")) {
+                    found = false;
+                    typeDef.first.assign(tempVec.begin(), tempVec.end());
+                    classNftnTypeDef.push_back(typeDef);
+                    typeDef.first.clear();
+                    typeDef.second = -1;
+                    tempVec.clear();
+                }
+
+            } else if ( isdigit(tok.at(0)) ) {
+                // 2. tok is type id
+                if (tok == "182" || tok == "113") found = true;
+                // 182 : class decl, 113 : ftn decl
+
+            } else if ( tok.at(0) == '#' ) {
+                // 3. tok is line number
+                if (found && typeDef.second == -1) typeDef.second = str_to_int(tok.substr(1).c_str());
+
+            }
+
+        }
+
+    }
 
     void pull_up_arg(){
 
@@ -578,7 +637,9 @@ void trim_code(int p, int q){
             fetch_arg_calls(c1, c2, arg1Name, arg2Name, diffLine);
 
             // 6. check the call name in the parent class
-            
+            vector< pair< vector<string>, int > > classNftnTypeDef;
+            gather_ftn_def(classToFileMap.find(parent)->second, classNftnTypeDef);
+            print_class_n_ftn_type(classNftnTypeDef);
 
             // 7. pull up the ftn interface which are not in the parent class
             // 8. ftn merge & arg type pull up
@@ -752,6 +813,27 @@ void print_arg_calls(CloneData &cd){
 
 }
 
+void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnTypeDef){
+
+    cout << " ===== Class Type Def ===== \n";
+    cout << "Line#" << classNftnTypeDef.at(0).second << " | ";
+    for(vector<string>::iterator it = classNftnTypeDef.at(0).first.begin(); it!=classNftnTypeDef.at(0).first.end(); ++it){
+        cout << (*it) << " ";
+    }
+    cout << "\n\n";
+
+    cout << " ===== Ftn Type Def ===== \n";
+    for(int i=1; i<classNftnTypeDef.size(); i++){
+        cout << "Line#" << classNftnTypeDef.at(i).second << " | ";
+        for(vector<string>::iterator it = classNftnTypeDef.at(i).first.begin(); it!=classNftnTypeDef.at(i).first.end(); ++it){
+            cout << (*it) << " ";
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+
+}
+
 
 
 /*
@@ -769,13 +851,6 @@ int main(int argc, char** argv){
     }
 
     read_file(argv[1]); // 1. reads input data
-
-    string filename = "/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java";
-    string a, b, c;
-    fetchClassHierarchy(filename, a, b, c);
-    cout << a << " " << b << " " << c << endl;
-
-    printPtree(filename);
 
     refactor(T4); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
