@@ -559,7 +559,7 @@ void trim_code(int p, int q){
 
             if ( is_alpha_or_parenthesis(tok.at(0)) ) {
                 // 1. tok is token
-                if (found && tok != "(" && tok != ")" && tok != "{") tempVec.push_back(tok);
+                if (found && tok != ")" && tok != "{") tempVec.push_back(tok);
                 else if (found && (tok == ")" || tok == "{")) {
                     found = false;
                     typeDef.first.assign(tempVec.begin(), tempVec.end());
@@ -584,12 +584,250 @@ void trim_code(int p, int q){
 
     }
 
-    void pull_up_arg(){
+    void parse_class_n_ftn_type(ClassType &c, vector<FtnType> &fv, vector< pair< vector<string>, int > > &classNftnTypeDef){
 
-        // 5. pull up arg of the parent
-        // 6. check the call name in the parent class
-        // 7. pull up the ftn interface which are not in the parent class
-        // 8. ftn merge & arg type pull up
+        c.lineNum = classNftnTypeDef.at(0).second;
+        vector<string>::iterator it = classNftnTypeDef.at(0).first.end();
+        --it;
+        c.cname = (*it);
+        --it;
+        if ((*it) == "interface") { 
+            c.ctype = INTERFACE; 
+            --it;
+        }
+        else if ((*it) == "class") {
+            --it;
+            if ((*it) == "abstract") c.ctype = ABSTRACT_CLASS;
+            else { 
+                c.ctype = CLASS; 
+                ++it;
+            }
+        }
+        c.keywords.assign(classNftnTypeDef.at(0).first.begin(), it);
+
+        FtnType tempFt;
+
+        for(int i=1; i<classNftnTypeDef.size(); i++) {
+            tempFt.lineNum = classNftnTypeDef.at(i).second;
+            ptrdiff_t deli = find(classNftnTypeDef.at(i).first.begin(), classNftnTypeDef.at(i).first.end(), "(") - classNftnTypeDef.at(i).first.begin();
+            // delimeter index dividing ftn def & arg def
+            
+            if(deli < classNftnTypeDef.at(i).first.size()) {
+
+                // parsing arg type and names
+                int deliRear = deli + 1;
+                while(deli < classNftnTypeDef.at(i).first.size() - 1){
+                    pair<string, string> argP;
+                    argP.first = classNftnTypeDef.at(i).first.at(deliRear);
+                    argP.second = classNftnTypeDef.at(i).first.at(deliRear + 1);
+                    tempFt.ftnArgs.push_back(argP);
+                    argP.first = argP.second = ""; 
+                    deliRear++;
+                }
+
+                // parsing ftn type and keywords
+                int deliFront = deli - 1;
+                tempFt.ftnName = classNftnTypeDef.at(i).first.at(deliFront);
+                tempFt.returnType = classNftnTypeDef.at(i).first.at(deliFront - 1);
+                for (int j=0; j<deliFront-1; j++) {
+                    tempFt.keywords.push_back(classNftnTypeDef.at(i).first.at(j));
+                }
+
+            }
+
+            fv.push_back(tempFt);
+            tempFt.keywords.clear();
+            tempFt.ftnArgs.clear();
+            tempFt.ftnName = "";
+            tempFt.lineNum = 0;
+            tempFt.returnType = "";
+
+        }
+
+        /* for(vector<string>::iterator it = classNftnTypeDef.at(0).first.begin(); it!=classNftnTypeDef.at(0).first.end(); ++it){
+            cout << (*it) << " ";
+        }
+
+        cout << " ===== Ftn Type Def ===== \n";
+        for(int i=1; i<classNftnTypeDef.size(); i++){
+            cout << "Line#" << classNftnTypeDef.at(i).second << " | ";
+            for(vector<string>::iterator it = classNftnTypeDef.at(i).first.begin(); it!=classNftnTypeDef.at(i).first.end(); ++it){
+                cout << (*it) << " ";
+            }
+            cout << "\n";
+        }
+        cout << "\n"; */
+
+    }
+
+    bool has_ft_vec_element(vector<FtnType> &ft, string s){
+        vector<FtnType>::iterator it = ft.begin();
+        for(; it!=ft.end(); ++it){
+            if ((*it).ftnName == s) return true;
+        }
+        return false;
+    }
+
+    bool comp_ftn_type(FtnType &f1, FtnType &f2) {
+
+        vector< pair<string, string> >::iterator it1 = f1.ftnArgs.begin();
+        vector< pair<string, string> >::iterator it2 = f2.ftnArgs.begin();
+        for (; it1!=f1.ftnArgs.end(), it2!=f2.ftnArgs.end(); ++it1, ++it2){
+            if ((*it1).first != (*it2).first) return false;
+        } 
+
+        return (f1.ftnName == f2.ftnName) && (f1.returnType == f2.returnType);
+
+    }
+
+    void ftnType_to_ftn_def(FtnType &f, string &s, bool isAbs){
+
+        s = "";
+        for(int i=0; i<f.keywords.size(); i++) {
+            s += (f.keywords.at(i) + " ");
+        }
+        if(isAbs) s += "abstract ";
+        s += f.returnType + " ";
+        s += f.ftnName + "(";
+        for(int i=0; i<f.ftnArgs.size(); i++){
+            s += " " + f.ftnArgs.at(i).first + " " + f.ftnArgs.at(i).second;
+        }
+        if (f.ftnArgs.size() == 0) s += ");";
+        else s += " );";
+
+    }
+
+    void cType_to_class_def(ClassType &c, string &s, bool isAbs){
+
+        s = "";
+        for(int i=0; i<c.keywords.size(); i++) {
+            s += (c.keywords.at(i) + " ");
+        }
+        if(isAbs) s += "abstract ";
+        s += "class" + c.cname;
+
+    }
+
+    void patch_arg_parent_code(string fileName, ClassType ct, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec, vector<string> &undefFtn) {
+
+        // 1. read in file
+        ifstream pfile(fileName.c_str());
+        string line;
+        int defLine = -1; // class definition line
+        int parOpen = -1; // class definition parenthesis opener line
+        int cnt = 0;
+        vector<string> pfileVec;
+
+        while(getline(pfile, line)) {
+            pfileVec.push_back(line);
+            if (line.find(ct.keywords.at(0)) != string::npos) {
+                if (line.find(ct.cname) != string::npos) defLine = cnt;
+            }
+            if ((defLine != -1) && (parOpen == -1)) {
+                if (line.find("{") != string::npos) parOpen = cnt;
+            }
+            cnt++;
+        }
+
+        /* for(int i=0; i<pfileVec.size(); i++){
+            cout << pfileVec.at(i) << endl;
+        } */
+
+        // prepare ftn definitions for pull up
+        vector<FtnType> pullUpFtns;
+        vector<FtnType>::iterator it1 = c1ArgFtVec.begin();
+        vector<FtnType>::iterator it2 = c2ArgFtVec.begin();
+        for (; it1!=c1ArgFtVec.end(), it2!=c2ArgFtVec.end(); ++it1, ++it2) {
+            if (comp_ftn_type((*it1), (*it2))) {
+                if ((find(undefFtn.begin(), undefFtn.end(), (*it1).ftnName)) != undefFtn.end()) pullUpFtns.push_back((*it1));
+            }
+        }
+
+        /* for(int i=0; i<pullUpFtns.size(); i++){
+            cout << pullUpFtns.at(i).ftnName << endl;
+        } */
+
+        string ftnDef;
+        vector<string> pullUpFtnLines;
+
+        if (ct.ctype == INTERFACE) {
+        // 3-1. if p class is interface, just pull up the ftn defs.
+            for(int i=0; i<pullUpFtns.size(); i++){
+                ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, false);
+                pullUpFtnLines.push_back(ftnDef);
+            }
+
+            vector<string> tempVec;
+            for(int i=0; i<pfileVec.size(); i++){
+                if(i == (parOpen+1)) tempVec.insert(tempVec.end(), pullUpFtnLines.begin(), pullUpFtnLines.end());
+                tempVec.push_back(pfileVec.at(i));
+            }
+            print_code(tempVec); 
+            // TODO: need to impl tempVec -> file write. to patch parent class code
+
+        } else if (ct.ctype == ABSTRACT_CLASS) {
+        // 3-2. if p class is abstract class, pull up the ftn defs and put abstract keyword.
+            for(int i=0; i<pullUpFtns.size(); i++){
+                ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, true);
+                pullUpFtnLines.push_back(ftnDef);
+            }
+            
+            vector<string> tempVec;
+            for(int i=0; i<pfileVec.size(); i++){
+                if(i == (parOpen+1)) tempVec.insert(tempVec.end(), pullUpFtnLines.begin(), pullUpFtnLines.end());
+                tempVec.push_back(pfileVec.at(i));
+            }
+            print_code(tempVec); 
+            // TODO: need to impl tempVec -> file write. to patch parent class code
+
+        } else if (ct.ctype == CLASS) {
+        // 3-3. if p class is class, change p class into abstract class and pull up the ftn defs and put abstract keyword.
+            for(int i=0; i<pullUpFtns.size(); i++){
+                ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, true);
+                pullUpFtnLines.push_back(ftnDef);
+            }
+            
+            vector<string> tempVec;
+            string classDef;
+            for(int i=0; i<pfileVec.size(); i++){
+                if(i == defLine) {
+                    if(defLine != parOpen) {
+                        cType_to_class_def(ct, classDef, true);
+                        tempVec.push_back(classDef);
+                    } else {
+                        cType_to_class_def(ct, classDef, true);
+                        classDef += "{";
+                        tempVec.push_back(classDef);
+                    }
+                } else {
+                    if(i == (parOpen+1)) tempVec.insert(tempVec.end(), pullUpFtnLines.begin(), pullUpFtnLines.end());
+                    tempVec.push_back(pfileVec.at(i));
+                }
+            }
+            print_code(tempVec); 
+            // TODO: need to impl tempVec -> file write. to patch parent class code
+
+        }
+
+    }
+
+    void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec){
+
+        vector<string> undefFtn;
+
+        // 1. compare call args with parent ftn types
+        // 2. gather undefined(which are not defined in parent class) call args
+        vector< pair<string, int> >::iterator it1 = c1.argCalls.begin();
+        vector< pair<string, int> >::iterator it2 = c2.argCalls.begin();
+        for(; it1!=c1.argCalls.end(), it2!=c2.argCalls.end(); ++it1, ++it2){
+            if ((*it1).first == (*it2).first) {
+                if (!has_ft_vec_element(pft, (*it1).first)) undefFtn.push_back((*it1).first);
+                // gather undef arg ftn call names
+            }
+            else continue;
+        }
+
+        patch_arg_parent_code(pfileName, pct, c1ArgFtVec, c2ArgFtVec, undefFtn);
 
     }
 
@@ -632,18 +870,54 @@ void trim_code(int p, int q){
             // 5. pull up arg of the parent
             // 5-1. chk parent class type before pull-up
             int pDefLine; // parent class def line
-            class_type ct = get_class_type(parent, pDefLine);
+            class_type ct = get_class_type(parent, pDefLine); // TODO: maybe remove this?
+
             // 5-2. chk diff line obj calls. get obj calls and chk if parent class has those ftns.
             fetch_arg_calls(c1, c2, arg1Name, arg2Name, diffLine);
 
             // 6. check the call name in the parent class
             vector< pair< vector<string>, int > > classNftnTypeDef;
             gather_ftn_def(classToFileMap.find(parent)->second, classNftnTypeDef);
-            print_class_n_ftn_type(classNftnTypeDef);
+            //print_class_n_ftn_type(classNftnTypeDef);
+            
+            ClassType ctype;
+            vector<FtnType> ftVec;
+            parse_class_n_ftn_type(ctype, ftVec, classNftnTypeDef);
+            /* print_class_type(ctype);
+            for (int k = 0; k<ftVec.size(); k++){
+                print_ftn_type(ftVec.at(k));
+            } */
+
+            // 6-1. get from the arg1 too.
+            vector< pair< vector<string>, int > > c1ClassNftnTypeDef;
+            gather_ftn_def(classToFileMap.find(arg1)->second, c1ClassNftnTypeDef);
+            //print_class_n_ftn_type(c1ClassNftnTypeDef);
+            
+            ClassType arg1Ctype;
+            vector<FtnType> arg1FtVec;
+            parse_class_n_ftn_type(arg1Ctype, arg1FtVec, c1ClassNftnTypeDef);
+            /* print_class_type(arg1Ctype);
+            for (int k = 0; k<arg1FtVec.size(); k++){
+                print_ftn_type(arg1FtVec.at(k));
+            } */
+
+            // 6-2. and from the arg2 too.
+            vector< pair< vector<string>, int > > c2ClassNftnTypeDef;
+            gather_ftn_def(classToFileMap.find(arg2)->second, c2ClassNftnTypeDef);
+            //print_class_n_ftn_type(c2ClassNftnTypeDef);
+            
+            ClassType arg2Ctype;
+            vector<FtnType> arg2FtVec;
+            parse_class_n_ftn_type(arg2Ctype, arg2FtVec, c2ClassNftnTypeDef);
+            /* print_class_type(arg2Ctype);
+            for (int k = 0; k<arg2FtVec.size(); k++){
+                print_ftn_type(arg2FtVec.at(k));
+            } */
 
             // 7. pull up the ftn interface which are not in the parent class
+            pull_up_arg(c1, c2, classToFileMap.find(parent)->second, ctype, ftVec, arg1FtVec, arg2FtVec);
             // 8. ftn merge & arg type pull up
-            pull_up_arg();
+            
 
         }
 
@@ -785,22 +1059,24 @@ void print_code(vector<string> code){
 
 void print_ftn_type(FtnType &f){
     cout << " ===== Function type ===== " << endl;
+    cout << "Keywords : ";
     for(int p=0; p<f.keywords.size(); p++){
         cout << f.keywords[p] << " ";
     }
-    cout << f.ftnName << " : ";
+    cout << endl << f.ftnName << " : ";
     if (f.ftnArgs.size() > 0) {
         cout << "( ";
         for(int i=0; i<f.ftnArgs.size(); i++){
             if(i == f.ftnArgs.size()-1) {
-                cout << f.ftnArgs.at(i).second << " : " << f.ftnArgs.at(i).first << " ) -> " << f.returnType << endl << endl;
+                cout << f.ftnArgs.at(i).second << " : " << f.ftnArgs.at(i).first << " ) -> " << f.returnType << endl;
             } else {
                 cout << f.ftnArgs.at(i).second << " : " << f.ftnArgs.at(i).first << " * ";
             }
         }
     } else {
-        cout << "void -> " << f.returnType << endl << endl;
+        cout << "void -> " << f.returnType << endl;
     }
+    cout << "Def line# : " << f.lineNum << endl;
 }
 
 void print_arg_calls(CloneData &cd){
@@ -831,6 +1107,22 @@ void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnType
         cout << "\n";
     }
     cout << "\n";
+
+}
+
+void print_class_type(ClassType &c){
+    
+    cout << " ===== Class Type ===== \n";
+    cout << "Keywords : ";
+    for(vector<string>::iterator it = c.keywords.begin(); it!=c.keywords.end(); ++it){
+        cout << (*it) << " ";
+    }
+    cout << "\nClass Type : ";
+    if (c.ctype == CLASS) cout << "class\n";
+    else if (c.ctype == ABSTRACT_CLASS) cout << "abstract class\n";
+    else if (c.ctype == INTERFACE) cout << "interface\n";
+    cout << "Class Name : " << c.cname << endl;
+    cout << "Def line# : " << c.lineNum << endl;
 
 }
 

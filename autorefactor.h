@@ -40,11 +40,26 @@ typedef struct{
 }CloneData;
 vector<CloneData> cloneDatas;
 
+typedef enum {
+    CLASS,
+    ABSTRACT_CLASS,
+    INTERFACE,
+    DONT_KNOW
+} class_type;
+
+typedef struct{
+    vector<string> keywords;
+    class_type ctype;
+    string cname;
+    int lineNum;
+}ClassType;
+
 typedef struct{
     vector<string> keywords;
     string returnType;
     vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
     string ftnName;
+    int lineNum;
 }FtnType;
 
 typedef enum {
@@ -53,13 +68,6 @@ typedef enum {
     T3,
     T4
 } clone_type;
-
-typedef enum {
-    CLASS,
-    ABSTRACT_CLASS,
-    INTERFACE,
-    DONT_KNOW
-} class_type;
 
 string typeArray[8] = {"byte", "short", "int", "long", 
      "float", "double", "boolean", "char"};
@@ -115,11 +123,15 @@ void trim_code(int p, int q);
 
 // functions for type 4
 bool chk_sibling(string arg1, string arg2);
-void pull_up_arg();
 class_type get_class_type(string c, int &classDefLine);
 void fetch_arg_calls(CloneData &c1, CloneData &c2, string arg1Name, string arg2Name, vector<int> diffLine);
 bool is_alpha_or_parenthesis(char c);
 void gather_ftn_def(string fileName, vector< pair< vector<string>, int > > &classNftnTypeDef);
+void parse_class_n_ftn_type(ClassType &c, vector<FtnType> &fv, vector< pair< vector<string>, int > > &classNftnTypeDef);
+bool comp_ftn_type(FtnType &f1, FtnType &f2);
+void ftnType_to_ftn_def(FtnType &f, string &s, bool isAbs);
+void patch_arg_parent_code(string fileName, ClassType ct);
+void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec);
 void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2); 
 
 // test functions
@@ -129,3 +141,4 @@ void test_diff();
 void print_ftn_type(FtnType &f);
 void print_arg_calls(CloneData &cd);
 void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnTypeDef);
+void print_class_type(ClassType &c);
