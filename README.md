@@ -2,7 +2,9 @@
   
 #### 사용법
   
-g++ autorefactor.cpp  
+make ptree.o
+make refactorguide
+make autorefactor
 ./a.out ALARMFILE  
 
 **인풋(알람 파일) 포맷**  
@@ -19,4 +21,4 @@ g++ autorefactor.cpp
 [Caller 객체명  Caller 함수명  기존 함수명(패치 이전)]  
 [Caller 호출시 인자 갯수  인자값1  인자값2  ...  인자값n]  
 [Caller 라인넘버]  
-
+  

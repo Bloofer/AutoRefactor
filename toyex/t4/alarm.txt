@@ -7,7 +7,7 @@ HelloWorld main f
 1 c
 33
 1
-/home/yang/Sources/AutoRefactor/toyex/t1/HelloWorld.java
+/home/yang/Sources/AutoRefactor/toyex/t4/HelloWorld.java
 HelloWorld main g
 1 t
 34

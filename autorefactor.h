@@ -130,7 +130,7 @@ void gather_ftn_def(string fileName, vector< pair< vector<string>, int > > &clas
 void parse_class_n_ftn_type(ClassType &c, vector<FtnType> &fv, vector< pair< vector<string>, int > > &classNftnTypeDef);
 bool comp_ftn_type(FtnType &f1, FtnType &f2);
 void ftnType_to_ftn_def(FtnType &f, string &s, bool isAbs);
-void patch_arg_parent_code(string fileName, ClassType ct);
+void patch_arg_parent_code(string fileName, ClassType ct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec, vector<string> &undefFtn);
 void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec);
 void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2); 
 
@@ -140,5 +140,6 @@ void print_code(vector<string> code);
 void test_diff();
 void print_ftn_type(FtnType &f);
 void print_arg_calls(CloneData &cd);
+void print_caller(CloneData &cd);
 void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnTypeDef);
 void print_class_type(ClassType &c);

@@ -456,9 +456,6 @@ void trim_code(int p, int q){
  * ====================================================
  */
 
-
-// TODO: need to impl this
-
     void get_class_hierarchy() {
 
         // this is just for testing
@@ -708,7 +705,8 @@ void trim_code(int p, int q){
 
     }
 
-    void patch_arg_parent_code(string fileName, ClassType ct, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec, vector<string> &undefFtn) {
+    void patch_arg_parent_code(string fileName, ClassType ct, vector<FtnType> &pft, 
+                               vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec, vector<string> &undefFtn) {
 
         // 1. read in file
         ifstream pfile(fileName.c_str());
@@ -749,12 +747,18 @@ void trim_code(int p, int q){
 
         string ftnDef;
         vector<string> pullUpFtnLines;
+        string indent;
+        if(pft.size() == 0) indent = "";
+        else {
+            int fstFtnLine = pft.front().lineNum - ct.lineNum + defLine;
+            indent = pfileVec.at(fstFtnLine).substr(0, pfileVec.at(fstFtnLine).find_first_not_of(" \t\r\n"));
+        }
 
         if (ct.ctype == INTERFACE) {
         // 3-1. if p class is interface, just pull up the ftn defs.
             for(int i=0; i<pullUpFtns.size(); i++){
                 ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, false);
-                pullUpFtnLines.push_back(ftnDef);
+                pullUpFtnLines.push_back(indent + ftnDef);
             }
 
             vector<string> tempVec;
@@ -762,14 +766,16 @@ void trim_code(int p, int q){
                 if(i == (parOpen+1)) tempVec.insert(tempVec.end(), pullUpFtnLines.begin(), pullUpFtnLines.end());
                 tempVec.push_back(pfileVec.at(i));
             }
+            cout << " ===== Patching parent arg file ===== \n";
             print_code(tempVec); 
+            cout << " ==================================== \n\n";
             // TODO: need to impl tempVec -> file write. to patch parent class code
 
         } else if (ct.ctype == ABSTRACT_CLASS) {
         // 3-2. if p class is abstract class, pull up the ftn defs and put abstract keyword.
             for(int i=0; i<pullUpFtns.size(); i++){
                 ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, true);
-                pullUpFtnLines.push_back(ftnDef);
+                pullUpFtnLines.push_back(indent + ftnDef);
             }
             
             vector<string> tempVec;
@@ -777,14 +783,16 @@ void trim_code(int p, int q){
                 if(i == (parOpen+1)) tempVec.insert(tempVec.end(), pullUpFtnLines.begin(), pullUpFtnLines.end());
                 tempVec.push_back(pfileVec.at(i));
             }
+            cout << " ===== Patching parent arg file ===== \n";
             print_code(tempVec); 
+            cout << " ==================================== \n\n";
             // TODO: need to impl tempVec -> file write. to patch parent class code
 
         } else if (ct.ctype == CLASS) {
         // 3-3. if p class is class, change p class into abstract class and pull up the ftn defs and put abstract keyword.
             for(int i=0; i<pullUpFtns.size(); i++){
                 ftnType_to_ftn_def(pullUpFtns.at(i), ftnDef, true);
-                pullUpFtnLines.push_back(ftnDef);
+                pullUpFtnLines.push_back(indent + ftnDef);
             }
             
             vector<string> tempVec;
@@ -804,14 +812,17 @@ void trim_code(int p, int q){
                     tempVec.push_back(pfileVec.at(i));
                 }
             }
+            cout << " ===== Patching parent arg file ===== \n";
             print_code(tempVec); 
+            cout << " ==================================== \n\n";
             // TODO: need to impl tempVec -> file write. to patch parent class code
 
         }
 
     }
 
-    void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec){
+    void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, 
+                     vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec){
 
         vector<string> undefFtn;
 
@@ -827,9 +838,150 @@ void trim_code(int p, int q){
             else continue;
         }
 
-        patch_arg_parent_code(pfileName, pct, c1ArgFtVec, c2ArgFtVec, undefFtn);
+        patch_arg_parent_code(pfileName, pct, pft, c1ArgFtVec, c2ArgFtVec, undefFtn);
 
     }
+
+    bool has_int_vec_element(vector<int> &iv, int n){
+        bool chk = false;
+        for(int i=0; i<iv.size(); i++){
+            chk |= (iv.at(i) == n);
+        }
+        return chk;
+    }
+
+    void merge_two_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, 
+                             string pargType, int argIdx, vector<int> diffLine){
+
+        string arg1 = f1.ftnArgs[argIdx].first;
+        string arg2 = f2.ftnArgs[argIdx].first;
+        string arg1Name = f1.ftnArgs[argIdx].second;
+        string arg2Name = f2.ftnArgs[argIdx].second;
+
+        int defLine = -1; // ftn definition line
+        int parOpen = -1; // ftn definition parenthesis opener line
+
+        for(int i=0; i<c1.cloneSnippet.size(); i++){
+            if (c1.cloneSnippet.at(i).find(f1.keywords.at(0)) != string::npos) {
+                if (c1.cloneSnippet.at(i).find(f1.ftnName) != string::npos) defLine = i;
+            }
+            if ((defLine != -1) && (parOpen == -1)) {
+                if (c1.cloneSnippet.at(i).find("{") != string::npos) parOpen = i;
+            }
+        }
+
+        string indent = c1.cloneSnippet.at(defLine).substr(0, c1.cloneSnippet.at(defLine).find_first_not_of(" \t\r\n"));
+        string ftnDefLine = indent;
+        string newFtnName = f1.ftnName + f2.ftnName;
+        string newArgName = "my" + pargType;
+        if (defLine == parOpen) {
+            for(int i=0; i<f1.keywords.size(); i++) ftnDefLine += f1.keywords.at(i) + " ";
+            ftnDefLine += f1.returnType + " " + newFtnName + "(";
+            for(int i=0; i<f1.ftnArgs.size(); i++){
+                if(i == argIdx) ftnDefLine += pargType + " " + newArgName;
+                else ftnDefLine += f1.ftnArgs.at(i).first + " " + f1.ftnArgs.at(i).second;
+                if(i < f1.ftnArgs.size()-1) ftnDefLine += " "; 
+            }
+            ftnDefLine += "){";
+        } else {
+            for(int i=0; i<f1.keywords.size(); i++) ftnDefLine += f1.keywords.at(i) + " ";
+            ftnDefLine += f1.returnType + " " + newFtnName + "( ";
+            for(int i=0; i<f1.ftnArgs.size(); i++){
+                if(i == argIdx) ftnDefLine += pargType + " " + newArgName;
+                else ftnDefLine += f1.ftnArgs.at(i).first + " " + f1.ftnArgs.at(i).second;
+                if(i < f1.ftnArgs.size()-1) ftnDefLine += " ";
+            }
+            ftnDefLine += ")";
+        }
+
+        for(int i=0; i<c1.cloneSnippet.size(); i++){
+            if(i == defLine) tempClone.push_back(ftnDefLine);
+            else if(has_int_vec_element(diffLine, i)) {
+                string tempStr = c1.cloneSnippet.at(i);
+                int objIdx = tempStr.find(arg1Name);
+                string tempFrt = tempStr.substr(0, objIdx);
+                string tempRear = tempStr.substr(objIdx + arg1Name.size());
+                tempClone.push_back(tempFrt + newArgName + tempRear);
+            }
+            else tempClone.push_back(c1.cloneSnippet.at(i));
+        }
+
+        ifstream pfile(fileName.c_str());
+        string line;
+        int cnt = 0;
+
+        while(getline(pfile, line)) {
+            if ((cnt >= c1.from-1 && cnt <= c1.to-1) || (cnt >= c2.from-1 && cnt <= c2.to-1)) {
+                if (cnt == c1.from) {
+                    patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
+                }
+            }
+            else patchCode.push_back(line);
+            cnt++;
+        }
+
+        cout << " ===== Patching clone code ===== \n";
+        print_code(patchCode);
+        cout << " =============================== \n\n";
+        // TODO: need to impl this to file write
+
+    }
+
+    void patch_callers_t4(Caller c, string newFname){
+        // function for fetching caller datas
+        // using data from the alarm file which are parsed from DOT file
+
+        // Get the call site code line too. to use for caller patching
+        ifstream pfile(c.fileName.c_str());
+        string line;
+        vector<string> tempCode;
+        int callerLine = c.lineNum;
+        int lineCnt = 0; // line counter
+        while(getline(pfile, line)) {
+            tempCode.push_back(line);
+            lineCnt++;
+        }
+
+        string patchLine = tempCode[c.lineNum-1];
+        bool found = false;
+        int ftnFront, ftnRear;
+        ftnFront = ftnRear = 0;
+
+        while(!found){
+            ftnFront = patchLine.find_first_of(c.originalFtnName, ftnFront);
+            if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(' && patchLine.at(ftnFront - 1) == '.') {
+                found = true;
+                ftnRear = patchLine.find_first_of(')', ftnFront);
+            } else if (patchLine.at(ftnFront + c.originalFtnName.size()) == ' '){
+                ftnFront += patchLine.substr(ftnFront).find_first_not_of(" \t\r\n");
+                if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(') {
+                    found = true;
+                    ftnRear = patchLine.find_first_of(')', ftnFront);
+                }
+            } else {
+                ftnFront++;
+            }
+        }
+        
+        string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
+        string strRear = ")" + patchLine.substr(ftnRear + 1);
+
+        patchLine = strFront;
+        if(c.argNum > 1) {
+            for(int i=0; i<c.argNum; i++){
+                patchLine += c.callArgs[i] + ", ";
+            }
+        } else if(c.argNum == 1) {
+            patchLine += c.callArgs[0];
+        }
+        patchLine += strRear;
+        tempCode[c.lineNum-1] = patchLine;    
+
+        cout << "Patching callers ...\n";
+        cout << "(This will be replaced with actual file write operations)\n";
+        print_code(tempCode); // TODO: need to replace this with file write operations
+
+    } 
 
     void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
 
@@ -845,6 +997,7 @@ void trim_code(int p, int q){
         }
 
         // preprocess and get ftn args
+        int argIdx = idx;
         string arg1 = f1.ftnArgs[idx].first;
         string arg2 = f2.ftnArgs[idx].first;
         string arg1Name = f1.ftnArgs[idx].second;
@@ -854,6 +1007,13 @@ void trim_code(int p, int q){
         string parent = classHierarchy.find(arg1)->second;
 
         if (chk_sibling(arg1, arg2)) {
+
+            for(int i=0; i<c1.callers.size(); i++){
+                patch_callers_t4(c1.callers.at(i), f1.ftnName+f2.ftnName);
+            }
+            for(int i=0; i<c2.callers.size(); i++){
+                patch_callers_t4(c2.callers.at(i), f1.ftnName+f2.ftnName);
+            }
 
             string parentType = classHierarchy.find(arg1)->second;
             string parentName = parentType;
@@ -917,7 +1077,7 @@ void trim_code(int p, int q){
             // 7. pull up the ftn interface which are not in the parent class
             pull_up_arg(c1, c2, classToFileMap.find(parent)->second, ctype, ftVec, arg1FtVec, arg2FtVec);
             // 8. ftn merge & arg type pull up
-            
+            merge_two_clone_ftn(fileName, c1, c2, f1, f2, parent, argIdx, diffLine);
 
         }
 
