@@ -64,9 +64,7 @@ typedef struct{
 
 typedef enum {
     T1,
-    T2,
-    T3,
-    T4
+    T2
 } clone_type;
 
 string typeArray[8] = {"byte", "short", "int", "long", 
@@ -95,9 +93,8 @@ void read_file(char* alarmFile); // reads input file including clone data
 void refactor(clone_type ct); // the main function for auto refactor
 
 // method extraction for 4 types of code clones
-void em_type1n2();
-void em_type3();
-void em_type4();
+void em_type1();
+void em_type2();
 
 // string utility functions
 bool are_same(string s1, string s2);
@@ -111,28 +108,15 @@ int str_to_int(const char *s);
 void parse_ftn_type(string s, FtnType &ftype);
 void patch_callers(Caller c, string newFname, int flag);
 
-// functions for type 1 & 2
-vector<int> get_diff(CloneData &c1, CloneData &c2);
-bool int_vec_contains(vector<int> &iv, int i);
-void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
-
-// functions for type 3
+// functions for type 1 (extract method)
 pair<int, int> get_common_part();
 void patch_code(string fileName); // replace code clone with new function
 void trim_code(int p, int q);
 
-// functions for type 4
-bool chk_sibling(string arg1, string arg2);
-class_type get_class_type(string c, int &classDefLine);
-void fetch_arg_calls(CloneData &c1, CloneData &c2, string arg1Name, string arg2Name, vector<int> diffLine);
-bool is_alpha_or_parenthesis(char c);
-void gather_ftn_def(string fileName, vector< pair< vector<string>, int > > &classNftnTypeDef);
-void parse_class_n_ftn_type(ClassType &c, vector<FtnType> &fv, vector< pair< vector<string>, int > > &classNftnTypeDef);
-bool comp_ftn_type(FtnType &f1, FtnType &f2);
-void ftnType_to_ftn_def(FtnType &f, string &s, bool isAbs);
-void patch_arg_parent_code(string fileName, ClassType ct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec, vector<string> &undefFtn);
-void pull_up_arg(CloneData &c1, CloneData &c2, string pfileName, ClassType &pct, vector<FtnType> &pft, vector<FtnType> &c1ArgFtVec, vector<FtnType> &c2ArgFtVec);
-void merge_t4_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2); 
+// functions for type 2 (merge method)
+vector<int> get_diff(CloneData &c1, CloneData &c2);
+bool int_vec_contains(vector<int> &iv, int i);
+void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
 
 // test functions
 void test_print(); // test printer for check cloneDatas
