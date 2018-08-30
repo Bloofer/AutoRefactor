@@ -489,6 +489,9 @@ void em_type2(){
 
     // TODO: refactor to below instruction
     // 1. diff 부분 확인하기. R-value만, L-value는 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
+    // 1-1. diff 뜨기 (트리 비교). L-value diff인 경우 알고리즘 중단.
+    // 1-2. 
+
     // 2. caller 패칭하기.
 
 }
@@ -636,7 +639,7 @@ void print_class_type(ClassType &c){
 
 int main(int argc, char** argv){
 
-    // USAGE :  ./autorefactor CLONEDATA
+    /* // USAGE :  ./autorefactor CLONEDATA
     if (argc < 2) {
         cerr << "Usage : " << argv[0] << " ALARMFILE" << endl;
         return 1;
@@ -644,8 +647,19 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
 
-    //refactor(T4); // 2. refactor the code according to the clone datas
-    //print_code(tempClone);
+    refactor(T2); // 2. refactor the code according to the clone datas
+    //print_code(tempClone); */
+
+    // test for tree manipulation
+    string fname = "/home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java";
+    string ftnname = "f";
+    getFtnSubtree(fname, ftnname);
+
+    ftnname = "g";
+    getFtnSubtree(fname, ftnname);
+
+    ftnname = "main";
+    getFtnSubtree(fname, ftnname);
 
     return 0;
 

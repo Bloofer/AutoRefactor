@@ -1,21 +1,29 @@
 public class HelloWorld {
 
-    public int f() {
+    public double f() {
+
+      // do something 1
 
       System.out.println("Hello, World!");
 
-      // do something
+      int counter = 0;
 
-      return 0;
+      // do something 2
+
+      return 0.0;
 
     }
 
     public int g() {
     
-      System.out.println("Hello, World!");
+      // do something 1
+
+      System.out.println("Hello, People!");
        
-      // do something
-      
+      int counter = 10;
+
+      // do something 2
+
       return 1;
     
     }

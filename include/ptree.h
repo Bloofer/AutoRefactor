@@ -179,13 +179,14 @@ class Tree {
  
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
+    virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
     virtual void print() {
-        std::cout << "[ " << type << " ";
+        std::cout << " [ " << type << " ";
         //if (type == 113) std::cout << "\n===ftn decl===\n";
         for (int i= 0; i < children.size(); i++) {
             children[i]->print();
         }
-        std::cout << "]";
+        std::cout << " ] ";
     }
 
     /* method for finding node by name */
@@ -336,6 +337,7 @@ public:
 
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
+    virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
     virtual void print()
     {
        std::cout << "<" << *value << ">";
@@ -370,6 +372,7 @@ public:
     virtual NonTerminal *toNonTerminal() {return this;}
 
     virtual void print2ss(std::stringstream &ss);
+    virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
 };
 

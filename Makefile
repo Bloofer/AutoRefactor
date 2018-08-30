@@ -23,9 +23,10 @@ refactorguide:${OBJS} ${HEADERS} refactorguide.cpp
 	${CXX} $(CPPFLAGS) -c refactorguide.cpp -o refactorguide.o
 
 autorefactor:${OBJS} autorefactor.o refactorguide.o ${HEADERS} autorefactor.cpp
-	$(CXX) $(CPPFLAGS) -c autorefactor.cpp
-	$(CXX) $(CPPFLAGS) autorefactor.o refactorguide.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
+	$(CXX) $(CPPFLAGS) -c -g autorefactor.cpp
+	$(CXX) $(CPPFLAGS) -g autorefactor.o refactorguide.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
 
 .PHONY: clean
 clean:
 	rm -f *.o
+	rm -f *.out

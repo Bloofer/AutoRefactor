@@ -2,13 +2,9 @@ public class HelloWorld {
 
     public int f() {
 
-      // do something 1
-
       System.out.println("Hello, World!");
 
-      int counter = 0;
-
-      // do something 2
+      // do something
 
       return 0;
 
@@ -16,14 +12,10 @@ public class HelloWorld {
 
     public int g() {
     
-      // do something 1
-
-      System.out.println("Hello, People!");
+      System.out.println("Hello, World!");
        
-      int counter = 10;
-
-      // do something 2
-
+      // do something
+      
       return 1;
     
     }

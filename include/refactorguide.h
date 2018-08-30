@@ -54,5 +54,6 @@ typedef enum {
 
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
 void getPtree(string &fileName, stringstream &ss);
+void getFtnSubtree(string &fileName, string &ftnName);
 void dumpPtree(string &fileName);
 string getClassKeyword(string &file_name, string &class_type);

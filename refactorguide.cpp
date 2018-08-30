@@ -61,6 +61,14 @@ extern Tree *root;
 
 void id_init();
 
+typedef struct{
+  int nodeId;
+  bool isTerminal;
+  string label; // empty if non-terminal
+  int lineNo;   // empty if non-terminal
+  int depth;    // depth of tree. same if siblings
+}NodeData;
+
 // method for finding class label. works only on fetching class names
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername){
 
@@ -84,7 +92,8 @@ void getPtree(string &fileName, stringstream &ss){
     return;
   }
 
-  pt->getRoot()->print2ss(ss);
+  string fname = "f";
+  pt->getRoot()->getFtnSubtree(ss, fname);
 
 }
 
@@ -100,6 +109,112 @@ void dumpPtree(string &fileName){
 
   pt->outputParseTree2Dot(fileName.c_str(), false);
   
+}
+
+int str2int(const char *s)
+{
+    int i;
+    i = 0;
+    while(*s >= '0' && *s <= '9')
+    {
+        i = i * 10 + (*s - '0');
+        s++;
+    }
+    return i;
+}
+
+void print_node_vector(vector<NodeData> &ndVec){
+
+  for(int i=0; i<ndVec.size(); i++){
+
+    if(ndVec.at(i).isTerminal) {
+      cout << "T [ nodeID : " << ' ' << " \tlabel : " << ndVec.at(i).label 
+           << "\tlineNum : " << ndVec.at(i).lineNo << "\tdepth : " << ndVec.at(i).depth << " ]\n";
+    } else {
+      cout << "NT[ nodeID : " << ndVec.at(i).nodeId << " \tlabel : " << ' '
+           << "\tlineNum : " << ' ' << "\tdepth : " << ndVec.at(i).depth << " ]\n";
+    }
+
+  }
+
+}
+
+void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
+
+  string tok;
+  int treeDepth = 0;
+
+  while(ss >> tok){
+    
+    if (tok.at(0) == '[') {
+      // if token is right tree parenthesis, increase depth
+      treeDepth++;
+    } else if (tok.at(0) == ']') {
+      // if token is left tree parenthesis, decrease depth
+      treeDepth--;
+    } else if (tok.at(0) >= '0' && tok.at(0) <= '9') {
+      // Non-terminal Node
+      // if token is nodeID, create node object and push to vector
+      NodeData ntNode;
+      ntNode.nodeId = str2int(tok.c_str());
+      ntNode.isTerminal = false;
+      ntNode.label = ""; // leave it empty b.c. this data is not used for non-terminal node
+      ntNode.lineNo = 0; // leave it zero b.c. this data is not used for non-terminal node
+      ntNode.depth = treeDepth;
+      ndVec.push_back(ntNode);
+    } else if (tok.at(0) == '<') {
+      // Terminal Node
+      // if token is label, create node object and push to vector
+      string tok1 = tok;
+
+      if (tok.substr(0,2) == "<\"") {
+        if (tok.substr(tok.size()-2) != "\">") {
+          ss >> tok;
+          tok1 += (" " + tok);
+          while(tok.substr(tok.size()-2) != "\">") {
+            ss >> tok;
+            tok1 += (" " + tok);
+          }
+        }
+      }
+      string tok2;
+      ss >> tok2; // parse second token to fetch line number
+
+      NodeData tNode;
+      tNode.nodeId = -1; // leave it negative one b.c. this data is not used for terminal node
+      tNode.isTerminal = true;
+      tNode.label = tok1.substr(1, tok1.size()-2);
+      tNode.lineNo = str2int(tok2.substr(1).c_str());
+      tNode.depth = treeDepth;
+      ndVec.push_back(tNode);
+    } else {
+      // return error if found exceptional token in ss
+      cerr << "Error : Abnormal token found in the string stream. Token : " << tok << endl;
+      return;
+    }
+
+  }
+
+}
+
+void getFtnSubtree(string &fileName, string &ftnName){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->getFtnSubtree(ss, ftnName);
+  cout << ss.str() << endl << endl;
+
+  vector<NodeData> ndVec;
+  ss2NodeVec(ndVec, ss);
+  print_node_vector(ndVec);
+
 }
 
 string getClassKeyword(string &file_name, string &class_type){
