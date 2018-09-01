@@ -52,8 +52,18 @@ typedef enum {
   DONTKNOW
 } refactor_pattern_t;
 
+typedef struct{
+  int nodeId;
+  bool isTerminal;
+  string label; // empty if non-terminal
+  int lineNo;   // empty if non-terminal
+  int depth;    // depth of tree. same if siblings
+}NodeData;
+
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
 void getPtree(string &fileName, stringstream &ss);
-void getFtnSubtree(string &fileName, string &ftnName);
+vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label);
+void print_node_vector(vector<NodeData> &ndVec);
+void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void dumpPtree(string &fileName);
 string getClassKeyword(string &file_name, string &class_type);

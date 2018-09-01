@@ -123,6 +123,18 @@ int str2int(const char *s)
     return i;
 }
 
+vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label){
+
+  vector< pair<NodeData, int> > outVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).label == label) outVec.push_back(pair<NodeData, int>(ndVec.at(i), i));
+  }
+
+  return outVec;
+
+}
+
 void print_node_vector(vector<NodeData> &ndVec){
 
   for(int i=0; i<ndVec.size(); i++){
@@ -197,7 +209,7 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
 
 }
 
-void getFtnSubtree(string &fileName, string &ftnName){
+void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   
   id_init();
 
@@ -209,11 +221,8 @@ void getFtnSubtree(string &fileName, string &ftnName){
   
   stringstream ss;
   pt->getRoot()->getFtnSubtree(ss, ftnName);
-  cout << ss.str() << endl << endl;
 
-  vector<NodeData> ndVec;
   ss2NodeVec(ndVec, ss);
-  print_node_vector(ndVec);
 
 }
 

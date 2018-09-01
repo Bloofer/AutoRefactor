@@ -19,12 +19,12 @@ TARGET=autorefactor
 ${TREEOBJS}:${TREESRC} ${TREEHEADER}
 	$(CXX) -o $@ $(CPPFLAGS) -c -DJAVA ${TREESRC}
 
-refactorguide:${OBJS} ${HEADERS} refactorguide.cpp
-	${CXX} $(CPPFLAGS) -c refactorguide.cpp -o refactorguide.o
+treeutil:${OBJS} ${HEADERS} treeutil.cpp
+	${CXX} $(CPPFLAGS) -c treeutil.cpp -o treeutil.o
 
-autorefactor:${OBJS} autorefactor.o refactorguide.o ${HEADERS} autorefactor.cpp
-	$(CXX) $(CPPFLAGS) -c -g autorefactor.cpp
-	$(CXX) $(CPPFLAGS) -g autorefactor.o refactorguide.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
+autorefactor:${OBJS} autorefactor.o treeutil.o ${HEADERS} autorefactor.cpp
+	$(CXX) -o autorefactor $(CPPFLAGS) -c -g autorefactor.cpp
+	$(CXX) -o autorefactor $(CPPFLAGS) -g autorefactor.o treeutil.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
 
 .PHONY: clean
 clean:
