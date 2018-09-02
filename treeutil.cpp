@@ -69,6 +69,35 @@ typedef struct{
   int depth;    // depth of tree. same if siblings
 }NodeData;
 
+bool has_node_id(vector<NodeData> &ndVec, int idx, int id){
+
+  // 1. get gap between index
+  int back = idx-1;
+  int front = back;
+  while(front >= 0){
+    if(!ndVec.at(front).isTerminal) front--;
+    else break;
+  }
+
+  // 2. check if gap has id. returns true if have had
+  bool has = false;
+  for(int i=front; i<=back; i++) {
+    //cout << ndVec.at(i).depth << endl;
+    has |= (ndVec.at(i).nodeId==id);
+  }
+
+  return has;
+
+}
+
+bool is_lvalue_node(vector<NodeData> &ndVec, int idx){
+// input : node vector for parsed ftn tree & index for specific node number
+
+  return has_node_id(ndVec, idx, 65) || has_node_id(ndVec, idx, 123);
+  // 65 : type,  123 : var_decl
+
+}
+
 // method for finding class label. works only on fetching class names
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername){
 
@@ -148,6 +177,18 @@ void print_node_vector(vector<NodeData> &ndVec){
     }
 
   }
+
+}
+
+vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lineNum){
+
+  vector< pair<NodeData, int> > outVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).lineNo == lineNum) outVec.push_back(pair<NodeData, int>(ndVec.at(i), i));
+  }
+
+  return outVec;
 
 }
 

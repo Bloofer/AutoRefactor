@@ -60,10 +60,13 @@ typedef struct{
   int depth;    // depth of tree. same if siblings
 }NodeData;
 
+bool has_node_id(vector<NodeData> &ndVec, int idx, int id);
+bool is_lvalue_node(vector<NodeData> &ndVec, int idx);
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
 void getPtree(string &fileName, stringstream &ss);
 vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label);
 void print_node_vector(vector<NodeData> &ndVec);
+vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void dumpPtree(string &fileName);
 string getClassKeyword(string &file_name, string &class_type);

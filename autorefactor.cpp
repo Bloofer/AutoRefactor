@@ -259,33 +259,91 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
 
     // <diff 알고리즘>
     // 1-1. 일단 syntatic하게 라인별로 비교
-    // 1-2. 불일치 라인 트리 벡터로 찾아가 토큰 하나씩 비교(여기서 토큰 일치시 불일치 아님)
+    // 1-2. 불일치 라인 트리 벡터로 찾아가 토큰 하나씩 비교
     
     // 1-2-a. 트리 벡터 이용시 사용할 라인 넘버 위한 라인 오프셋 계산.
-    int lineOffset; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
-                    // offset = 실제 파일 라인 - 파스 트리 파일 라인
+    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
+                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    vector< pair<NodeData, int> > tempVec = find_node_by_label(ndVec1, f1.ftnName);
-    for(int i=0; i<tempVec.size(); i++){
-        if(tempVec.at(i).second > 1){
-            if(ndVec1.at(tempVec.at(i).second - 2).nodeId == 187) lineOffset = c1.from - tempVec.at(i).first.lineNo;
+    vector< pair<NodeData, int> > tempVec1 = find_node_by_label(ndVec1, f1.ftnName);
+    bool found1 = false;
+    for(int i=0; i<tempVec1.size(); i++){
+        if(tempVec1.at(i).second > 1){
+            if(ndVec1.at(tempVec1.at(i).second - 2).nodeId == 187){ 
+                lineOffset1 = c1.from - tempVec1.at(i).first.lineNo;
+                found1 = true;
+            }
         }
     }
-    
+
+    vector< pair<NodeData, int> > tempVec2 = find_node_by_label(ndVec2, f2.ftnName);
+    bool found2 = false;
+    for(int i=0; i<tempVec2.size(); i++){
+        if(tempVec2.at(i).second > 1){
+            if(ndVec2.at(tempVec2.at(i).second - 2).nodeId == 187){ 
+                lineOffset2 = c2.from - tempVec2.at(i).first.lineNo;
+                found2 = true;
+            }
+        }
+    }
+
+    if(!found1) cerr << "line offset1 not set. undefined error might be caused." << endl;
+    if(!found2) cerr << "line offset2 not set. undefined error might be caused." << endl;
+
+    /* print_node_vector(ndVec1);
+    print_node_vector(ndVec2); */
+
+    // 1-2-b. 불일치 라인 트리 벡터로 토큰 비교.
+    bool hasLvalue = false;
 
     // 1-3. 비교해서 다른 토큰 각각 짚기
     // 1-4. 다른 토큰이 L-value인 경우 알고리즘 종료(찾는 방법은 nodeID를 보고)
-    // 1-5. R-value인 경우 정상.
+    for(int i=0; i<diffLine.size(); i++){
+
+        vector< pair<NodeData, int> > tmpVec1 = find_node_by_line(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
+        vector< pair<NodeData, int> > tmpVec2 = find_node_by_line(ndVec2, c2.from+diffLine.at(i)-lineOffset2);
+        //cout << tmpVec1.size() << " " << tmpVec2.size() << endl;
+        //cout << diffLine.at(i) << endl;
+
+        // get same token (to except from diff token compare)
+        vector<int> tokSame1;
+        vector<int> tokSame2;
+        for(int j=0; j<tmpVec1.size() || j<tmpVec2.size(); j++){
+            if(tmpVec1.at(j).first.label == tmpVec2.at(j).first.label) {
+                tokSame1.push_back(j);
+                tokSame2.push_back(j);
+            }
+        }
+        //cout << tokSame1.size() << tokSame2.size() << endl;
+
+        vector<int> emptyVec;
+        // Diff line Lvalue check part
+        for(int j=0; j<tmpVec1.size(); j++){
+            if(int_vec_contains(tokSame1, j)) continue;
+            if(is_lvalue_node(ndVec1, tmpVec1.at(j).second)) {
+                cerr << "Error : lvalue found on vec1 diff line. merge should be aborted." << endl;
+                hasLvalue |= is_lvalue_node(ndVec1, tmpVec1.at(j).second);
+            }
+        }
+        for(int j=0; j<tmpVec2.size(); j++){
+            if(int_vec_contains(tokSame2, j)) continue;
+            if(is_lvalue_node(ndVec2, tmpVec2.at(j).second)) {
+                 cerr << "Error : lvalue found on vec2 diff line. merge should be aborted." << endl;
+                 hasLvalue |= is_lvalue_node(ndVec2, tmpVec2.at(j).second);
+            }
+        }
+        if(hasLvalue) return emptyVec;
+
+    }
 
     // 구현시 주의사항
     // * 라인 오프셋 주의하여 인자 전달
     // * 알고리즘 종료조건 함수 반환시 전달하여 정상 종료 될 수 있게.
 
-
- 
+    // 1-5. R-value인 경우 정상.
     // 3. return the vector
     return diffLine;
 }
@@ -403,6 +461,7 @@ void trim_code(int p, int q){
  */
 
 bool int_vec_contains(vector<int> &iv, int i){
+// returns true if vector contains the element
     return ( find(iv.begin(), iv.end(), i) != iv.end() );
 }
 
@@ -421,6 +480,11 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     
 
     vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back(), f1, f2); // TODO: refactor this?
+    if(diffLine.empty()) {
+        cerr << "Diff line empty. Merging method aborted." << endl;
+        return;
+    }
+
     // 2. insert procedure branches using if/else statements using flag.
     // use diffLine to get the diff lines
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
@@ -444,13 +508,54 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     ftnDecl += "int flag) {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
     tempClone.push_back(ftnDecl);
 
+    // check for adjacent clone lines;
+    bool adjacent = false;
+    vector<string> cloneDummy1; 
+    vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
+    string ifOpen;
+
     for(int i=1; i<c1.cloneSize; i++){
         if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
         else {
             tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
             tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
-            tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
-            tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));
+
+            if(!adjacent){
+            // 처음 중복 라인 찾아서 브랜치 나누는 경우
+                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
+                    cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
+                    cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);
+                    ifOpen = tabStr;
+                    adjacent = true;
+                } else {
+                    tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
+                    tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
+                }
+
+            } else {
+            // 이미 인접한 중복 라인을 찾아서 브랜치 나누는 경우(parenthesis 안에 존재)
+                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);                    
+                } else {
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy1.push_back(ifOpen + "}");
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);
+                    cloneDummy2.push_back(ifOpen + "}");
+
+                    // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+                    tempClone.insert(tempClone.end(), cloneDummy1.begin(), cloneDummy1.end());
+                    tempClone.insert(tempClone.end(), cloneDummy2.begin(), cloneDummy2.end());
+
+                    cloneDummy1.clear();
+                    cloneDummy2.clear();      
+                    adjacent = false;              
+                }
+            }
         }
     }
 
@@ -684,15 +789,11 @@ int main(int argc, char** argv){
     //print_code(tempClone);
 
     /* // test for tree manipulation
-    string fname = "/home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java";
-    string ftnname = "f";
-    getFtnSubtree(fname, ftnname);
-
-    ftnname = "g";
-    getFtnSubtree(fname, ftnname);
-
-    ftnname = "main";
-    getFtnSubtree(fname, ftnname); */
+    string fname = "/home/yang/Sources/Fasoo/bench/dp_server/DigitalPage_Server.UserServiceImpl.java";
+    string ftnname = "makeNewIntroductionKorInitNote";
+    vector<NodeData> ndvec;
+    getFtnSubtree(fname, ftnname, ndvec);
+    print_node_vector(ndvec); */
 
     return 0;
 
