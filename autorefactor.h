@@ -67,11 +67,6 @@ typedef enum {
     T2
 } clone_type;
 
-string typeArray[8] = {"byte", "short", "int", "long", 
-     "float", "double", "boolean", "char"};
-vector<string> javaPrimitiveDataTypes(&typeArray[0], &typeArray[0]+8); 
-// TODO: maybe need to update more java types?
-
 map<string, string> classHierarchy;
 // (child -> parent) map
 // class hierarchy of the whole project.
@@ -89,7 +84,13 @@ int tempCodeLine;
 string cloneFtnName = "cloneFtn";
 int cloneFtnNum = 1;
 
+// logger & variables
+int beforePatchLoc;
+int afterPatchLoc;
+int reducedLoc;
+
 void read_file(char* alarmFile); // reads input file including clone data
+int get_file_line(string fileName);
 void refactor(clone_type ct); // the main function for auto refactor
 
 // method extraction for 4 types of code clones
@@ -107,6 +108,8 @@ int str_to_int(const char *s);
 // communal functions for all types
 void parse_ftn_type(string s, FtnType &ftype);
 void patch_callers(Caller c, string newFname, int flag);
+int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from);
+vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
 
 // functions for type 1 (extract method)
 pair<int, int> get_common_part();

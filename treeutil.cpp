@@ -6,6 +6,7 @@
 
 #include "include/ptree.h"
 #include <sys/types.h>
+#include <assert.h>
 #include <dirent.h>
 #include <errno.h>
 #include <ptree.h>
@@ -164,6 +165,29 @@ vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string
 
 }
 
+pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+
+  // 구간 내 터미널 라인 번호 터미널 노드 먼저 짚기
+  int from, to;
+  from = to = 0;
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).lineNo >= scope.first) {
+      from = i;
+      break;
+    }
+  }
+  for(int i=ndVec.size()-1; i>=0; i--){
+    if(ndVec.at(i).lineNo <= scope.second) {
+      to = i;
+      break;
+    }
+  }
+  if(from == 0 && to == 0) return pair<int, int>(0, 0); // error case
+
+  // for loop이나 if 찾아서 (앞쪽부터) popen pclose 짝 맞는 가장 큰 bracket 찾고 반환
+
+}
+
 void print_node_vector(vector<NodeData> &ndVec){
 
   for(int i=0; i<ndVec.size(); i++){
@@ -189,6 +213,58 @@ vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lin
   }
 
   return outVec;
+
+}
+
+int line_parenthesis_check(vector<NodeData> &ndVec, int lineNum){
+
+  // checks if specific line has pair of parenthesis
+  // will be used for line by line patching
+  
+  vector<NodeData> lineVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).lineNo == lineNum) lineVec.push_back(ndVec.at(i));
+  }
+
+  int popen = 0;
+  int pclose = 0;
+
+  for(int i=0; i<lineVec.size(); i++){
+    if(lineVec.at(i).label == "(") popen++;
+    if(lineVec.at(i).label == ")") pclose++;
+  }
+
+  // output
+  // - (negative) : need to include lineNum - 1 line to diff line
+  // 0 : pair of parenthesis in one line.
+  // + (positive) : need to include lineNum + 1 line to diff line
+
+  vector<NodeData> lineVecNext;
+
+  if (popen > pclose) {
+    for(int i=0; i<ndVec.size(); i++){
+      if(ndVec.at(i).lineNo == lineNum+1) lineVecNext.push_back(ndVec.at(i));
+    }
+    for(int i=0; i<lineVecNext.size(); i++){
+      if(lineVecNext.at(i).label == "(") popen++;
+      if(lineVecNext.at(i).label == ")") pclose++;
+    }
+    if (popen == pclose) return 1;
+    else return 0;
+  }
+  else if (popen < pclose) {
+    for(int i=0; i<ndVec.size(); i++){
+      if(ndVec.at(i).lineNo == lineNum-1) lineVecNext.push_back(ndVec.at(i));
+    }
+    for(int i=0; i<lineVecNext.size(); i++){
+      if(lineVecNext.at(i).label == "(") popen++;
+      if(lineVecNext.at(i).label == ")") pclose++;
+    }
+    if (popen == pclose) return -1;
+    else return 0;
+  }
+  else return 0;
 
 }
 
@@ -220,11 +296,12 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
       // if token is label, create node object and push to vector
       string tok1 = tok;
 
+      assert(tok.size() >= 2);
       if (tok.substr(0,2) == "<\"") {
         if (tok.substr(tok.size()-2) != "\">") {
           ss >> tok;
           tok1 += (" " + tok);
-          while(tok.substr(tok.size()-2) != "\">") {
+          while(tok.size()<2 || tok.substr(tok.size()-2) != "\">") {
             ss >> tok;
             tok1 += (" " + tok);
           }
@@ -233,10 +310,14 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
       string tok2;
       ss >> tok2; // parse second token to fetch line number
 
+      //cout << tok1 << " ";
+
       NodeData tNode;
       tNode.nodeId = -1; // leave it negative one b.c. this data is not used for terminal node
       tNode.isTerminal = true;
+      //assert(tok1.size() > 2);
       tNode.label = tok1.substr(1, tok1.size()-2);
+      //assert(tok2.size() > 2);
       tNode.lineNo = str2int(tok2.substr(1).c_str());
       tNode.depth = treeDepth;
       ndVec.push_back(tNode);
@@ -264,6 +345,23 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   pt->getRoot()->getFtnSubtree(ss, ftnName);
 
   ss2NodeVec(ndVec, ss);
+
+}
+
+void print2ssFtnSubtree(string &fileName, string &ftnName){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->getFtnSubtree(ss, ftnName);
+
+  cout << ss.str() << endl;
 
 }
 

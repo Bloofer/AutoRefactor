@@ -67,6 +67,8 @@ void getPtree(string &fileName, stringstream &ss);
 vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label);
 void print_node_vector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lineNum);
+int line_parenthesis_check(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void dumpPtree(string &fileName);
+void print2ssFtnSubtree(string &fileName, string &ftnName);
 string getClassKeyword(string &file_name, string &class_type);

@@ -57,6 +57,20 @@ void read_file(char* alarmFile){
 
 }
 
+int get_file_line(string fileName){
+
+    int cnt = 0;
+    ifstream iFile(fileName.c_str());
+    string line;
+
+    while(getline(iFile, line)){
+        cnt++;
+    }
+
+    return cnt;
+
+}
+
 
 /*
  * ====================================================
@@ -111,6 +125,9 @@ int str_to_int(const char *s)
     return i;
 }
 
+int min_int(int a, int b){
+    return a < b ? a : b;
+}
 
 
 /*
@@ -242,6 +259,25 @@ void patch_callers(Caller c, string newFname, int flag){
 
 } 
 
+int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from){
+
+    int lineOffset;
+
+    vector< pair<NodeData, int> > tempVec = find_node_by_label(ndVec, ftnName);
+    bool found = false;
+    for(int i=0; i<tempVec.size(); i++){
+        if(tempVec.at(i).second > 1){
+            if(ndVec.at(tempVec.at(i).second - 2).nodeId == 187){ 
+                lineOffset = from - tempVec.at(i).first.lineNo;
+                found = true;
+            }
+        }
+    }
+
+    return lineOffset;
+
+}
+
 vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     // function for getting diff part of two clone datas
     vector<int> diffLine;
@@ -268,30 +304,11 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    vector< pair<NodeData, int> > tempVec1 = find_node_by_label(ndVec1, f1.ftnName);
-    bool found1 = false;
-    for(int i=0; i<tempVec1.size(); i++){
-        if(tempVec1.at(i).second > 1){
-            if(ndVec1.at(tempVec1.at(i).second - 2).nodeId == 187){ 
-                lineOffset1 = c1.from - tempVec1.at(i).first.lineNo;
-                found1 = true;
-            }
-        }
-    }
+    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
 
-    vector< pair<NodeData, int> > tempVec2 = find_node_by_label(ndVec2, f2.ftnName);
-    bool found2 = false;
-    for(int i=0; i<tempVec2.size(); i++){
-        if(tempVec2.at(i).second > 1){
-            if(ndVec2.at(tempVec2.at(i).second - 2).nodeId == 187){ 
-                lineOffset2 = c2.from - tempVec2.at(i).first.lineNo;
-                found2 = true;
-            }
-        }
-    }
-
-    if(!found1) cerr << "line offset1 not set. undefined error might be caused." << endl;
-    if(!found2) cerr << "line offset2 not set. undefined error might be caused." << endl;
+    //if(!found1) cerr << "line offset1 not set. error might be caused." << endl;
+    //if(!found2) cerr << "line offset2 not set. error might be caused." << endl;
 
     /* print_node_vector(ndVec1);
     print_node_vector(ndVec2); */
@@ -339,6 +356,29 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
 
     }
 
+    vector<int> tmpIntVec;
+
+    for(int i=0; i<diffLine.size(); i++){
+        if(line_parenthesis_check(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == 1 && line_parenthesis_check(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == 1){
+            if(i<diffLine.size()-1 && diffLine.at(i+1) != diffLine.at(i)+1) continue;
+            else{
+                //tmpIntVec.push_back(diffLine.at(i)-1);
+                //cout << diffLine.at(i) << endl;
+                diffLine.insert(diffLine.begin()+i+1, diffLine.at(i)+1);
+                i++;
+            }
+        }
+        else if(line_parenthesis_check(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == -1 && line_parenthesis_check(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == -1){
+            if(i>0 && diffLine.at(i-1) != diffLine.at(i)-1) continue;
+            else{
+                //tmpIntVec.push_back(diffLine.at(i)+1);
+                //cout << "-1" << endl;
+                diffLine.insert(diffLine.begin()+i, diffLine.at(i)-1);
+                i++;
+            }
+        }
+    }
+
     // 구현시 주의사항
     // * 라인 오프셋 주의하여 인자 전달
     // * 알고리즘 종료조건 함수 반환시 전달하여 정상 종료 될 수 있게.
@@ -348,6 +388,16 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     return diffLine;
 }
 
+void report_result(){
+
+    cout << "\n======= Reporting Results =======" << endl;
+    cout << "Original Loc : " << beforePatchLoc << endl;
+    cout << "Patched Loc : " << afterPatchLoc << endl;
+    cout << "Reduced Loc : " << reducedLoc << endl;
+    cout << "Patched Ftn : " << endl; // TODO: fill this
+    cout << "=================================" << endl;
+
+}
 
 /*
  * ====================================================
@@ -356,36 +406,59 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
  */
 
 
-pair<int, int> get_common_part(CloneData &c1, CloneData &c2){
+pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+
+    // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
+    // 1.1. 일단 syntatic하게 비교해서 아예 같은 구간 먼저 찾아내기.
+    // 1.2. 함수 내 중복 부분 중 bracket(for문, if문) 큰 구간 찾고 적용 가능 한 구간 설정(이때 구간에 return문 제외)
+    // 1.3. 앞 쪽 선언된 지역 변수가 있는데 구간 밖에서 사용되면 그 부분 제외
+
+    pair<int, int> cp;
 
     // compare two clone datas
+    vector<int> diffInt;
+
     vector<string>::iterator it1 = c1.cloneSnippet.begin();
     vector<string>::iterator it2 = c2.cloneSnippet.begin();
-    
-    int from = 0;
-    int to = 0;
-    int count = 1;
-    bool same = false;
-    bool check = false;
+    int idx = 0;
 
-    while (it1 != c1.cloneSnippet.end() || it2 != c2.cloneSnippet.end()){
-
-        if(are_same((*it1), (*it2)) && !same) {
-            from = count;
-            same = true;
-        } else if(!are_same((*it1), (*it2)) && same && !check){
-            to = count - 1;
-            check = true;
-        }
-
-        count++;
-        if(it1 != c1.cloneSnippet.end()) ++it1;
-        if(it2 != c2.cloneSnippet.end()) ++it2;
+    // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
+    for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
+        if (!are_same((*it1), (*it2)) && idx != 0) diffInt.push_back(idx);
+        cout << (*it1) << endl << (*it2) << endl;
+        idx++;
     }
 
-    pair<int, int> p = pair<int, int>(from, to);
+    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
+                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
 
-    return p;
+    vector< pair<NodeData, int> > returnVec1 = find_node_by_label(ndVec1, "return");
+    vector< pair<NodeData, int> > returnVec2 = find_node_by_label(ndVec2, "return");
+    
+    int diffFrontRet1 = returnVec1.front().first.lineNo + lineOffset1 - c1.from;
+    int diffFrontRet2 = returnVec2.front().first.lineNo + lineOffset2 - c1.from;
+    //cout << returnVec1.size() << endl;
+    //cout << returnVec2.size() << endl;
+
+    if (diffInt.back() > diffFrontRet1 || diffInt.back() > diffFrontRet2) return pair<int, int>(0, 0);
+
+    int frt, rear;
+    frt = diffInt.back();
+    rear = min_int(diffFrontRet1, diffFrontRet2) - 1;
+    cout << frt << rear << endl;
+
+    //cout << f1.ftnName << " " << f2.ftnName << endl;
+    //cout << diffInt.size();
+ 
+    
+
+    return cp;
 
 }
 
@@ -578,7 +651,9 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
 
     cout << "Patching clones ...\n";
     cout << "(This will be replaced with actual file write operations)\n";
-    print_code(patchCode); // TODO: need to replace this with file write operations
+    afterPatchLoc = patchCode.size();
+    print_code(tempClone);
+    //print_code(patchCode); // TODO: need to replace this with file write operations
 
 }
 
@@ -593,20 +668,38 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
 
 void em_type1(){
 
-    pair<int, int> p = get_common_part(cloneDatas.front(), cloneDatas.back());
+    CloneData c1, c2;
+    c1 = cloneDatas.front();
+    c2 = cloneDatas.back();
+
+    beforePatchLoc = get_file_line(c1.fileName);
+
+    FtnType f1, f2;
+    parse_ftn_type(c1.cloneSnippet.front(), f1);
+    parse_ftn_type(c2.cloneSnippet.front(), f2);
+
+    pair<int, int> p = get_common_part(cloneDatas.front(), cloneDatas.back(), f1, f2);
     tempCodeLine = p.second - p.first + 1;
-    trim_code(p.first, p.second);
+    
+    cout << p.first << " " << p.second << endl;
+    /* trim_code(p.first, p.second);
 
     for(int i=0; i<tempCodeLine; i++){
         tempClone.push_back(cloneDatas.front().cloneSnippet.at(i + p.first - 1));
     }
 
-    patch_code(cloneDatas.front().fileName);
+    patch_code(cloneDatas.front().fileName); */
 
-    // TODO: refactor to below instruction
-    // 1. return문 확인하기.(함수 추출 부 사이에 있으면 안됨. 반환하는게 어떤 인자인지 중요.)
-    // 2. em 구역 지정하기.(선언문 아래로, return문 위로). em 구역은 bracket 쌍이 되도록
-    // 3. em 구역 내 diff 부분 확인하기. R-value만, L-value가 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
+    // TODO: refactor below instruction
+    // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
+    // 1.1. 함수 내 중복 부분 중 bracket(for문, if문) 큰 구간 찾고 적용 가능 한 구간 설정(이때 구간에 return문 제외)
+    // 1.2. 앞 쪽 선언된 지역 변수가 있는데 구간 밖에서 사용되면 그 부분 제외
+    // 2. EM 인자 모으기
+    // 2.1. 일단 전역(클래스 멤버 변수), 지역(함수 내부, but 구간 외부), 함수 Arg 변수들 전부 <type, name>쌍의 Set으로 모으기
+    // 2.2. 내부 구간에서 bracket 내(scope가 구간 내 사라지는 것) 변수 외에 사용된 변수들 중 지역과 Arg 인자들 모으기
+    // 2.3. 해당 모아진 변수들은 함수 추출시 새로운 Arg로 전달 및 사용.
+    // 3. 정의 만들고 중복 지운 후 Call로 대치.
+
 }
 
 void em_type2(){
@@ -615,11 +708,16 @@ void em_type2(){
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
 
+    beforePatchLoc = get_file_line(c1.fileName);
+
     FtnType f1, f2;
     parse_ftn_type(c1.cloneSnippet.front(), f1);
     parse_ftn_type(c2.cloneSnippet.front(), f2);
 
     merge_clone_ftn(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
+
+    reducedLoc = beforePatchLoc - afterPatchLoc;
+    report_result();
 
     // TODO: refactor to below instruction
     // 1. diff 부분 확인하기. R-value만, L-value는 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
@@ -785,15 +883,14 @@ int main(int argc, char** argv){
 
     read_file(argv[1]); // 1. reads input data
 
-    refactor(T2); // 2. refactor the code according to the clone datas
+    refactor(T1); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
 
-    /* // test for tree manipulation
-    string fname = "/home/yang/Sources/Fasoo/bench/dp_server/DigitalPage_Server.UserServiceImpl.java";
-    string ftnname = "makeNewIntroductionKorInitNote";
-    vector<NodeData> ndvec;
-    getFtnSubtree(fname, ftnname, ndvec);
-    print_node_vector(ndvec); */
+    // test for tree manipulation
+    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6/ePrint.com.fasoo.sqlclient.SqlClient.java";
+    string ftnname = "select";
+    print2ssFtnSubtree(fname, ftnname); */
+    //print_node_vector(ndvec);
 
     return 0;
 
