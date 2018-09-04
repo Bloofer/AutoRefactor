@@ -166,6 +166,7 @@ vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string
 }
 
 pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+  // returns vector line pair of the biggest bracket
 
   // 구간 내 터미널 라인 번호 터미널 노드 먼저 짚기
   int from, to;
@@ -184,7 +185,54 @@ pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, 
   }
   if(from == 0 && to == 0) return pair<int, int>(0, 0); // error case
 
-  // for loop이나 if 찾아서 (앞쪽부터) popen pclose 짝 맞는 가장 큰 bracket 찾고 반환
+  vector<int> stmtLoc; // vector for for/if/if-else statement counter
+  for(int i=from; i<=to; i++){
+    if (ndVec.at(i).nodeId == 22 || ndVec.at(i).nodeId == 99 || ndVec.at(i).nodeId == 107) {
+      stmtLoc.push_back(i);
+    }
+  }
+
+  //cout << "Number of bracket statements : " << stmtLoc.size() << endl;
+
+  vector< pair<int, int> > stmtScopeVec; // vector for for/if/if-else statement found in the given scope
+
+  for(int i=0; i<stmtLoc.size(); i++){
+
+    int popenLine, pcloseLine;
+    int popen, pclose;
+    popen = pclose = 0;
+    bool found = false;
+    // for loop이나 if 찾아서 (앞쪽부터) popen pclose 짝 맞는 가장 큰 bracket 찾고 반환
+    for(int j=stmtLoc.at(i); j<=to; j++){
+      if (ndVec.at(j).label == "{" && !found) { 
+        popen++;
+        found = true;
+        popenLine = ndVec.at(j).lineNo;
+      } else if (ndVec.at(j).label == "{") {
+        popen++;
+      } else if (ndVec.at(j).label == "}") {
+        pclose++;
+        if(popen == pclose) {
+          pcloseLine = ndVec.at(j).lineNo;
+          stmtScopeVec.push_back(pair<int, int>(popenLine, pcloseLine));
+          break;
+        }
+      }
+    }
+
+  }
+
+  // find biggest bracket pair
+  int bgstVal = 0;
+  int bgstIdx;
+  for(int i=0; i<stmtScopeVec.size(); i++){
+    if((stmtScopeVec.at(i).second - stmtScopeVec.at(i).first) > bgstVal) {
+      bgstVal = (stmtScopeVec.at(i).second - stmtScopeVec.at(i).first);
+      bgstIdx = i;
+    }
+  }
+  
+  return stmtScopeVec.at(bgstIdx);
 
 }
 

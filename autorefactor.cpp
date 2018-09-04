@@ -425,7 +425,7 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
     for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
         if (!are_same((*it1), (*it2)) && idx != 0) diffInt.push_back(idx);
-        cout << (*it1) << endl << (*it2) << endl;
+        ///cout << (*it1) << endl << (*it2) << endl;
         idx++;
     }
 
@@ -447,17 +447,32 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     //cout << returnVec2.size() << endl;
 
     if (diffInt.back() > diffFrontRet1 || diffInt.back() > diffFrontRet2) return pair<int, int>(0, 0);
+    // error case
 
     int frt, rear;
     frt = diffInt.back();
     rear = min_int(diffFrontRet1, diffFrontRet2) - 1;
-    cout << frt << rear << endl;
+    //cout << frt << rear << endl;
+
+    pair<int, int> tmpPair1 = pair<int, int>(frt + c1.from - lineOffset1, rear + c1.from - lineOffset1);
+    pair<int, int> tmpPair2 = pair<int, int>(frt + c2.from - lineOffset2, rear + c2.from - lineOffset2);
+    pair<int, int> scp1 = find_biggest_bracket_in_scope(ndVec1, tmpPair1);
+    pair<int, int> scp2 = find_biggest_bracket_in_scope(ndVec2, tmpPair2);
+    if (scp1.first == 0 && scp1.second == 0) return pair<int, int>(0, 0);
+    if (scp2.first == 0 && scp2.second == 0) return pair<int, int>(0, 0);
+    // if there is no bracket in the scope
+
+    //cout << scp1.first + lineOffset1 << "~" << scp1.second + lineOffset1 << endl;
+    //cout << scp2.first + lineOffset2 << "~" << scp2.second + lineOffset2 << endl;
+
+    if (scp1.second - scp1.first != scp2.second - scp2.first) return pair<int, int>(0, 0);
+    // error case : cannot find the scope
 
     //cout << f1.ftnName << " " << f2.ftnName << endl;
     //cout << diffInt.size();
  
-    
-
+    cp.first = scp1.first - c1.from + lineOffset1;
+    cp.second = scp1.second - c1.from + lineOffset1;
     return cp;
 
 }
@@ -887,8 +902,8 @@ int main(int argc, char** argv){
     //print_code(tempClone);
 
     // test for tree manipulation
-    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6/ePrint.com.fasoo.sqlclient.SqlClient.java";
-    string ftnname = "select";
+    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
+    string ftnname = "checkAchieveMission";
     print2ssFtnSubtree(fname, ftnname); */
     //print_node_vector(ndvec);
 
