@@ -396,6 +396,40 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
 
 }
 
+void getPtreeVec(string &fileName, vector<NodeData> &ndVec){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->print2ss(ss);
+
+  ss2NodeVec(ndVec, ss);
+
+}
+
+void printss(string &fileName){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->print2ss(ss);
+
+  cout << ss.str() << endl;
+
+}
+
 void print2ssFtnSubtree(string &fileName, string &ftnName){
   
   id_init();

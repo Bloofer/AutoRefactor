@@ -67,6 +67,10 @@ typedef enum {
     T2
 } clone_type;
 
+// function variable datas
+vector<string> importClassVec; // vector holding imported class datas(type, name)
+vector< pair<string, string> > classMemVarVec; // vector holding class member var datas(type, name)
+
 map<string, string> classHierarchy;
 // (child -> parent) map
 // class hierarchy of the whole project.
@@ -110,6 +114,7 @@ void parse_ftn_type(string s, FtnType &ftype);
 void patch_callers(Caller c, string newFname, int flag);
 int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from);
 vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
+void parse_class_member_vars(string fileName);
 
 // functions for type 1 (extract method)
 pair<int, int> get_common_part();

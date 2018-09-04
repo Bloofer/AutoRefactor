@@ -129,6 +129,13 @@ int min_int(int a, int b){
     return a < b ? a : b;
 }
 
+bool str_vec_exists(vector<string> &sv, string s){
+    for(int i=0; i<sv.size(); i++){
+        if(sv.at(i) == s) return true;
+    }
+    return false;
+}
+
 
 /*
  * ====================================================
@@ -388,6 +395,62 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     return diffLine;
 }
 
+void parse_class_member_vars(string fileName){
+// parse import class vars and class member vars
+
+    vector<NodeData> ndVec;
+    getPtreeVec(fileName, ndVec);
+
+    int imptCnt = 0;
+    for(int i=0; i<ndVec.size(); i++){
+        if(ndVec.at(i).nodeId == 125) imptCnt++;
+    }
+
+    //cout << imptCnt << endl;
+
+    bool found = false;
+    int cnt = 0;
+    for(int i=0; i<ndVec.size(); i++){
+        if(ndVec.at(i).nodeId == 83) found = true;
+        if(found){
+            if(ndVec.at(i).label == ";") {
+                importClassVec.push_back(ndVec.at(i-1).label);
+                cnt++;
+                found = false;
+            }
+        }
+        if(cnt == imptCnt) break;
+    }
+
+    int classMems = 0;
+    for(int i=0; i<ndVec.size()-1; i++){
+        if(ndVec.at(i).nodeId == 88 && ndVec.at(i+1).nodeId == 143) classMems++;
+    }
+
+    found = false;
+    bool typeChk = false;
+    bool nameChk = false;
+    string memType, memName;
+    cnt = 0;
+    for(int i=0; i<ndVec.size(); i++){
+        if(ndVec.at(i).nodeId == 123) found = true;
+        if(ndVec.at(i).nodeId == 65) nameChk = true;
+        if(found && ndVec.at(i).isTerminal && !typeChk){
+            memType = ndVec.at(i).label;
+            typeChk = true;
+        } else if(found && ndVec.at(i).isTerminal && typeChk && !nameChk){
+            memType += ndVec.at(i).label;
+        } else if(found && ndVec.at(i).isTerminal && typeChk && nameChk){
+            memName = ndVec.at(i).label;
+            classMemVarVec.push_back(pair<string, string>(memType, memName));
+            cnt++;
+            found = typeChk = nameChk = false;
+        }
+        if(cnt == classMems) break;
+    }
+
+}
+
 void report_result(){
 
     cout << "\n======= Reporting Results =======" << endl;
@@ -474,6 +537,47 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     cp.first = scp1.first - c1.from + lineOffset1;
     cp.second = scp1.second - c1.from + lineOffset1;
     return cp;
+
+}
+
+vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+
+    vector< pair<string, string> > emArgs;
+
+    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
+                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
+
+    //print_node_vector(ndVec1);
+
+    // 1. USED : 구간 내 사용된 변수 이름 모으기
+    vector<string> usedVars1;
+    for(int i=0; i<ndVec1.size(); i++){
+        if(ndVec1.at(i).nodeId == 39){
+            if(i>5 && ndVec1.at(i-1).label != "." && ndVec1.at(i-5).nodeId != 123 && ndVec1.at(i+1).label != "Exception" 
+                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)) usedVars1.push_back(ndVec1.at(i+1).label);
+        }
+    }
+
+    cout << usedVars1.size() << endl;
+
+    for(int i=0; i<usedVars1.size(); i++){
+        cout << usedVars1.at(i) << endl;
+    }
+
+    // 2. INNER : 구간 내 정의된 변수 모으기
+    // 3. EXTERN & CLASS_MEMBER : 다른 함수에서 모은 import 객체, 클래스 멤버 변수
+    // 4. LOCAL : 함수 내 scope 구간 위 정의된 변수 모으기
+
+    // 5. ARG = USED - INNER - EXTERN - CLASS_MEMBER 이 중에 LOCAL에 존재하는 이름.(만약 하나라도 없으면 FAIL)
+    // USED 중 세 변수 집합에 존재하는 것 전부 빼고 나머지 중 LOCAL에 존재하는 이름 찾으면 됨.
+
+    return emArgs;
 
 }
 
@@ -693,9 +797,23 @@ void em_type1(){
     parse_ftn_type(c1.cloneSnippet.front(), f1);
     parse_ftn_type(c2.cloneSnippet.front(), f2);
 
-    pair<int, int> p = get_common_part(cloneDatas.front(), cloneDatas.back(), f1, f2);
+    pair<int, int> p = get_common_part(c1, c2, f1, f2);
     tempCodeLine = p.second - p.first + 1;
     
+    if(p.first == 0 && p.second == 0) {
+        cout << "Error getting bracket scope. Aborting refactor..." << endl;
+        return;
+    }
+
+    parse_class_member_vars(c1.fileName);
+
+    // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
+
+    vector< pair<string, string> > emArgs = get_em_args(c1, c2, f1, f2, p);
+
+    // b. 뽑은 인자 사용해서 함수 정의부 만들고 중복부분 함수 호출 대치
+
+
     cout << p.first << " " << p.second << endl;
     /* trim_code(p.first, p.second);
 
@@ -905,6 +1023,8 @@ int main(int argc, char** argv){
     /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
     string ftnname = "checkAchieveMission";
     print2ssFtnSubtree(fname, ftnname); */
+    //printss(fname);
+    //parse_class_member_vars(fname);
     //print_node_vector(ndvec);
 
     return 0;

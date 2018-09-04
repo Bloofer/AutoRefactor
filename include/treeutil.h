@@ -72,4 +72,6 @@ int line_parenthesis_check(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void dumpPtree(string &fileName);
 void print2ssFtnSubtree(string &fileName, string &ftnName);
+void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
+void printss(string &fileName);
 string getClassKeyword(string &file_name, string &class_type);
