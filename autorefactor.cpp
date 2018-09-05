@@ -136,6 +136,29 @@ bool str_vec_exists(vector<string> &sv, string s){
     return false;
 }
 
+int str_sec_vec_exists(vector< pair<string, string> > &sv, string s){
+    // if found, return index. if not found, return -1
+    for(int i=0; i<sv.size(); i++){
+        if(sv.at(i).second == s) return i;
+    }
+    return -1;
+}
+
+bool comp_sp_vec(vector< pair<string, string> > &sv1, vector< pair<string, string> > &sv2){
+    // returns true if all elements are true;
+    // NOTE: all elements must be sorted in same order
+    // TODO : sort before compare?
+    bool same = true;
+    if(sv1.size() != sv2.size()) return false;
+    else {
+        for(int i=0; i<sv1.size(); i++){
+            same &= ( sv1.at(i).first==sv2.at(i).first ) && ( sv1.at(i).second==sv2.at(i).second );
+        }
+    }
+    return same;
+}
+
+
 
 /*
  * ====================================================
@@ -555,29 +578,108 @@ vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType
 
     //print_node_vector(ndVec1);
 
-    // 1. USED : 구간 내 사용된 변수 이름 모으기
+    // 1. EXTERN & CLASS_MEMBER : 다른 함수에서 모은 import 객체, 클래스 멤버 변수
+
+    // 2. FTN_ARG : 각 함수의 인자로 정의된 변수 모으기
+    /* for(int i=0; i<f1.ftnArgs.size(); i++){
+        cout << f1.ftnArgs.at(i).first << " " << f1.ftnArgs.at(i).second << endl;
+    }
+    for(int i=0; i<f2.ftnArgs.size(); i++){
+        cout << f2.ftnArgs.at(i).first << " " << f2.ftnArgs.at(i).second << endl;
+    } */
+
+    // 3. LOCAL : 함수 내 scope 구간 위 정의된 변수 모으기
+    vector< pair<string, string> > varAboveScope1;
+    vector< pair<string, string> > varAboveScope2;
+
+    // 3.1. LOCAL 뽑을 범위 계산하기 (from : 함수 정의부 + 1, to : Scope.front - 1)
+    // 파스 트리 파일 라인 = 실제 파일 라인 - offset
+    int locScopeFrt1 = c1.from + 1 - lineOffset1;
+    int locScopeRear1 = c1.from + scope.first - 1 - lineOffset1;
+    pair<int, int> locScope1 = pair<int, int>(locScopeFrt1, locScopeRear1);
+    varAboveScope1 = find_loc_var_in_scope(ndVec1, locScope1);
+
+    int locScopeFrt2 = c2.from + 1 - lineOffset2;
+    int locScopeRear2 = c2.from + scope.first - 1 - lineOffset2;
+    pair<int, int> locScope2 = pair<int, int>(locScopeFrt2, locScopeRear2);
+    varAboveScope2 = find_loc_var_in_scope(ndVec2, locScope2);
+
+    // 3.2 merge ftn arg with local var above scope
+    varAboveScope1.insert(varAboveScope1.end(), f1.ftnArgs.begin(), f1.ftnArgs.end());
+    varAboveScope2.insert(varAboveScope2.end(), f2.ftnArgs.begin(), f2.ftnArgs.end());
+
+    /* cout << endl << varAboveScope1.size() << endl;
+    for(int i = 0; i<varAboveScope1.size(); i++){
+        cout << varAboveScope1.at(i).first << " " << varAboveScope1.at(i).second << endl;
+    }
+
+    cout << varAboveScope2.size() << endl;
+    for(int i = 0; i<varAboveScope2.size(); i++){
+        cout << varAboveScope2.at(i).first << " " << varAboveScope2.at(i).second << endl;
+    } */
+
+    // 4. USED : 구간 내 사용된 변수 이름 모으기
+    // TODO: refactor this and extract to function
     vector<string> usedVars1;
+    int brktScopeFrt1 = c1.from + scope.first - lineOffset1;
+    int brktScopeRear1 = c1.from + scope.second - lineOffset1;
     for(int i=0; i<ndVec1.size(); i++){
         if(ndVec1.at(i).nodeId == 39){
             if(i>5 && ndVec1.at(i-1).label != "." && ndVec1.at(i-5).nodeId != 123 && ndVec1.at(i+1).label != "Exception" 
-                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)) usedVars1.push_back(ndVec1.at(i+1).label);
+                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)
+                && ndVec1.at(i+1).lineNo >= brktScopeFrt1 && ndVec1.at(i+1).lineNo <= brktScopeRear1 ) usedVars1.push_back(ndVec1.at(i+1).label);
+        }
+    }
+    vector< pair<string, string> > emArgs1;
+    for(int i=0; i<usedVars1.size(); i++){
+        int idx = str_sec_vec_exists(varAboveScope1, usedVars1.at(i));
+        if (idx != -1){
+            emArgs1.push_back(varAboveScope1.at(idx));
+        }
+    }
+    
+    vector<string> usedVars2;
+    int brktScopeFrt2 = c2.from + scope.first - lineOffset2;
+    int brktScopeRear2 = c2.from + scope.second - lineOffset2;
+    for(int i=0; i<ndVec2.size(); i++){
+        if(ndVec2.at(i).nodeId == 39){
+            if(i>5 && ndVec2.at(i-1).label != "." && ndVec2.at(i-5).nodeId != 123 && ndVec2.at(i+1).label != "Exception" 
+                && ndVec2.at(i+1).isTerminal && !str_vec_exists(usedVars2, ndVec2.at(i+1).label)
+                && ndVec2.at(i+1).lineNo >= brktScopeFrt2 && ndVec2.at(i+1).lineNo <= brktScopeRear2 ) usedVars2.push_back(ndVec2.at(i+1).label);
+        }
+    }
+    vector< pair<string, string> > emArgs2;
+    for(int i=0; i<usedVars2.size(); i++){
+        int idx = str_sec_vec_exists(varAboveScope2, usedVars2.at(i));
+        if (idx != -1){
+            emArgs2.push_back(varAboveScope2.at(idx));
         }
     }
 
-    cout << usedVars1.size() << endl;
+    /* cout << endl << emArgs1.size() << endl;
+    for(int i = 0; i<emArgs1.size(); i++){
+        cout << emArgs1.at(i).first << " " << emArgs1.at(i).second << endl;
+    }
+    cout << endl << emArgs2.size() << endl;
+    for(int i = 0; i<emArgs2.size(); i++){
+        cout << emArgs2.at(i).first << " " << emArgs2.at(i).second << endl;
+    } */
+
+    /* cout << usedVars1.size() << endl;
 
     for(int i=0; i<usedVars1.size(); i++){
         cout << usedVars1.at(i) << endl;
-    }
+    } */
 
-    // 2. INNER : 구간 내 정의된 변수 모으기
-    // 3. EXTERN & CLASS_MEMBER : 다른 함수에서 모은 import 객체, 클래스 멤버 변수
-    // 4. LOCAL : 함수 내 scope 구간 위 정의된 변수 모으기
+    if(!comp_sp_vec(emArgs1, emArgs2)) {
+        cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        return emArgs;
+    }
 
     // 5. ARG = USED - INNER - EXTERN - CLASS_MEMBER 이 중에 LOCAL에 존재하는 이름.(만약 하나라도 없으면 FAIL)
     // USED 중 세 변수 집합에 존재하는 것 전부 빼고 나머지 중 LOCAL에 존재하는 이름 찾으면 됨.
 
-    return emArgs;
+    return emArgs1;
 
 }
 
@@ -590,7 +692,150 @@ string get_clone_ftn_name(){
 
 }
 
-void patch_code(string fileName){
+void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > emArgs){
+
+    //cout << scope.first << " " << scope.second << endl;
+
+    // 1. make new method name and decl line
+    string newFtnName = f1.ftnName + f2.ftnName;
+
+    int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
+    string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
+    string fstLine = tabStr + "public void " + newFtnName + "(";
+    for(int i=0; i<emArgs.size(); i++){
+        fstLine += emArgs.at(i).first + " " + emArgs.at(i).second;
+        if(i<emArgs.size()-1) fstLine += ", ";
+    }
+    fstLine += ") {";
+    tempClone.push_back(fstLine);
+    //tempClone.push_back(""); // insert empty line to format
+
+    // 2. insert bracket scope in the new method
+    for(int i=scope.first; i<=scope.second; i++){
+        tempClone.push_back(c1.cloneSnippet.at(i));    
+    }
+    
+    //tempClone.push_back("");
+    tempClone.push_back(tabStr + "}");
+
+    //print_code(tempClone);
+
+    // 3. replace clone part with new function call
+    bool inserted = false;
+    for(int i=0; i<c1.cloneSnippet.size(); i++){
+        if(i >= scope.first && i <= scope.second && !inserted){
+            int tabIdxIn = c1.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
+            string tabStrIn = c1.cloneSnippet.front().substr(0, tabIdxIn);
+            string newFtnCall = tabStrIn + newFtnName + "(";
+            for(int i=0; i<emArgs.size(); i++){
+                newFtnCall += emArgs.at(i).second;
+                if (i<emArgs.size()-1) newFtnCall += ", ";
+            }
+            newFtnCall += ");";
+            orgClone1.push_back(newFtnCall);
+            inserted = true;
+        }
+        else if (i < scope.first || i > scope.second) orgClone1.push_back(c1.cloneSnippet.at(i));
+    }
+
+    print_code(orgClone1);
+
+
+    // 3. insert flag at the ftn decl.
+    // use FtnType to not get new function name & arg name
+    /* string ftnDecl = tabStr;
+    for(int i=0; i<f1.keywords.size(); i++){
+        ftnDecl += (f1.keywords[i] + " ");
+    }
+
+    ftnDecl += (f1.returnType + " " + newFtnName + "(");
+    for(int i=0; i<f1.ftnArgs.size(); i++){
+        ftnDecl += f1.ftnArgs[i].first;
+        ftnDecl += " ";
+        ftnDecl += f1.ftnArgs[i].second;
+        ftnDecl += ", ";
+    }
+    ftnDecl += "int flag) {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
+    tempClone.push_back(ftnDecl);
+
+    // check for adjacent clone lines;
+    bool adjacent = false;
+    vector<string> cloneDummy1; 
+    vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
+    string ifOpen;
+
+    for(int i=1; i<c1.cloneSize; i++){
+        if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
+        else {
+            tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
+            tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
+
+            if(!adjacent){
+            // 처음 중복 라인 찾아서 브랜치 나누는 경우
+                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
+                    cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
+                    cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);
+                    ifOpen = tabStr;
+                    adjacent = true;
+                } else {
+                    tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
+                    tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
+                }
+
+            } else {
+            // 이미 인접한 중복 라인을 찾아서 브랜치 나누는 경우(parenthesis 안에 존재)
+                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);                    
+                } else {
+                    cloneDummy1.push_back(c1.cloneSnippet[i]);
+                    cloneDummy1.push_back(ifOpen + "}");
+                    cloneDummy2.push_back(c2.cloneSnippet[i]);
+                    cloneDummy2.push_back(ifOpen + "}");
+
+                    // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+                    tempClone.insert(tempClone.end(), cloneDummy1.begin(), cloneDummy1.end());
+                    tempClone.insert(tempClone.end(), cloneDummy2.begin(), cloneDummy2.end());
+
+                    cloneDummy1.clear();
+                    cloneDummy2.clear();      
+                    adjacent = false;              
+                }
+            }
+        }
+    }
+
+    ifstream pfile(c1.fileName.c_str());
+    string line;
+
+    int lineCnt = 1; // line counter
+    while(getline(pfile, line)) {
+        //if (lineCnt >= c1.from && lineCnt <= c1.to) continue;
+        //if (lineCnt >= c2.from && lineCnt <= c2.to) continue;
+        //cout << line << endl;
+        if(lineCnt == c1.from) patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
+        if(lineCnt == c2.to + 1) {
+            if(only_spaces(line)) { lineCnt++; continue; }
+        }
+        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
+        
+        lineCnt++;
+    }
+
+    cout << "Patching clones ...\n";
+    cout << "(This will be replaced with actual file write operations)\n";
+    afterPatchLoc = patchCode.size();
+    print_code(tempClone); */
+    //print_code(patchCode); // TODO: need to replace this with file write operations
+
+
+}
+
+/* void patch_code(string fileName){
 
     ifstream pfile(fileName.c_str());
     string line;
@@ -628,22 +873,8 @@ void patch_code(string fileName){
     }
     cloneFtnNum++;
 
-}
+} */
 
-void trim_code(int p, int q){
-// trim the clone part of the cloneDatas
-
-    int from = cloneDatas.front().from;
-    int to = cloneDatas.front().to;
-    cloneDatas.front().from = from + (p - 1);
-    cloneDatas.front().to = from + (q - p);
-
-    from = cloneDatas.back().from;
-    to = cloneDatas.back().to;
-    cloneDatas.back().from = from + (p - 1);
-    cloneDatas.back().to = from + (q - p);
-
-}
 
 
 /*
@@ -801,7 +1032,7 @@ void em_type1(){
     tempCodeLine = p.second - p.first + 1;
     
     if(p.first == 0 && p.second == 0) {
-        cout << "Error getting bracket scope. Aborting refactor..." << endl;
+        cerr << "Error getting bracket scope. Aborting refactor..." << endl;
         return;
     }
 
@@ -811,17 +1042,13 @@ void em_type1(){
 
     vector< pair<string, string> > emArgs = get_em_args(c1, c2, f1, f2, p);
 
+    /* cout << "\nEM args size : " << emArgs.size() << endl;
+    for(int i=0; i<emArgs.size(); i++){
+        cout << emArgs.at(i).first << " " << emArgs.at(i).second << endl;
+    } */
+
     // b. 뽑은 인자 사용해서 함수 정의부 만들고 중복부분 함수 호출 대치
-
-
-    cout << p.first << " " << p.second << endl;
-    /* trim_code(p.first, p.second);
-
-    for(int i=0; i<tempCodeLine; i++){
-        tempClone.push_back(cloneDatas.front().cloneSnippet.at(i + p.first - 1));
-    }
-
-    patch_code(cloneDatas.front().fileName); */
+    patch_code(c1.fileName, c1, c2, f1, f2, p, emArgs);
 
     // TODO: refactor below instruction
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)

@@ -82,8 +82,10 @@ map<string, string> classToFileMap;
 // TODO: need to impl the ftn which gathers this data
 
 // temporary variable to save the clone code snippets
-vector<string> tempClone;
-vector<string> patchCode;
+vector<string> tempClone; // T1 : extracted method, T2 : merged method
+vector<string> orgClone1; // T1 : clone method1 (patched clone with ftn call)
+vector<string> orgClone2; // T1 : clone method2 (patched clone with ftn call)
+vector<string> patchCode; // final result of the patched source code
 int tempCodeLine;
 string cloneFtnName = "cloneFtn";
 int cloneFtnNum = 1;
@@ -118,8 +120,8 @@ void parse_class_member_vars(string fileName);
 
 // functions for type 1 (extract method)
 pair<int, int> get_common_part();
-void patch_code(string fileName); // replace code clone with new function
 void trim_code(int p, int q);
+void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > emArgs);
 
 // functions for type 2 (merge method)
 vector<int> get_diff(CloneData &c1, CloneData &c2);
