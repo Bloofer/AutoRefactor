@@ -117,89 +117,88 @@ void print_node_vector(vector<NodeData> &ndVec){
 
 }
 
+pair<string, string> parse_arg(vector<string> &tokVec){
+
+  string argT, argN;
+  argN = tokVec.at(tokVec.size()-1);
+  for(int i=0; i<tokVec.size()-1; i++){
+    argT += tokVec.at(i);
+    if(tokVec.at(i) == ",") argT += " ";
+  }
+
+  return pair<string, string>(argT, argN);
+
+}
+
 void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
   // NOTE : must pass ndVec of specific function
 
-  bool kwdFound = false;
-  bool kwdFoundEnd = false;
-  bool retTypFound = false;
-  bool ftnNamFound = false;
-  bool argOpen = false;
-  bool argTfound = false;
-  bool argNfound = false;
-  bool thrwFound = false;
+  bool tdeli = false;
+  bool ndeli = false;
+  int fstL;
 
   vector<string> tokVec;
 
-  for(int i=0; i<ndVec.size(); i++){
-    if(ndVec.at(i).isTerminal) tokVec.push_back(ndVec.at(i).label);
-    if(ndVec.at(i).nodeId == 123 || ndVec.at(i).nodeId == 187 || ndVec.at(i).nodeId == 37) tokVec.push_back("|");
-    if(ndVec.at(i).isTerminal && ndVec.at(i).label=="{") break;
+  for(int i=0; i<ndVec.size()-2; i++){
+    if(ndVec.at(i).isTerminal) { 
+      tokVec.push_back(ndVec.at(i).label);
+    }
+    if(ndVec.at(i).nodeId == 123 && !tdeli) {
+      tokVec.push_back("|");
+      tdeli = true;
+    }
+    if(ndVec.at(i).nodeId == 187 && !ndeli) {
+      tokVec.push_back("|");
+      fstL = ndVec.at(i+2).lineNo;
+      ndeli = true;
+    }
+    if(ndVec.at(i).isTerminal && ndVec.at(i).label=="{") {
+      ftype.bopenLine = ndVec.at(i).lineNo - fstL;
+      break;
+    }
   }
+
+  // parsed with given sequence
+  // KEYWORDS | RETURN_TYPE | FTN_NAME ( ARG_TYPE ARG_NAME, ... ) [EXCEPTION_THROW] {
+
+  vector<string> argTok;
+  pair<string, string> argT;
+  vector<string> tempArg;
+  tdeli = ndeli = false;
+  bool argOpen = false;
+  bool argClose = false;
+  int bnum = 0;
 
   for(int i=0; i<tokVec.size(); i++){
-    cout << tokVec.at(i) << endl;
-  }
-
-  /* for(int i=0; i<ndVec.size()-4; i++){
-    string argT, argN;
-
-    if(!kwdFound && !kwdFoundEnd && ndVec.at(i).isTerminal) {
-      if(ndVec.at(i).label != "public" && ndVec.at(i).label != "private" && ndVec.at(i).label != "protected"){
-        cerr << "Error : cannot parse ndVec of \"" << ndVec.at(i).label << "\"" << endl;
-        return;
+    if(tokVec.at(i) != "|" && !tdeli) ftype.keywords.push_back(tokVec.at(i));
+    else if(tokVec.at(i) == "|" && !tdeli) tdeli = true;
+    else if(tdeli && tokVec.at(i) != "|" && !ndeli) ftype.returnType += tokVec.at(i);
+    else if(tdeli && tokVec.at(i) == "|" && !ndeli) ndeli = true;
+    else if(tdeli && ndeli && tokVec.at(i) != "(" && !argOpen) ftype.ftnName = tokVec.at(i);
+    else if(tdeli && ndeli && tokVec.at(i) == "(" && !argOpen) {
+      argOpen = true;
+      if(i<tokVec.size()-1 && tokVec.at(i)==")") argClose = true;
+    }
+    else if(tdeli && ndeli && argOpen && !argClose) {
+      if(tokVec.at(i) == "<") bnum++;
+      if(tokVec.at(i) == ">") bnum--;
+      if(bnum == 0 && ( tokVec.at(i) == "," || tokVec.at(i) == ")" ) ) {
+        argT = parse_arg(tempArg);
+        ftype.ftnArgs.push_back(argT);
+        argT.first = argT.second = "";
+        tempArg.clear();
+        if(tokVec.at(i) == ")") argClose = true;
       } else {
-        ftype.keywords.push_back(ndVec.at(i).label);
-        kwdFound = true;
+        tempArg.push_back(tokVec.at(i));
       }
-    } else if(kwdFound && !kwdFoundEnd && ndVec.at(i).isTerminal) {
-      ftype.keywords.push_back(ndVec.at(i).label);
-    } else if(kwdFound && !kwdFoundEnd && !ndVec.at(i).isTerminal) {
-      if(ndVec.at(i).nodeId == 123) kwdFoundEnd = true;
-    } else if(kwdFoundEnd && !retTypFound && ndVec.at(i).isTerminal) {
-      ftype.returnType += ndVec.at(i).label;
-    } else if(kwdFoundEnd && !retTypFound && !ndVec.at(i).isTerminal) {
-      if(ndVec.at(i).nodeId == 187) retTypFound = true;
-    } else if(retTypFound && !ftnNamFound && ndVec.at(i).isTerminal) {
-      ftype.ftnName = ndVec.at(i).label;
-      ftnNamFound = true;
-    } else if(ftnNamFound && ndVec.at(i).isTerminal) {
-      if(ndVec.at(i).label == "(") argOpen = true;
-    } else if(argOpen && !argTfound && !ndVec.at(i).isTerminal) {
-      if(ndVec.at(i).nodeId == 123) argTfound = true;
-    } else if(argOpen && argTfound && !argNfound && ndVec.at(i).isTerminal) {
-      cout << "tf!" << endl;
-      argT += ndVec.at(i).label;
-      cout << ndVec.at(i).label << endl;
-      if (ndVec.at(i+1).nodeId == 37 && ndVec.at(i+2).nodeId == 39) {
-        argTfound = false;
-        argNfound = true;
-        argN = ndVec.at(i+3).label;
-        ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
-        if (ndVec.at(i+4).label == ")") { 
-          argOpen = false;
-          i += 5;
-        } else if (ndVec.at(i+4).label == ","){
-          argNfound = false;
-          i += 5;
-        }
-      }
-    } else if(!argOpen && argNfound && !thrwFound && ndVec.at(i).isTerminal) {
-      if (ndVec.at(i).label == "throws") thrwFound = true;
-      else if (ndVec.at(i).label == "{") {
-        ftype.thrwExtn = false;
-        ftype.bopenLine = ndVec.at(i).lineNo;
-        return;
-      }
-    } else if(!argOpen && argNfound && thrwFound && ndVec.at(i).isTerminal) {
-      if (ndVec.at(i).label == "Exception") ftype.thrwExtn = true;
-    } else if(!argOpen && argNfound && thrwFound && ndVec.at(i).isTerminal && ftype.thrwExtn) {
-      if (ndVec.at(i).label == "{") {
-        ftype.bopenLine = ndVec.at(i).lineNo;
+    }
+    else if(tdeli && ndeli && argOpen && argClose && tokVec.at(i)!="{") { 
+      if(i<tokVec.size()-1 && tokVec.at(i) == "throws" && tokVec.at(i+1) == "Exception") {
+        ftype.thrwExtn = true;
         return;
       }
     }
-  } */
+  }
 
 }
 

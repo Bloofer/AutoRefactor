@@ -70,6 +70,7 @@ typedef struct{
     int bopenLine;
 }FtnType;
 
+pair<string, string> parse_arg(vector<string> &tokVec);
 void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype);
 bool has_node_id(vector<NodeData> &ndVec, int idx, int id);
 bool is_lvalue_node(vector<NodeData> &ndVec, int idx);

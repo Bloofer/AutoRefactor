@@ -1175,6 +1175,10 @@ void print_ftn_type(FtnType &f){
     } else {
         cout << "void -> " << f.returnType << endl;
     }
+    cout << "throws Exception : ";
+    if(f.thrwExtn) cout << "O" << endl;
+    else cout << "X" << endl;
+    cout << "Bracket opener offset : " << f.bopenLine << endl;
     cout << "Def line# : " << f.lineNum << endl;
 }
 
