@@ -467,13 +467,47 @@ void parse_class_member_vars(string fileName){
 
 }
 
+bool compare_ftype(FtnType &f1, FtnType &f2){
+
+    if(f1.ftnArgs.size() != f1.ftnArgs.size()) return false;
+
+    bool same = true;
+    same &= (f1.returnType == f2.returnType);
+    for(int i=0; i<f1.ftnArgs.size(); i++){
+        same &= (f1.ftnArgs.at(i).first == f2.ftnArgs.at(i).first) && (f1.ftnArgs.at(i).second == f2.ftnArgs.at(i).second);
+    }
+    return same;
+
+}
+
+clone_type get_clone_type(){
+
+    CloneData c1, c2;
+    c1 = cloneDatas.front();
+    c2 = cloneDatas.back();
+
+    FtnType f1, f2;
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    parse_ftn_type(c1.cloneSnippet.front(), f1);
+    parse_ftn_type(c2.cloneSnippet.front(), f2);
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    //parse_ftype(ndVec1, f1);
+    //parse_ftype(ndVec2, f2);
+
+    if (compare_ftype(f1, f2)) return T2;
+    else return T1;
+
+}
+
 void report_result(){
 
     cout << "\n======= Reporting Results =======" << endl;
     cout << "Original Loc : " << beforePatchLoc << endl;
     cout << "Patched Loc : " << afterPatchLoc << endl;
     cout << "Reduced Loc : " << reducedLoc << endl;
-    cout << "Patched Ftn : " << endl; // TODO: fill this
+    //cout << "Patched Ftn : " << endl; // TODO: fill this
     cout << "=================================" << endl;
 
 }
@@ -734,9 +768,11 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     tempClone.push_back(seVarSetRet);
     tempClone.push_back(tabStr + "}");
 
-    cout << "Patching clone..." << endl;
-    cout << "Extracted method from clone part : " << newFtnName << "()" << endl << endl;
-    print_code(tempClone);
+    if(runOption != COD){
+        cout << "Patching clone..." << endl;
+        cout << "Extracted method from clone part : " << newFtnName << "()" << endl << endl;
+        print_code(tempClone);
+    }
 
     // 3. replace clone part with new function call
     bool inserted1 = false;
@@ -758,10 +794,12 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
         else if (i < scope.first || i > scope.second) orgClone1.push_back(c1.cloneSnippet.at(i));
     }
 
-    cout << endl << "========================================" << endl;
-    cout << "Patching clone..." << endl;
-    cout << "Clone part 1 patched with ftn call." << endl << endl;
-    print_code(orgClone1);
+    if(runOption != COD){
+        cout << endl << "========================================" << endl;
+        cout << "Patching clone..." << endl;
+        cout << "Clone part 1 patched with ftn call." << endl << endl;
+        print_code(orgClone1);
+    }
 
     // 3. replace clone part with new function call
     bool inserted2 = false;
@@ -783,10 +821,41 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
         else if (i < scope.first || i > scope.second) orgClone2.push_back(c2.cloneSnippet.at(i));
     }
 
-    cout << endl << "========================================" << endl;
-    cout << "Patching clone..." << endl;
-    cout << "Clone part 2 patched with ftn call." << endl << endl;
-    print_code(orgClone2);
+    if(runOption != COD){
+        cout << endl << "========================================" << endl;
+        cout << "Patching clone..." << endl;
+        cout << "Clone part 2 patched with ftn call." << endl << endl;
+        print_code(orgClone2);
+    }
+
+    // patch code to the entire file
+    ifstream pfile(c1.fileName.c_str());
+    string line;
+
+    int lineCnt = 1; // line counter
+    while(getline(pfile, line)) {
+        if(lineCnt == c1.from) { 
+            patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
+            patchCode.push_back("");
+            patchCode.insert(patchCode.end(), orgClone1.begin(), orgClone1.end());
+        } else if(lineCnt == c2.from){
+            patchCode.insert(patchCode.end(), orgClone2.begin(), orgClone2.end());
+        }
+        if(lineCnt == c2.to + 1) {
+            if(only_spaces(line)) { lineCnt++; continue; }
+        }
+        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
+        
+        lineCnt++;
+    }
+
+    afterPatchLoc = patchCode.size();
+
+    if(runOption != RST){
+        cout << "Patching clones ...\n";
+        cout << "(This will be replaced with actual file write operations)\n";
+        print_code(patchCode);
+    }
 
 }
 
@@ -907,11 +976,20 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
         lineCnt++;
     }
 
-    cout << "Patching clones ...\n";
-    cout << "(This will be replaced with actual file write operations)\n";
     afterPatchLoc = patchCode.size();
-    print_code(tempClone);
-    //print_code(patchCode); // TODO: need to replace this with file write operations
+    
+    if (runOption != COD){
+        cout << "Merging clone..." << endl;
+        cout << "Clone part 1,2 merged to one ftn." << endl << endl;
+        print_code(tempClone);
+    }
+
+    if (runOption != RST){
+        cout << endl << "========================================" << endl;
+        cout << "Patching clones ...\n";
+        cout << "(This will be replaced with actual file write operations)\n";
+        print_code(patchCode); // TODO: need to replace this with file write operations
+    }
 
 }
 
@@ -949,6 +1027,12 @@ void em_type1(){
         return;
     }
 
+    if(p.second - p.first < 10) {
+        // this is heuristic. maybe need to improve this?
+        cerr << "Bracket scope too small(less than 10 line). Aborting refactor..." << endl;
+        return;
+    }
+
     parse_class_member_vars(c1.fileName);
 
     // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
@@ -966,6 +1050,10 @@ void em_type1(){
 
     // b. 뽑은 인자 사용해서 함수 정의부 만들고 중복부분 함수 호출 대치
     patch_code(c1.fileName, c1, c2, f1, f2, p, varSet, seVarSet);
+
+    reducedLoc = beforePatchLoc - afterPatchLoc;
+    
+    report_result();
 
     // TODO: refactor below instruction
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
@@ -1153,15 +1241,26 @@ void print_class_type(ClassType &c){
 
 int main(int argc, char** argv){
 
-    // USAGE :  ./autorefactor CLONEDATA
+    // USAGE :  ./autorefactor OPTION CLONEDATA
     if (argc < 2) {
-        cerr << "Usage : " << argv[0] << " ALARMFILE" << endl;
+        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
 
-    read_file(argv[1]); // 1. reads input data
+    string opt = string(argv[1]);
 
-    refactor(T1); // 2. refactor the code according to the clone datas
+    if (opt == "-a") runOption = ALL;
+    else if (opt == "-r") runOption = RST;
+    else if (opt == "-c") runOption = COD;
+    else {
+        cerr << "Error : run option not proper." << endl;
+        return 1;
+    }
+
+    read_file(argv[2]); // 1. reads input data
+
+    clone_type ct = get_clone_type();
+    refactor(ct); // 2. refactor the code according to the clone datas
     //print_code(tempClone);
 
     // test for tree manipulation

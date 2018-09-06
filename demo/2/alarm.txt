@@ -1,0 +1,4 @@
+2
+/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java 797 1083
+/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java 1085 1371
+0

@@ -1,0 +1,114 @@
+    private UserMissionHistory checkAchieveMissionByMajorVersion(long userId, int majorVersion) {
+
+        List<MissionEvent> unachieveMissions = achieveMissionMapper.selectUnachieveMissionListByMajorVersion(userId, majorVersion);
+
+
+
+        boolean firstData = true;
+
+        UserMissionHistory resultData = null;
+
+
+
+        for (MissionEvent missionEvent : unachieveMissions) {
+
+
+
+            int eventType = missionEvent.getEventType();
+
+            int threshold = 0;
+
+
+
+            switch (MissionEventType.valueOf(eventType)) {
+
+            case NOTE_COUNT: {
+
+                HashMap<String, Object> param = new HashMap<String, Object>();
+
+                param.put(Parameter.USER_ID, userId);
+
+                threshold = noteMapper.selectNoteCountByUserIdAndType(userId, NoteType.NORMAL.getValue());
+
+                break;
+
+            }
+
+            case DATE_INLINE_TAG_COUNT: {
+
+                HashMap<String, Object> param = new HashMap<String, Object>();
+
+                param.put(Parameter.USER_ID, userId);
+
+                param.put(Parameter.INLINE_TAG_TYPE, InlineTagType.DATE.getType());
+
+                threshold = inlineTagMapper.selectInlineTagsCountByUserIdAndType(param);
+
+                break;
+
+            }
+
+            case NAME_INLINE_TAG_COUNT: {
+
+                HashMap<String, Object> param = new HashMap<String, Object>();
+
+                param.put(Parameter.USER_ID, userId);
+
+                param.put(Parameter.INLINE_TAG_TYPE, InlineTagType.NAME.getType());
+
+                threshold = inlineTagMapper.selectInlineTagsCountByUserIdAndType(param);
+
+                break;
+
+            }
+
+            case LOCATION_INLINE_TAG_COUNT: {
+
+                HashMap<String, Object> param = new HashMap<String, Object>();
+
+                param.put(Parameter.USER_ID, userId);
+
+                param.put(Parameter.INLINE_TAG_TYPE, InlineTagType.LOCATION.getType());
+
+                threshold = inlineTagMapper.selectInlineTagsCountByUserIdAndType(param);
+
+                break;
+
+            }
+
+            default: {
+
+                // 예외처리의 경우 루프를 돌림.
+
+                continue;
+
+            }
+
+            }
+
+
+
+            if (threshold >= missionEvent.getThreshold()) {
+
+                UserMissionHistory userMissionHistory = new UserMissionHistory(missionEvent.getId(), userId);
+
+                achieveMissionMapper.insertUserMissionHistory(userMissionHistory);
+
+                if (firstData == true) {
+
+                    resultData = userMissionHistory;
+
+                    firstData = false;
+
+                }
+
+            }
+
+        }
+
+
+
+        return resultData;
+
+    }
+

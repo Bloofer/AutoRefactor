@@ -59,6 +59,13 @@ typedef enum {
     T2
 } clone_type;
 
+typedef enum {
+    ALL, // show all results and output
+    RST, // show only result
+    COD // show only output
+} RunOption;
+RunOption runOption;
+
 // function variable datas
 vector<string> importClassVec; // vector holding imported class datas(type, name)
 vector< pair<string, string> > classMemVarVec; // vector holding class member var datas(type, name)

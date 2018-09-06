@@ -1,0 +1,10 @@
+1c1
+<     private UserMissionHistory checkAchieveMission(long userId, int publicState) throws Exception {
+---
+>     private UserMissionHistory checkAchieveMissionByMajorVersion(long userId, int majorVersion) {
+3,5c3
+< 
+< 
+<         List<MissionEvent> unachieveMissions = achieveMissionMapper.selectUnachieveMissionList(userId, publicState);
+---
+>         List<MissionEvent> unachieveMissions = achieveMissionMapper.selectUnachieveMissionListByMajorVersion(userId, majorVersion);

@@ -1,0 +1,40 @@
+1c1
+<     private void makeNewIntroductionKorInitNote(User user) throws ResourceNotFoundException {
+---
+>     private void makeNewIntroductionEngInitNote(User user) throws ResourceNotFoundException {
+5c5
+< 		String[] resourceHashValues = new String[] { "4f966289091f00667f68d2b2a8a676179d06ed77",
+---
+>     	String[] resourceHashValues = new String[] { "c22bda26d3c2c361d2ba655a2872f746a9b17fae",
+7c7
+< 				"6d6f9b8b0fa664b92d368af85c9a08b8b05f661e", "971271aad01ded9cb244f0aa58d3448677f6530d",
+---
+> 				"acb2e6b0b651cf26dcb9b5e15f5ce46f06dc74af", "5aeac7ac3745df76027adb2edb916999d1ea2215",
+9c9
+< 				"d926d5ce461bc8c6174c1ded2497c8b88141a846", "025711b07d0af0b4ea1393b3d534314d4f338838" };
+---
+> 				"994140967316a71c55056d067c5e5134c150be85", "07ed4438feeee4eff7bb5de7032c12849690d8ba" };
+11c11
+<         long[] resourceSizeValues = new long[] { 20723, 18899, 174042, 112105, 27009 };
+---
+>         long[] resourceSizeValues = new long[] { 20723, 18899, 162236, 115622, 27009 };
+17c17
+<         InitNote initNote = initNoteMapper.selectInitNoteByLocale(InitNoteType.INTRODUCTION.getValue(), "KR");
+---
+>         InitNote initNote = initNoteMapper.selectInitNoteByLocale(InitNoteType.INTRODUCTION.getValue(), "US");
+37c37
+<             String img2Name = "1p_2.jpg";
+---
+>             String img2Name = "1p_eng_2.jpg";
+39c39
+<             String img3Name = "1p_3.jpg";
+---
+>             String img3Name = "1p_eng_3.jpg";
+549c549
+<             File img2File = new File(resourcePath.toString() + "1p_2.jpg");
+---
+>             File img2File = new File(resourcePath.toString() + "1p_eng_2.jpg");
+555c555
+<             File img3File = new File(resourcePath.toString() + "1p_3.jpg");
+---
+>             File img3File = new File(resourcePath.toString() + "1p_eng_3.jpg");
