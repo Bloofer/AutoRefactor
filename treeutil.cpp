@@ -130,8 +130,20 @@ pair<string, string> parse_arg(vector<string> &tokVec){
 
 }
 
+void clear_ftype(FtnType &ftype){
+  ftype.bopenLine = 0;
+  ftype.ftnArgs.clear();
+  ftype.ftnName = "";
+  ftype.keywords.clear();
+  ftype.lineNum = 0;
+  ftype.returnType = "";
+  ftype.thrwExtn = false;
+}
+
 void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
   // NOTE : must pass ndVec of specific function
+
+  clear_ftype(ftype);
 
   bool tdeli = false;
   bool ndeli = false;

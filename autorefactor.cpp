@@ -699,6 +699,8 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     // 1. make new method name and decl line
     string newFtnName = f1.ftnName + f2.ftnName;
 
+    //cout << endl << "|" << newFtnName << "|" << endl;
+
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
     string fstLine = tabStr + "public void " + newFtnName + "(";
@@ -725,7 +727,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     for(int i=0; i<c1.cloneSnippet.size(); i++){
         if(i >= scope.first && i <= scope.second && !inserted){
             int tabIdxIn = c1.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
-            string tabStrIn = c1.cloneSnippet.front().substr(0, tabIdxIn);
+            string tabStrIn = c1.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
             string newFtnCall = tabStrIn + newFtnName + "(";
             for(int i=0; i<emArgs.size(); i++){
                 newFtnCall += emArgs.at(i).second;
@@ -1025,8 +1027,17 @@ void em_type1(){
     beforePatchLoc = get_file_line(c1.fileName);
 
     FtnType f1, f2;
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
     parse_ftn_type(c1.cloneSnippet.front(), f1);
     parse_ftn_type(c2.cloneSnippet.front(), f2);
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    parse_ftype(ndVec1, f1);
+    parse_ftype(ndVec2, f2);
+
+    //print_ftn_type(f1);
+    //print_ftn_type(f2);
 
     pair<int, int> p = get_common_part(c1, c2, f1, f2);
     tempCodeLine = p.second - p.first + 1;
@@ -1179,7 +1190,7 @@ void print_ftn_type(FtnType &f){
     if(f.thrwExtn) cout << "O" << endl;
     else cout << "X" << endl;
     cout << "Bracket opener offset : " << f.bopenLine << endl;
-    cout << "Def line# : " << f.lineNum << endl;
+    //cout << "Def line# : " << f.lineNum << endl; // TODO: remove this from ftnType?
 }
 
 void print_arg_calls(CloneData &cd){
@@ -1240,7 +1251,7 @@ void print_class_type(ClassType &c){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " ALARMFILE" << endl;
         return 1;
     }
@@ -1248,16 +1259,16 @@ int main(int argc, char** argv){
     read_file(argv[1]); // 1. reads input data
 
     refactor(T1); // 2. refactor the code according to the clone datas
-    //print_code(tempClone); */
+    //print_code(tempClone);
 
     // test for tree manipulation
-    string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
+    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
     string ftnname = "checkAchieveMission";
     vector<NodeData> ndVec;
     getFtnSubtree(fname, ftnname, ndVec);
     FtnType ftype;
     parse_ftype(ndVec, ftype);
-    print_ftn_type(ftype);
+    print_ftn_type(ftype); */
     //print_node_vector(ndVec);
     //printss(fname);
     //parse_class_member_vars(fname);
