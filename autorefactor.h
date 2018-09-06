@@ -113,7 +113,8 @@ void parse_class_member_vars(string fileName);
 // functions for type 1 (extract method)
 pair<int, int> get_common_part();
 void trim_code(int p, int q);
-void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > emArgs);
+vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet);
+void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
 
 // functions for type 2 (merge method)
 vector<int> get_diff(CloneData &c1, CloneData &c2);

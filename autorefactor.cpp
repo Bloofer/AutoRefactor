@@ -337,12 +337,6 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
     lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
 
-    //if(!found1) cerr << "line offset1 not set. error might be caused." << endl;
-    //if(!found2) cerr << "line offset2 not set. error might be caused." << endl;
-
-    /* print_node_vector(ndVec1);
-    print_node_vector(ndVec2); */
-
     // 1-2-b. 불일치 라인 트리 벡터로 토큰 비교.
     bool hasLvalue = false;
 
@@ -413,8 +407,7 @@ vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     // * 라인 오프셋 주의하여 인자 전달
     // * 알고리즘 종료조건 함수 반환시 전달하여 정상 종료 될 수 있게.
 
-    // 1-5. R-value인 경우 정상.
-    // 3. return the vector
+    // return the vector
     return diffLine;
 }
 
@@ -529,8 +522,6 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     
     int diffFrontRet1 = returnVec1.front().first.lineNo + lineOffset1 - c1.from;
     int diffFrontRet2 = returnVec2.front().first.lineNo + lineOffset2 - c1.from;
-    //cout << returnVec1.size() << endl;
-    //cout << returnVec2.size() << endl;
 
     if (diffInt.back() > diffFrontRet1 || diffInt.back() > diffFrontRet2) return pair<int, int>(0, 0);
     // error case
@@ -538,7 +529,6 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     int frt, rear;
     frt = diffInt.back();
     rear = min_int(diffFrontRet1, diffFrontRet2) - 1;
-    //cout << frt << rear << endl;
 
     pair<int, int> tmpPair1 = pair<int, int>(frt + c1.from - lineOffset1, rear + c1.from - lineOffset1);
     pair<int, int> tmpPair2 = pair<int, int>(frt + c2.from - lineOffset2, rear + c2.from - lineOffset2);
@@ -548,14 +538,8 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     if (scp2.first == 0 && scp2.second == 0) return pair<int, int>(0, 0);
     // if there is no bracket in the scope
 
-    //cout << scp1.first + lineOffset1 << "~" << scp1.second + lineOffset1 << endl;
-    //cout << scp2.first + lineOffset2 << "~" << scp2.second + lineOffset2 << endl;
-
     if (scp1.second - scp1.first != scp2.second - scp2.first) return pair<int, int>(0, 0);
     // error case : cannot find the scope
-
-    //cout << f1.ftnName << " " << f2.ftnName << endl;
-    //cout << diffInt.size();
  
     cp.first = scp1.first - c1.from + lineOffset1;
     cp.second = scp1.second - c1.from + lineOffset1;
@@ -563,9 +547,10 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
 
 }
 
-vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet){
+// 사이드 이펙트에 영향을 받는 scope 위쪽 함수 변수 셋 모으기
 
-    vector< pair<string, string> > emArgs;
+    vector< pair<string, string> > seVarSet;
 
     int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
                                   // offset = 실제 파일 라인 - 파스 트리 파일 라인
@@ -576,17 +561,71 @@ vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType
     lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
     lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
 
-    //print_node_vector(ndVec1);
+    // 4. USED : 구간 내 사용된 변수 이름 모으기
+    // TODO: refactor this and extract to function
+    vector<string> usedVars1;
+    int brktScopeFrt1 = c1.from + scope.first - lineOffset1;
+    int brktScopeRear1 = c1.from + scope.second - lineOffset1;
+    for(int i=0; i<ndVec1.size(); i++){
+        if(ndVec1.at(i).nodeId == 39){
+            if(i>5 && ndVec1.at(i-1).label != "." && ndVec1.at(i-5).nodeId != 123 && ndVec1.at(i+1).label != "Exception" 
+                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)
+                && ndVec1.at(i+1).lineNo >= brktScopeFrt1 && ndVec1.at(i+1).lineNo <= brktScopeRear1 ) usedVars1.push_back(ndVec1.at(i+1).label);
+        }
+    }
+    vector< pair<string, string> > seVarSet1;
+    for(int i=0; i<usedVars1.size(); i++){
+        int idx = str_sec_vec_exists(varSet, usedVars1.at(i));
+        if (idx != -1){
+            seVarSet1.push_back(varSet.at(idx));
+        }
+    }
+    
+    vector<string> usedVars2;
+    int brktScopeFrt2 = c2.from + scope.first - lineOffset2;
+    int brktScopeRear2 = c2.from + scope.second - lineOffset2;
+    for(int i=0; i<ndVec2.size(); i++){
+        if(ndVec2.at(i).nodeId == 39){
+            if(i>5 && ndVec2.at(i-1).label != "." && ndVec2.at(i-5).nodeId != 123 && ndVec2.at(i+1).label != "Exception" 
+                && ndVec2.at(i+1).isTerminal && !str_vec_exists(usedVars2, ndVec2.at(i+1).label)
+                && ndVec2.at(i+1).lineNo >= brktScopeFrt2 && ndVec2.at(i+1).lineNo <= brktScopeRear2 ) usedVars2.push_back(ndVec2.at(i+1).label);
+        }
+    }
+    vector< pair<string, string> > seVarSet2;
+    for(int i=0; i<usedVars2.size(); i++){
+        int idx = str_sec_vec_exists(varSet, usedVars2.at(i));
+        if (idx != -1){
+            seVarSet2.push_back(varSet.at(idx));
+        }
+    }
+
+    if(!comp_sp_vec(seVarSet1, seVarSet2)) {
+        cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        return seVarSet;
+    }
+
+    // 5. ARG = USED - INNER - EXTERN - CLASS_MEMBER 이 중에 LOCAL에 존재하는 이름.(만약 하나라도 없으면 FAIL)
+    // USED 중 세 변수 집합에 존재하는 것 전부 빼고 나머지 중 LOCAL에 존재하는 이름 찾으면 됨.
+
+    return seVarSet1;
+
+}
+
+vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+
+    vector< pair<string, string> > varSet;
+
+    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
+                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
 
     // 1. EXTERN & CLASS_MEMBER : 다른 함수에서 모은 import 객체, 클래스 멤버 변수
-
     // 2. FTN_ARG : 각 함수의 인자로 정의된 변수 모으기
-    /* for(int i=0; i<f1.ftnArgs.size(); i++){
-        cout << f1.ftnArgs.at(i).first << " " << f1.ftnArgs.at(i).second << endl;
-    }
-    for(int i=0; i<f2.ftnArgs.size(); i++){
-        cout << f2.ftnArgs.at(i).first << " " << f2.ftnArgs.at(i).second << endl;
-    } */
 
     // 3. LOCAL : 함수 내 scope 구간 위 정의된 변수 모으기
     vector< pair<string, string> > varAboveScope1;
@@ -608,16 +647,6 @@ vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType
     varAboveScope1.insert(varAboveScope1.end(), f1.ftnArgs.begin(), f1.ftnArgs.end());
     varAboveScope2.insert(varAboveScope2.end(), f2.ftnArgs.begin(), f2.ftnArgs.end());
 
-    /* cout << endl << varAboveScope1.size() << endl;
-    for(int i = 0; i<varAboveScope1.size(); i++){
-        cout << varAboveScope1.at(i).first << " " << varAboveScope1.at(i).second << endl;
-    }
-
-    cout << varAboveScope2.size() << endl;
-    for(int i = 0; i<varAboveScope2.size(); i++){
-        cout << varAboveScope2.at(i).first << " " << varAboveScope2.at(i).second << endl;
-    } */
-
     // 4. USED : 구간 내 사용된 변수 이름 모으기
     // TODO: refactor this and extract to function
     vector<string> usedVars1;
@@ -630,11 +659,11 @@ vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType
                 && ndVec1.at(i+1).lineNo >= brktScopeFrt1 && ndVec1.at(i+1).lineNo <= brktScopeRear1 ) usedVars1.push_back(ndVec1.at(i+1).label);
         }
     }
-    vector< pair<string, string> > emArgs1;
+    vector< pair<string, string> > varSet1;
     for(int i=0; i<usedVars1.size(); i++){
         int idx = str_sec_vec_exists(varAboveScope1, usedVars1.at(i));
         if (idx != -1){
-            emArgs1.push_back(varAboveScope1.at(idx));
+            varSet1.push_back(varAboveScope1.at(idx));
         }
     }
     
@@ -648,38 +677,23 @@ vector< pair<string, string> > get_em_args(CloneData &c1, CloneData &c2, FtnType
                 && ndVec2.at(i+1).lineNo >= brktScopeFrt2 && ndVec2.at(i+1).lineNo <= brktScopeRear2 ) usedVars2.push_back(ndVec2.at(i+1).label);
         }
     }
-    vector< pair<string, string> > emArgs2;
+    vector< pair<string, string> > varSet2;
     for(int i=0; i<usedVars2.size(); i++){
         int idx = str_sec_vec_exists(varAboveScope2, usedVars2.at(i));
         if (idx != -1){
-            emArgs2.push_back(varAboveScope2.at(idx));
+            varSet2.push_back(varAboveScope2.at(idx));
         }
     }
 
-    /* cout << endl << emArgs1.size() << endl;
-    for(int i = 0; i<emArgs1.size(); i++){
-        cout << emArgs1.at(i).first << " " << emArgs1.at(i).second << endl;
-    }
-    cout << endl << emArgs2.size() << endl;
-    for(int i = 0; i<emArgs2.size(); i++){
-        cout << emArgs2.at(i).first << " " << emArgs2.at(i).second << endl;
-    } */
-
-    /* cout << usedVars1.size() << endl;
-
-    for(int i=0; i<usedVars1.size(); i++){
-        cout << usedVars1.at(i) << endl;
-    } */
-
-    if(!comp_sp_vec(emArgs1, emArgs2)) {
+    if(!comp_sp_vec(varSet1, varSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
-        return emArgs;
+        return varSet;
     }
 
     // 5. ARG = USED - INNER - EXTERN - CLASS_MEMBER 이 중에 LOCAL에 존재하는 이름.(만약 하나라도 없으면 FAIL)
     // USED 중 세 변수 집합에 존재하는 것 전부 빼고 나머지 중 LOCAL에 존재하는 이름 찾으면 됨.
 
-    return emArgs1;
+    return varSet1;
 
 }
 
@@ -692,190 +706,89 @@ string get_clone_ftn_name(){
 
 }
 
-void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > emArgs){
-
-    //cout << scope.first << " " << scope.second << endl;
+void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet){
 
     // 1. make new method name and decl line
     string newFtnName = f1.ftnName + f2.ftnName;
 
-    //cout << endl << "|" << newFtnName << "|" << endl;
-
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
-    string fstLine = tabStr + "public void " + newFtnName + "(";
-    for(int i=0; i<emArgs.size(); i++){
-        fstLine += emArgs.at(i).first + " " + emArgs.at(i).second;
-        if(i<emArgs.size()-1) fstLine += ", ";
+    // TODO: seVarSet.front().first --> should be refactored.
+    // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+    string fstLine = tabStr + "public " + seVarSet.front().first + " " + newFtnName + "(";
+    for(int i=0; i<varSet.size(); i++){
+        fstLine += varSet.at(i).first + " " + varSet.at(i).second;
+        if(i<varSet.size()-1) fstLine += ", ";
     }
     fstLine += ") {";
     tempClone.push_back(fstLine);
-    //tempClone.push_back(""); // insert empty line to format
 
     // 2. insert bracket scope in the new method
     for(int i=scope.first; i<=scope.second; i++){
         tempClone.push_back(c1.cloneSnippet.at(i));    
-    }
-    
-    //tempClone.push_back("");
+    }    
+    // 2-2 insert return statement to pass effected seVarSet
+    int retTabIdx = c1.cloneSnippet.at(scope.second).find_first_not_of(" \t\r\n");
+    string retTabStr = c1.cloneSnippet.at(scope.second).substr(0, retTabIdx);
+    string seVarSetRet = retTabStr + "return " + seVarSet.front().second + ";";
+    tempClone.push_back(seVarSetRet);
     tempClone.push_back(tabStr + "}");
 
-    //print_code(tempClone);
+    cout << "Patching clone..." << endl;
+    cout << "Extracted method from clone part : " << newFtnName << "()" << endl << endl;
+    print_code(tempClone);
 
     // 3. replace clone part with new function call
-    bool inserted = false;
+    bool inserted1 = false;
     for(int i=0; i<c1.cloneSnippet.size(); i++){
-        if(i >= scope.first && i <= scope.second && !inserted){
+        if(i >= scope.first && i <= scope.second && !inserted1){
             int tabIdxIn = c1.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
             string tabStrIn = c1.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
-            string newFtnCall = tabStrIn + newFtnName + "(";
-            for(int i=0; i<emArgs.size(); i++){
-                newFtnCall += emArgs.at(i).second;
-                if (i<emArgs.size()-1) newFtnCall += ", ";
+            // TODO: seVarSet.front().second --> should be refactored.
+            // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+            string newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            for(int i=0; i<varSet.size(); i++){
+                newFtnCall += varSet.at(i).second;
+                if (i<varSet.size()-1) newFtnCall += ", ";
             }
             newFtnCall += ");";
             orgClone1.push_back(newFtnCall);
-            inserted = true;
+            inserted1 = true;
         }
         else if (i < scope.first || i > scope.second) orgClone1.push_back(c1.cloneSnippet.at(i));
     }
 
+    cout << endl << "========================================" << endl;
+    cout << "Patching clone..." << endl;
+    cout << "Clone part 1 patched with ftn call." << endl << endl;
     print_code(orgClone1);
 
-
-    // 3. insert flag at the ftn decl.
-    // use FtnType to not get new function name & arg name
-    /* string ftnDecl = tabStr;
-    for(int i=0; i<f1.keywords.size(); i++){
-        ftnDecl += (f1.keywords[i] + " ");
-    }
-
-    ftnDecl += (f1.returnType + " " + newFtnName + "(");
-    for(int i=0; i<f1.ftnArgs.size(); i++){
-        ftnDecl += f1.ftnArgs[i].first;
-        ftnDecl += " ";
-        ftnDecl += f1.ftnArgs[i].second;
-        ftnDecl += ", ";
-    }
-    ftnDecl += "int flag) {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
-    tempClone.push_back(ftnDecl);
-
-    // check for adjacent clone lines;
-    bool adjacent = false;
-    vector<string> cloneDummy1; 
-    vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
-    string ifOpen;
-
-    for(int i=1; i<c1.cloneSize; i++){
-        if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
-        else {
-            tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
-            tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
-
-            if(!adjacent){
-            // 처음 중복 라인 찾아서 브랜치 나누는 경우
-                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
-                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
-                    cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
-                    cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);
-                    ifOpen = tabStr;
-                    adjacent = true;
-                } else {
-                    tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
-                    tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
-                }
-
-            } else {
-            // 이미 인접한 중복 라인을 찾아서 브랜치 나누는 경우(parenthesis 안에 존재)
-                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
-                // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);                    
-                } else {
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy1.push_back(ifOpen + "}");
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);
-                    cloneDummy2.push_back(ifOpen + "}");
-
-                    // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
-                    tempClone.insert(tempClone.end(), cloneDummy1.begin(), cloneDummy1.end());
-                    tempClone.insert(tempClone.end(), cloneDummy2.begin(), cloneDummy2.end());
-
-                    cloneDummy1.clear();
-                    cloneDummy2.clear();      
-                    adjacent = false;              
-                }
+    // 3. replace clone part with new function call
+    bool inserted2 = false;
+    for(int i=0; i<c2.cloneSnippet.size(); i++){
+        if(i >= scope.first && i <= scope.second && !inserted2){
+            int tabIdxIn = c2.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
+            string tabStrIn = c2.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
+            // TODO: seVarSet.front().second --> should be refactored.
+            // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+            string newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            for(int i=0; i<varSet.size(); i++){
+                newFtnCall += varSet.at(i).second;
+                if (i<varSet.size()-1) newFtnCall += ", ";
             }
+            newFtnCall += ");";
+            orgClone2.push_back(newFtnCall);
+            inserted2 = true;
         }
+        else if (i < scope.first || i > scope.second) orgClone2.push_back(c2.cloneSnippet.at(i));
     }
 
-    ifstream pfile(c1.fileName.c_str());
-    string line;
-
-    int lineCnt = 1; // line counter
-    while(getline(pfile, line)) {
-        //if (lineCnt >= c1.from && lineCnt <= c1.to) continue;
-        //if (lineCnt >= c2.from && lineCnt <= c2.to) continue;
-        //cout << line << endl;
-        if(lineCnt == c1.from) patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
-        if(lineCnt == c2.to + 1) {
-            if(only_spaces(line)) { lineCnt++; continue; }
-        }
-        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
-        
-        lineCnt++;
-    }
-
-    cout << "Patching clones ...\n";
-    cout << "(This will be replaced with actual file write operations)\n";
-    afterPatchLoc = patchCode.size();
-    print_code(tempClone); */
-    //print_code(patchCode); // TODO: need to replace this with file write operations
-
+    cout << endl << "========================================" << endl;
+    cout << "Patching clone..." << endl;
+    cout << "Clone part 2 patched with ftn call." << endl << endl;
+    print_code(orgClone2);
 
 }
-
-/* void patch_code(string fileName){
-
-    ifstream pfile(fileName.c_str());
-    string line;
-    int classLine; // line number of class declaration
-    int lineCnt = 0; // line counter
-    string ftnDef, ftnCls, ftnCall; // patch function code definition line & closure line
-    ftnCall = "      " + get_clone_ftn_name() + ";";
-
-    while(getline(pfile, line)) {
-        lineCnt++;
-
-        if (contains(line, "public") && contains(line, "class")) {
-            patchCode.push_back(line);
-            istringstream iss(line);
-            string a, b;
-            iss >> a >> b;
-            if (!a.compare("public") && !b.compare("class")) {
-                ftnDef = "    public void " + get_clone_ftn_name() + " {";
-                ftnCls = "    }";
-                patchCode.push_back("");
-                patchCode.push_back(ftnDef);
-                patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
-                patchCode.push_back(ftnCls);
-                classLine = lineCnt;
-            }
-        } else {
-
-            if ((lineCnt >= cloneDatas.front().from && lineCnt < cloneDatas.front().to) 
-               || (lineCnt >= cloneDatas.back().from && lineCnt < cloneDatas.back().to)) continue;
-            else if (lineCnt == cloneDatas.front().to || lineCnt == cloneDatas.back().to) patchCode.push_back(ftnCall);
-            else patchCode.push_back(line);
-
-        }
-
-    }
-    cloneFtnNum++;
-
-} */
 
 
 
@@ -894,15 +807,12 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     
     string newFtnName = f1.ftnName + f2.ftnName;
     // 1. substitute caller function name with new one.
-
     for(int i=0; i<c1.callers.size(); i++){
         patch_callers(c1.callers[i], newFtnName, 0);
     }
-
     for(int i=0; i<c2.callers.size(); i++){
         patch_callers(c2.callers[i], newFtnName, 1);
     }
-    
 
     vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back(), f1, f2); // TODO: refactor this?
     if(diffLine.empty()) {
@@ -914,7 +824,6 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     // use diffLine to get the diff lines
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
-
 
     // 3. insert flag at the ftn decl.
     // use FtnType to not get new function name & arg name
@@ -989,9 +898,6 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
 
     int lineCnt = 1; // line counter
     while(getline(pfile, line)) {
-        //if (lineCnt >= c1.from && lineCnt <= c1.to) continue;
-        //if (lineCnt >= c2.from && lineCnt <= c2.to) continue;
-        //cout << line << endl;
         if(lineCnt == c1.from) patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
         if(lineCnt == c2.to + 1) {
             if(only_spaces(line)) { lineCnt++; continue; }
@@ -1008,7 +914,6 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     //print_code(patchCode); // TODO: need to replace this with file write operations
 
 }
-
 
 
 
@@ -1036,9 +941,6 @@ void em_type1(){
     parse_ftype(ndVec1, f1);
     parse_ftype(ndVec2, f2);
 
-    //print_ftn_type(f1);
-    //print_ftn_type(f2);
-
     pair<int, int> p = get_common_part(c1, c2, f1, f2);
     tempCodeLine = p.second - p.first + 1;
     
@@ -1050,16 +952,20 @@ void em_type1(){
     parse_class_member_vars(c1.fileName);
 
     // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
+    vector< pair<string, string> > varSet = get_var_set(c1, c2, f1, f2, p);
 
-    vector< pair<string, string> > emArgs = get_em_args(c1, c2, f1, f2, p);
+    pair<int, int> scopeUp;
+    scopeUp.first = p.second+1;
+    scopeUp.second = c1.cloneSnippet.size();
+    vector< pair<string, string> > seVarSet = get_se_var_set(c1, c2, f1, f2, scopeUp, varSet);
 
-    /* cout << "\nEM args size : " << emArgs.size() << endl;
-    for(int i=0; i<emArgs.size(); i++){
-        cout << emArgs.at(i).first << " " << emArgs.at(i).second << endl;
-    } */
+    if(seVarSet.size()>1){
+        cerr << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
+        return;
+    }
 
     // b. 뽑은 인자 사용해서 함수 정의부 만들고 중복부분 함수 호출 대치
-    patch_code(c1.fileName, c1, c2, f1, f2, p, emArgs);
+    patch_code(c1.fileName, c1, c2, f1, f2, p, varSet, seVarSet);
 
     // TODO: refactor below instruction
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
@@ -1098,7 +1004,6 @@ void em_type2(){
     // 1-3. 비교해서 다른 토큰 각각 짚기
     // 1-4. 다른 토큰이 L-value인 경우 알고리즘 종료(찾는 방법은 nodeID를 보고)
     // 1-5. R-value인 경우 정상.
-
     // 2. caller 패칭하기.
 
 }
@@ -1116,8 +1021,6 @@ void refactor(clone_type ct){
     }
     
 }
-
-
 
 
 
