@@ -60,6 +60,17 @@ typedef struct{
   int depth;    // depth of tree. same if siblings
 }NodeData;
 
+typedef struct{
+    vector<string> keywords;
+    string returnType;
+    vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
+    string ftnName;
+    bool thrwExtn;
+    int lineNum;
+    int bopenLine;
+}FtnType;
+
+void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype);
 bool has_node_id(vector<NodeData> &ndVec, int idx, int id);
 bool is_lvalue_node(vector<NodeData> &ndVec, int idx);
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);

@@ -54,14 +54,6 @@ typedef struct{
     int lineNum;
 }ClassType;
 
-typedef struct{
-    vector<string> keywords;
-    string returnType;
-    vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
-    string ftnName;
-    int lineNum;
-}FtnType;
-
 typedef enum {
     T1,
     T2

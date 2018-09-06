@@ -70,6 +70,16 @@ typedef struct{
   int depth;    // depth of tree. same if siblings
 }NodeData;
 
+typedef struct{
+    vector<string> keywords;
+    string returnType;
+    vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
+    string ftnName;
+    bool thrwExtn;
+    int lineNum;
+    int bopenLine;
+}FtnType;
+
 bool has_node_id(vector<NodeData> &ndVec, int idx, int id){
 
   // 1. get gap between index
@@ -104,6 +114,92 @@ void print_node_vector(vector<NodeData> &ndVec){
     }
 
   }
+
+}
+
+void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
+  // NOTE : must pass ndVec of specific function
+
+  bool kwdFound = false;
+  bool kwdFoundEnd = false;
+  bool retTypFound = false;
+  bool ftnNamFound = false;
+  bool argOpen = false;
+  bool argTfound = false;
+  bool argNfound = false;
+  bool thrwFound = false;
+
+  vector<string> tokVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).isTerminal) tokVec.push_back(ndVec.at(i).label);
+    if(ndVec.at(i).nodeId == 123 || ndVec.at(i).nodeId == 187 || ndVec.at(i).nodeId == 37) tokVec.push_back("|");
+    if(ndVec.at(i).isTerminal && ndVec.at(i).label=="{") break;
+  }
+
+  for(int i=0; i<tokVec.size(); i++){
+    cout << tokVec.at(i) << endl;
+  }
+
+  /* for(int i=0; i<ndVec.size()-4; i++){
+    string argT, argN;
+
+    if(!kwdFound && !kwdFoundEnd && ndVec.at(i).isTerminal) {
+      if(ndVec.at(i).label != "public" && ndVec.at(i).label != "private" && ndVec.at(i).label != "protected"){
+        cerr << "Error : cannot parse ndVec of \"" << ndVec.at(i).label << "\"" << endl;
+        return;
+      } else {
+        ftype.keywords.push_back(ndVec.at(i).label);
+        kwdFound = true;
+      }
+    } else if(kwdFound && !kwdFoundEnd && ndVec.at(i).isTerminal) {
+      ftype.keywords.push_back(ndVec.at(i).label);
+    } else if(kwdFound && !kwdFoundEnd && !ndVec.at(i).isTerminal) {
+      if(ndVec.at(i).nodeId == 123) kwdFoundEnd = true;
+    } else if(kwdFoundEnd && !retTypFound && ndVec.at(i).isTerminal) {
+      ftype.returnType += ndVec.at(i).label;
+    } else if(kwdFoundEnd && !retTypFound && !ndVec.at(i).isTerminal) {
+      if(ndVec.at(i).nodeId == 187) retTypFound = true;
+    } else if(retTypFound && !ftnNamFound && ndVec.at(i).isTerminal) {
+      ftype.ftnName = ndVec.at(i).label;
+      ftnNamFound = true;
+    } else if(ftnNamFound && ndVec.at(i).isTerminal) {
+      if(ndVec.at(i).label == "(") argOpen = true;
+    } else if(argOpen && !argTfound && !ndVec.at(i).isTerminal) {
+      if(ndVec.at(i).nodeId == 123) argTfound = true;
+    } else if(argOpen && argTfound && !argNfound && ndVec.at(i).isTerminal) {
+      cout << "tf!" << endl;
+      argT += ndVec.at(i).label;
+      cout << ndVec.at(i).label << endl;
+      if (ndVec.at(i+1).nodeId == 37 && ndVec.at(i+2).nodeId == 39) {
+        argTfound = false;
+        argNfound = true;
+        argN = ndVec.at(i+3).label;
+        ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
+        if (ndVec.at(i+4).label == ")") { 
+          argOpen = false;
+          i += 5;
+        } else if (ndVec.at(i+4).label == ","){
+          argNfound = false;
+          i += 5;
+        }
+      }
+    } else if(!argOpen && argNfound && !thrwFound && ndVec.at(i).isTerminal) {
+      if (ndVec.at(i).label == "throws") thrwFound = true;
+      else if (ndVec.at(i).label == "{") {
+        ftype.thrwExtn = false;
+        ftype.bopenLine = ndVec.at(i).lineNo;
+        return;
+      }
+    } else if(!argOpen && argNfound && thrwFound && ndVec.at(i).isTerminal) {
+      if (ndVec.at(i).label == "Exception") ftype.thrwExtn = true;
+    } else if(!argOpen && argNfound && thrwFound && ndVec.at(i).isTerminal && ftype.thrwExtn) {
+      if (ndVec.at(i).label == "{") {
+        ftype.bopenLine = ndVec.at(i).lineNo;
+        return;
+      }
+    }
+  } */
 
 }
 

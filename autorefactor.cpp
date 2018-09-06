@@ -1236,7 +1236,7 @@ void print_class_type(ClassType &c){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " ALARMFILE" << endl;
         return 1;
     }
@@ -1244,12 +1244,17 @@ int main(int argc, char** argv){
     read_file(argv[1]); // 1. reads input data
 
     refactor(T1); // 2. refactor the code according to the clone datas
-    //print_code(tempClone);
+    //print_code(tempClone); */
 
     // test for tree manipulation
-    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
+    string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
     string ftnname = "checkAchieveMission";
-    print2ssFtnSubtree(fname, ftnname); */
+    vector<NodeData> ndVec;
+    getFtnSubtree(fname, ftnname, ndVec);
+    FtnType ftype;
+    parse_ftype(ndVec, ftype);
+    print_ftn_type(ftype);
+    //print_node_vector(ndVec);
     //printss(fname);
     //parse_class_member_vars(fname);
     //print_node_vector(ndvec);
