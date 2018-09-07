@@ -359,6 +359,69 @@ pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, 
 
 }
 
+vector< pair<string, string> > find_prmtv_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+
+  //cout << scope.first << " " << scope.second << endl;
+
+  // find vector scope indices
+  int abv = 0;
+  bool abvChk = false;
+  int blw;
+  for(int i=0; i<ndVec.size(); i++){
+    if(!abvChk && ndVec.at(i).isTerminal && ndVec.at(i).lineNo < scope.first){
+      abv = i + 1;
+    } else if(!abvChk && ndVec.at(i).isTerminal && ndVec.at(i).lineNo >= scope.first){
+      abvChk = true;
+    } 
+  }
+
+  blw = ndVec.size(); // below scope is to the end of the function
+
+  //cout << "scope : " << ndVec.at(abv-1).lineNo << " " << ndVec.at(blw).lineNo << endl;
+
+  if(!abvChk) cerr << "Error : Se Loc var scope not found." << endl;
+
+  vector< pair<string, string> > locVars;
+  bool tfound = false;
+  bool nfound = false;
+  bool isPrmtv = false;
+  int bopen = 0;
+  string varType, varName;
+
+  //print_node_vector(ndVec);
+
+  // find local vars
+  for(int i=abv; i<blw-3; i++){
+    if(ndVec.at(i).nodeId == 23 && ndVec.at(i+1).nodeId == 145 && ndVec.at(i+2).nodeId == 123 && !tfound){
+      if(ndVec.at(i+3).nodeId == 117){
+        // if type is primitive type
+        tfound = isPrmtv = true;
+        nfound = false;
+      } else {
+        tfound = true;
+        nfound = false;
+      }
+    } else if (tfound && isPrmtv && !nfound){
+      if(ndVec.at(i).isTerminal) { 
+        varType = ndVec.at(i).label;
+        //cout << varType;
+        nfound = true;
+        if(ndVec.at(i+1).nodeId == 4 && ndVec.at(i+2).nodeId == 65 && ndVec.at(i+3).nodeId == 37 && ndVec.at(i+4).nodeId == 39){
+          if(ndVec.at(i+5).isTerminal) {
+            varName = ndVec.at(i+5).label;
+            //cout << varName;
+            locVars.push_back(pair<string, string>(varType, varName));
+            tfound = false;
+          }
+        }
+      }
+    } 
+  }
+
+  return locVars;
+
+}
+
 vector< pair<string, string> > find_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
 
   //cout << scope.first << " " << scope.second << endl;

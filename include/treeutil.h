@@ -79,6 +79,7 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
 void getPtree(string &fileName, stringstream &ss);
 vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label);
 pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope);
+vector< pair<string, string> > find_prmtv_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope);
 vector< pair<string, string> > find_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope);
 void print_node_vector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lineNum);

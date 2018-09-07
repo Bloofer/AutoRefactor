@@ -581,7 +581,7 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
 
 }
 
-vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet){
+vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
 // 사이드 이펙트에 영향을 받는 scope 위쪽 함수 변수 셋 모으기
 
     vector< pair<string, string> > seVarSet;
@@ -594,6 +594,31 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
     lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
     lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
+
+    vector< pair<string, string> > varBelowScope1;
+    vector< pair<string, string> > varBelowScope2;
+
+    // 3.1. LOCAL 뽑을 범위 계산하기 (from : 함수 정의부 + 1, to : Scope.front - 1)
+    // 파스 트리 파일 라인 = 실제 파일 라인 - offset
+    int locScopeFrt1 = c1.from + scope.first - lineOffset1;
+    int locScopeRear1 = c1.to - lineOffset1;
+    pair<int, int> locScope1 = pair<int, int>(locScopeFrt1, locScopeRear1);
+    varBelowScope1 = find_prmtv_loc_var_in_scope(ndVec1, locScope1);
+    // varBelowScope is only primitive type
+
+    //print_node_vector(ndVec1);
+    //cout << endl << locScope1.first << "  " << locScope1.second << endl;
+
+    int locScopeFrt2 = c2.from + scope.first - lineOffset2;
+    int locScopeRear2 = c2.to - lineOffset2;
+    pair<int, int> locScope2 = pair<int, int>(locScopeFrt2, locScopeRear2);
+    varBelowScope2 = find_prmtv_loc_var_in_scope(ndVec2, locScope2);
+    // varBelowScope is only primitive type
+
+    if (varBelowScope1.size() == 0 || varBelowScope2.size() == 0) {
+        cout << "No side-effected variables are found. return empty SeVarSet." << endl;
+        return seVarSet;
+    }
 
     // 4. USED : 구간 내 사용된 변수 이름 모으기
     // TODO: refactor this and extract to function
@@ -609,12 +634,14 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     }
     vector< pair<string, string> > seVarSet1;
     for(int i=0; i<usedVars1.size(); i++){
-        int idx = str_sec_vec_exists(varSet, usedVars1.at(i));
+        int idx = str_sec_vec_exists(varBelowScope1, usedVars1.at(i));
         if (idx != -1){
-            seVarSet1.push_back(varSet.at(idx));
+            seVarSet1.push_back(varBelowScope1.at(idx));
         }
     }
     
+    // prune for primitive type vars (to return)
+
     vector<string> usedVars2;
     int brktScopeFrt2 = c2.from + scope.first - lineOffset2;
     int brktScopeRear2 = c2.from + scope.second - lineOffset2;
@@ -627,11 +654,13 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     }
     vector< pair<string, string> > seVarSet2;
     for(int i=0; i<usedVars2.size(); i++){
-        int idx = str_sec_vec_exists(varSet, usedVars2.at(i));
+        int idx = str_sec_vec_exists(varBelowScope2, usedVars2.at(i));
         if (idx != -1){
-            seVarSet2.push_back(varSet.at(idx));
+            seVarSet2.push_back(varBelowScope2.at(idx));
         }
     }
+
+    // prune for primitive type vars (to return)
 
     if(!comp_sp_vec(seVarSet1, seVarSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
@@ -748,8 +777,11 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
     // TODO: seVarSet.front().first --> should be refactored.
-    // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
-    string fstLine = tabStr + "public " + seVarSet.front().first + " " + newFtnName + "(";
+    // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+    string fstLine;
+    if (seVarSet.empty()) fstLine = tabStr + "public void " + newFtnName + "(";
+    else if (seVarSet.size()==1) fstLine = tabStr + "public " + seVarSet.front().first + " " + newFtnName + "(";
+    else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
     for(int i=0; i<varSet.size(); i++){
         fstLine += varSet.at(i).first + " " + varSet.at(i).second;
         if(i<varSet.size()-1) fstLine += ", ";
@@ -764,7 +796,12 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     // 2-2 insert return statement to pass effected seVarSet
     int retTabIdx = c1.cloneSnippet.at(scope.second).find_first_not_of(" \t\r\n");
     string retTabStr = c1.cloneSnippet.at(scope.second).substr(0, retTabIdx);
-    string seVarSetRet = retTabStr + "return " + seVarSet.front().second + ";";
+    // TODO: seVarSet --> should be refactored.
+    // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+    string seVarSetRet;
+    if (seVarSet.empty()) { // if empty. skip this stage. (inserting return statement)
+    } else if (seVarSet.size()==1) seVarSetRet = retTabStr + "return " + seVarSet.front().second + ";";
+    else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
     tempClone.push_back(seVarSetRet);
     tempClone.push_back(tabStr + "}");
 
@@ -781,8 +818,11 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
             int tabIdxIn = c1.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
             string tabStrIn = c1.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
             // TODO: seVarSet.front().second --> should be refactored.
-            // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
-            string newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+            string newFtnCall;
+            if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
+            else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
             for(int i=0; i<varSet.size(); i++){
                 newFtnCall += varSet.at(i).second;
                 if (i<varSet.size()-1) newFtnCall += ", ";
@@ -808,8 +848,11 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
             int tabIdxIn = c2.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
             string tabStrIn = c2.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
             // TODO: seVarSet.front().second --> should be refactored.
-            // this impl only accepts one seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
-            string newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
+            string newFtnCall;
+            if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
+            else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
+            else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
             for(int i=0; i<varSet.size(); i++){
                 newFtnCall += varSet.at(i).second;
                 if (i<varSet.size()-1) newFtnCall += ", ";
@@ -1041,7 +1084,7 @@ void em_type1(){
     pair<int, int> scopeUp;
     scopeUp.first = p.second+1;
     scopeUp.second = c1.cloneSnippet.size();
-    vector< pair<string, string> > seVarSet = get_se_var_set(c1, c2, f1, f2, scopeUp, varSet);
+    vector< pair<string, string> > seVarSet = get_se_var_set(c1, c2, f1, f2, scopeUp);
 
     if(seVarSet.size()>1){
         cerr << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
@@ -1264,13 +1307,14 @@ int main(int argc, char** argv){
     //print_code(tempClone);
 
     // test for tree manipulation
-    /* string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
-    string ftnname = "checkAchieveMission";
-    vector<NodeData> ndVec;
-    getFtnSubtree(fname, ftnname, ndVec);
-    FtnType ftype;
-    parse_ftype(ndVec, ftype);
-    print_ftn_type(ftype); */
+    //string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
+    //string ftnname = "checkAchieveMission";
+    //vector<NodeData> ndVec;
+    //getFtnSubtree(fname, ftnname, ndVec);
+    //print2ssFtnSubtree(fname, ftnname);
+    //FtnType ftype;
+    //parse_ftype(ndVec, ftype);
+    //print_ftn_type(ftype);
     //print_node_vector(ndVec);
     //printss(fname);
     //parse_class_member_vars(fname);
