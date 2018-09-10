@@ -1,0 +1,4 @@
+2
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/5/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageAction.java 237 275
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/5/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageAction.java 277 315
+0

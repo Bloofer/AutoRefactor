@@ -1,0 +1,4 @@
+2
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/3/ePrint.com.fasoo.drmone.usage.struts.HistoryLogAction.java 145 188
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/3/ePrint.com.fasoo.drmone.usage.struts.HistoryLogAction.java 190 233
+0

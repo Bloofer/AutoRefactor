@@ -1,0 +1,8 @@
+1c1
+< 	public ActionForward list( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
+---
+> 	public ActionForward logexport( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
+43c43
+< 		return mapping.findForward( "usage.historylog.historylog_list" );
+---
+> 		return mapping.findForward( "usage.historylog.log_export" );
