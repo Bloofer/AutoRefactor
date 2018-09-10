@@ -80,7 +80,7 @@ typedef struct{
     int bopenLine;
 }FtnType;
 
-bool has_node_id(vector<NodeData> &ndVec, int idx, int id){
+bool hasNodeId(vector<NodeData> &ndVec, int idx, int id){
 
   // 1. get gap between index
   int back = idx-1;
@@ -101,7 +101,7 @@ bool has_node_id(vector<NodeData> &ndVec, int idx, int id){
 
 }
 
-void print_node_vector(vector<NodeData> &ndVec){
+void printNodeVector(vector<NodeData> &ndVec){
 
   for(int i=0; i<ndVec.size(); i++){
 
@@ -117,7 +117,7 @@ void print_node_vector(vector<NodeData> &ndVec){
 
 }
 
-pair<string, string> parse_arg(vector<string> &tokVec){
+pair<string, string> parseArg(vector<string> &tokVec){
 
   string argT, argN;
   argN = tokVec.at(tokVec.size()-1);
@@ -130,7 +130,7 @@ pair<string, string> parse_arg(vector<string> &tokVec){
 
 }
 
-void clear_ftype(FtnType &ftype){
+void clearFtype(FtnType &ftype){
   ftype.bopenLine = 0;
   ftype.ftnArgs.clear();
   ftype.ftnName = "";
@@ -140,10 +140,10 @@ void clear_ftype(FtnType &ftype){
   ftype.thrwExtn = false;
 }
 
-void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
+void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
   // NOTE : must pass ndVec of specific function
 
-  clear_ftype(ftype);
+  clearFtype(ftype);
 
   bool tdeli = false;
   bool ndeli = false;
@@ -195,7 +195,7 @@ void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
       if(tokVec.at(i) == "<") bnum++;
       if(tokVec.at(i) == ">") bnum--;
       if(bnum == 0 && ( tokVec.at(i) == "," || tokVec.at(i) == ")" ) ) {
-        argT = parse_arg(tempArg);
+        argT = parseArg(tempArg);
         ftype.ftnArgs.push_back(argT);
         argT.first = argT.second = "";
         tempArg.clear();
@@ -214,10 +214,10 @@ void parse_ftype(vector<NodeData> &ndVec, FtnType &ftype){
 
 }
 
-bool is_lvalue_node(vector<NodeData> &ndVec, int idx){
+bool isLvalueNode(vector<NodeData> &ndVec, int idx){
 // input : node vector for parsed ftn tree & index for specific node number
 
-  return has_node_id(ndVec, idx, 65) || has_node_id(ndVec, idx, 123);
+  return hasNodeId(ndVec, idx, 65) || hasNodeId(ndVec, idx, 123);
   // 65 : type,  123 : var_decl
 
 }
@@ -276,7 +276,7 @@ int str2int(const char *s)
     return i;
 }
 
-vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string label){
+vector< pair<NodeData, int> > findNodeByLabel(vector<NodeData> &ndVec, string label){
 
   vector< pair<NodeData, int> > outVec;
 
@@ -288,7 +288,7 @@ vector< pair<NodeData, int> > find_node_by_label(vector<NodeData> &ndVec, string
 
 }
 
-pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope){
   // returns vector line pair of the biggest bracket
 
   // 구간 내 터미널 라인 번호 터미널 노드 먼저 짚기
@@ -359,7 +359,7 @@ pair<int, int> find_biggest_bracket_in_scope(vector<NodeData> &ndVec, pair<int, 
 
 }
 
-vector< pair<string, string> > find_prmtv_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+vector< pair<string, string> > findPrmtvLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope){
 
   //cout << scope.first << " " << scope.second << endl;
 
@@ -388,7 +388,7 @@ vector< pair<string, string> > find_prmtv_loc_var_in_scope(vector<NodeData> &ndV
   int bopen = 0;
   string varType, varName;
 
-  //print_node_vector(ndVec);
+  //printNodeVector(ndVec);
 
   // find local vars
   for(int i=abv; i<blw-3; i++){
@@ -422,7 +422,7 @@ vector< pair<string, string> > find_prmtv_loc_var_in_scope(vector<NodeData> &ndV
 
 }
 
-vector< pair<string, string> > find_loc_var_in_scope(vector<NodeData> &ndVec, pair<int, int> &scope){
+vector< pair<string, string> > findLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope){
 
   //cout << scope.first << " " << scope.second << endl;
 
@@ -454,7 +454,7 @@ vector< pair<string, string> > find_loc_var_in_scope(vector<NodeData> &ndVec, pa
   int bopen = 0;
   string varType, varName;
 
-  //print_node_vector(ndVec);
+  //printNodeVector(ndVec);
 
   // find local vars
   for(int i=abv; i<blw-3; i++){
@@ -500,7 +500,7 @@ vector< pair<string, string> > find_loc_var_in_scope(vector<NodeData> &ndVec, pa
 
 }
 
-vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lineNum){
+vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNum){
 
   vector< pair<NodeData, int> > outVec;
 
@@ -512,7 +512,7 @@ vector< pair<NodeData, int> > find_node_by_line(vector<NodeData> &ndVec, int lin
 
 }
 
-int line_parenthesis_check(vector<NodeData> &ndVec, int lineNum){
+int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum){
 
   // checks if specific line has pair of parenthesis
   // will be used for line by line patching

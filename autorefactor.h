@@ -86,54 +86,58 @@ vector<string> orgClone1; // T1 : clone method1 (patched clone with ftn call)
 vector<string> orgClone2; // T1 : clone method2 (patched clone with ftn call)
 vector<string> patchCode; // final result of the patched source code
 int tempCodeLine;
-string cloneFtnName = "cloneFtn";
-int cloneFtnNum = 1;
 
 // logger & variables
 int beforePatchLoc;
 int afterPatchLoc;
 int reducedLoc;
 
-void read_file(char* alarmFile); // reads input file including clone data
-int get_file_line(string fileName);
+void readFile(char* alarmFile); // reads input file including clone data
+int getFileLine(string fileName);
 void refactor(clone_type ct); // the main function for auto refactor
 
 // method extraction for 4 types of code clones
-void em_type1();
+void patchT1();
 void em_type2();
 
 // string utility functions
-bool are_same(string s1, string s2);
-bool only_spaces(string str);
-bool contains(string str, string word);
-int min_pos(int a, int b);
-string int_to_str(int n);
-int str_to_int(const char *s);
+bool strAreSame(string s1, string s2);
+bool strOnlySpaces(string str);
+string int2str(int n);
+int intMin(int a, int b);
+bool intVecContains(vector<int> &iv, int i);
+bool strVecExists(vector<string> &sv, string s);
+int ssPairVecSndExists(vector< pair<string, string> > &sv, string s);
+bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, string> > &sv2);
 
 // communal functions for all types
-void parse_ftn_type(string s, FtnType &ftype);
-void patch_callers(Caller c, string newFname, int flag);
-int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from);
-vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
-void parse_class_member_vars(string fileName);
+void parseFtnType(string s, FtnType &ftype);
+void patchCaller(Caller c, string newFname, int flag);
+int getLineOffset(vector<NodeData> &ndVec, string &ftnName, int from);
+void parseClassMemVars(string fileName);
+bool compFtype(FtnType &f1, FtnType &f2);
+clone_type getCloneType();
+void reportResult();
 
 // functions for type 1 (extract method)
-pair<int, int> get_common_part();
-void trim_code(int p, int q);
-vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope);
-void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
+pair<int, int> getCommonPart();
+vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope);
+vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope);
+void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
 
 // functions for type 2 (merge method)
-vector<int> get_diff(CloneData &c1, CloneData &c2);
-bool int_vec_contains(vector<int> &iv, int i);
-void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
+void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
+
+// clone patch main functions (for T1 & T2)
+void patchT1();
+void patchT2();
 
 // test functions
-void test_print(); // test printer for check cloneDatas
-void print_code(vector<string> code);
-void test_diff();
-void print_ftn_type(FtnType &f);
-void print_arg_calls(CloneData &cd);
-void print_caller(CloneData &cd);
-void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnTypeDef);
-void print_class_type(ClassType &c);
+void testPrintCloneData(); // test printer for check cloneDatas
+void testPrintCaller(CloneData &cd);
+void testPrintCode(vector<string> code);
+void testPrintFtnType(FtnType &f);
+void testPrintArgCalls(CloneData &cd);
+void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnTypeDef);
+void testPrintClassType(ClassType &c);

@@ -7,7 +7,7 @@
  */
 
 // maybe replace with merging the code to refactor_guide?
-void read_file(char* alarmFile){
+void readFile(char* alarmFile){
 
     ifstream cfile(alarmFile);
     cfile >> n;
@@ -57,7 +57,7 @@ void read_file(char* alarmFile){
 
 }
 
-int get_file_line(string fileName){
+int getFileLine(string fileName){
 
     int cnt = 0;
     ifstream iFile(fileName.c_str());
@@ -72,16 +72,17 @@ int get_file_line(string fileName){
 }
 
 
+
 /*
  * ====================================================
  * ============ STRING UTILITY FUNCTIONS ==============
  * ====================================================
  */
 
-bool are_same(string s1, string s2){
+bool strAreSame(string s1, string s2){
 
-    if(only_spaces(s1) && only_spaces(s2)) return true;
-    else if(only_spaces(s1) || only_spaces(s2)) return false;
+    if(strOnlySpaces(s1) && strOnlySpaces(s2)) return true;
+    else if(strOnlySpaces(s1) || strOnlySpaces(s2)) return false;
 
     dtl::Diff< char, string > strDiff(s1, s2);
     strDiff.compose();
@@ -89,54 +90,36 @@ bool are_same(string s1, string s2){
 
 }
 
-bool only_spaces(string str){
+bool strOnlySpaces(string str){
     // checks if certain string has only spaces
     // this function is for checking white space in the program code
     if(str.find_first_not_of(" \t\r\n") != std::string::npos) return false;
     else return true;
 }
 
-bool contains(string str, string word){
-    // checks if str contains word
-    return (str.find(word) < str.size() && str.find(word) >= 0);
-
-}
-
-int min_pos(int a, int b){
-    if (a >= 0 && b >= 0) return a < b ? a : b;
-    else return a > b ? a : b;
-}
-
-string int_to_str(int n){
+string int2str(int n){
     ostringstream ss;
     ss << n;
     return ss.str();
 }
 
-int str_to_int(const char *s)
-{
-    int i;
-    i = 0;
-    while(*s >= '0' && *s <= '9')
-    {
-        i = i * 10 + (*s - '0');
-        s++;
-    }
-    return i;
-}
-
-int min_int(int a, int b){
+int intMin(int a, int b){
     return a < b ? a : b;
 }
 
-bool str_vec_exists(vector<string> &sv, string s){
+bool intVecContains(vector<int> &iv, int i){
+// returns true if vector contains the element
+    return ( find(iv.begin(), iv.end(), i) != iv.end() );
+}
+
+bool strVecExists(vector<string> &sv, string s){
     for(int i=0; i<sv.size(); i++){
         if(sv.at(i) == s) return true;
     }
     return false;
 }
 
-int str_sec_vec_exists(vector< pair<string, string> > &sv, string s){
+int ssPairVecSndExists(vector< pair<string, string> > &sv, string s){
     // if found, return index. if not found, return -1
     for(int i=0; i<sv.size(); i++){
         if(sv.at(i).second == s) return i;
@@ -144,7 +127,7 @@ int str_sec_vec_exists(vector< pair<string, string> > &sv, string s){
     return -1;
 }
 
-bool comp_sp_vec(vector< pair<string, string> > &sv1, vector< pair<string, string> > &sv2){
+bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, string> > &sv2){
     // returns true if all elements are true;
     // NOTE: all elements must be sorted in same order
     // TODO : sort before compare?
@@ -166,10 +149,10 @@ bool comp_sp_vec(vector< pair<string, string> > &sv1, vector< pair<string, strin
  * ====================================================
  */
 
-void parse_ftn_type(string s, FtnType &ftype){
+void parseFtnType(string s, FtnType &ftype){
     
     if (s.find(')') == string::npos) { 
-        cerr << "Error : parse_ftn_type() cannot parse \"" << s << "\" without parentheses closure" << endl;
+        cerr << "Error : parseFtnType() cannot parse \"" << s << "\" without parentheses closure" << endl;
         return;
     }
 
@@ -215,8 +198,8 @@ void parse_ftn_type(string s, FtnType &ftype){
         ns = ns.substr(emptyPoint);
         ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
         
-        emptyPoint = min_pos(ns.find(' '), ns.find(','));
-        emptyPoint = min_pos(emptyPoint, ns.find(')'));
+        emptyPoint = intMin(ns.find(' '), ns.find(','));
+        emptyPoint = intMin(emptyPoint, ns.find(')'));
         argPair.second = ns.substr(0, emptyPoint);
         ns = ns.substr(emptyPoint + 1);
 
@@ -237,7 +220,7 @@ void parse_ftn_type(string s, FtnType &ftype){
 
 }
 
-void patch_callers(Caller c, string newFname, int flag){
+void patchCaller(Caller c, string newFname, int flag){
     // function for fetching caller datas
     // using data from the alarm file which are parsed from DOT file
 
@@ -274,7 +257,7 @@ void patch_callers(Caller c, string newFname, int flag){
     }
     
     string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
-    string strRear = int_to_str(flag) + ")" + patchLine.substr(ftnRear + 1);
+    string strRear = int2str(flag) + ")" + patchLine.substr(ftnRear + 1);
 
     patchLine = strFront;
     for(int i=0; i<c.argNum; i++){
@@ -285,15 +268,15 @@ void patch_callers(Caller c, string newFname, int flag){
 
     cout << "Patching callers ...\n";
     cout << "(This will be replaced with actual file write operations)\n";
-    print_code(tempCode); // TODO: need to replace this with file write operations
+    testPrintCode(tempCode); // TODO: need to replace this with file write operations
 
 } 
 
-int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from){
+int getLineOffset(vector<NodeData> &ndVec, string &ftnName, int from){
 
     int lineOffset;
 
-    vector< pair<NodeData, int> > tempVec = find_node_by_label(ndVec, ftnName);
+    vector< pair<NodeData, int> > tempVec = findNodeByLabel(ndVec, ftnName);
     bool found = false;
     for(int i=0; i<tempVec.size(); i++){
         if(tempVec.at(i).second > 1){
@@ -308,110 +291,7 @@ int get_line_offset(vector<NodeData> &ndVec, string &ftnName, int from){
 
 }
 
-vector<int> get_diff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
-    // function for getting diff part of two clone datas
-    vector<int> diffLine;
-
-    // 1. compare two clone datas (function-wise)
-    vector<string>::iterator it1 = c1.cloneSnippet.begin();
-    vector<string>::iterator it2 = c2.cloneSnippet.begin();
-    int idx = 0;
-
-    // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
-    for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
-        if (!are_same((*it1), (*it2)) && idx != 0) diffLine.push_back(idx);
-        idx++;
-    }
-
-    // <diff 알고리즘>
-    // 1-1. 일단 syntatic하게 라인별로 비교
-    // 1-2. 불일치 라인 트리 벡터로 찾아가 토큰 하나씩 비교
-    
-    // 1-2-a. 트리 벡터 이용시 사용할 라인 넘버 위한 라인 오프셋 계산.
-    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
-                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
-    vector<NodeData> ndVec1;
-    vector<NodeData> ndVec2;
-    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
-    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
-    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
-
-    // 1-2-b. 불일치 라인 트리 벡터로 토큰 비교.
-    bool hasLvalue = false;
-
-    // 1-3. 비교해서 다른 토큰 각각 짚기
-    // 1-4. 다른 토큰이 L-value인 경우 알고리즘 종료(찾는 방법은 nodeID를 보고)
-    for(int i=0; i<diffLine.size(); i++){
-
-        vector< pair<NodeData, int> > tmpVec1 = find_node_by_line(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
-        vector< pair<NodeData, int> > tmpVec2 = find_node_by_line(ndVec2, c2.from+diffLine.at(i)-lineOffset2);
-        //cout << tmpVec1.size() << " " << tmpVec2.size() << endl;
-        //cout << diffLine.at(i) << endl;
-
-        // get same token (to except from diff token compare)
-        vector<int> tokSame1;
-        vector<int> tokSame2;
-        for(int j=0; j<tmpVec1.size() || j<tmpVec2.size(); j++){
-            if(tmpVec1.at(j).first.label == tmpVec2.at(j).first.label) {
-                tokSame1.push_back(j);
-                tokSame2.push_back(j);
-            }
-        }
-        //cout << tokSame1.size() << tokSame2.size() << endl;
-
-        vector<int> emptyVec;
-        // Diff line Lvalue check part
-        for(int j=0; j<tmpVec1.size(); j++){
-            if(int_vec_contains(tokSame1, j)) continue;
-            if(is_lvalue_node(ndVec1, tmpVec1.at(j).second)) {
-                cerr << "Error : lvalue found on vec1 diff line. merge should be aborted." << endl;
-                hasLvalue |= is_lvalue_node(ndVec1, tmpVec1.at(j).second);
-            }
-        }
-        for(int j=0; j<tmpVec2.size(); j++){
-            if(int_vec_contains(tokSame2, j)) continue;
-            if(is_lvalue_node(ndVec2, tmpVec2.at(j).second)) {
-                 cerr << "Error : lvalue found on vec2 diff line. merge should be aborted." << endl;
-                 hasLvalue |= is_lvalue_node(ndVec2, tmpVec2.at(j).second);
-            }
-        }
-        if(hasLvalue) return emptyVec;
-
-    }
-
-    vector<int> tmpIntVec;
-
-    for(int i=0; i<diffLine.size(); i++){
-        if(line_parenthesis_check(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == 1 && line_parenthesis_check(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == 1){
-            if(i<diffLine.size()-1 && diffLine.at(i+1) != diffLine.at(i)+1) continue;
-            else{
-                //tmpIntVec.push_back(diffLine.at(i)-1);
-                //cout << diffLine.at(i) << endl;
-                diffLine.insert(diffLine.begin()+i+1, diffLine.at(i)+1);
-                i++;
-            }
-        }
-        else if(line_parenthesis_check(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == -1 && line_parenthesis_check(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == -1){
-            if(i>0 && diffLine.at(i-1) != diffLine.at(i)-1) continue;
-            else{
-                //tmpIntVec.push_back(diffLine.at(i)+1);
-                //cout << "-1" << endl;
-                diffLine.insert(diffLine.begin()+i, diffLine.at(i)-1);
-                i++;
-            }
-        }
-    }
-
-    // 구현시 주의사항
-    // * 라인 오프셋 주의하여 인자 전달
-    // * 알고리즘 종료조건 함수 반환시 전달하여 정상 종료 될 수 있게.
-
-    // return the vector
-    return diffLine;
-}
-
-void parse_class_member_vars(string fileName){
+void parseClassMemVars(string fileName){
 // parse import class vars and class member vars
 
     vector<NodeData> ndVec;
@@ -467,7 +347,7 @@ void parse_class_member_vars(string fileName){
 
 }
 
-bool compare_ftype(FtnType &f1, FtnType &f2){
+bool compFtype(FtnType &f1, FtnType &f2){
 
     if(f1.ftnArgs.size() != f1.ftnArgs.size()) return false;
 
@@ -480,7 +360,7 @@ bool compare_ftype(FtnType &f1, FtnType &f2){
 
 }
 
-clone_type get_clone_type(){
+clone_type getCloneType(){
 
     CloneData c1, c2;
     c1 = cloneDatas.front();
@@ -489,19 +369,19 @@ clone_type get_clone_type(){
     FtnType f1, f2;
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
-    parse_ftn_type(c1.cloneSnippet.front(), f1);
-    parse_ftn_type(c2.cloneSnippet.front(), f2);
+    parseFtnType(c1.cloneSnippet.front(), f1);
+    parseFtnType(c2.cloneSnippet.front(), f2);
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    //parse_ftype(ndVec1, f1);
-    //parse_ftype(ndVec2, f2);
+    //parseFtype(ndVec1, f1);
+    //parseFtype(ndVec2, f2);
 
-    if (compare_ftype(f1, f2)) return T2;
+    if (compFtype(f1, f2)) return T2;
     else return T1;
 
 }
 
-void report_result(){
+void reportResult(){
 
     cout << "\n======= Reporting Results =======" << endl;
     cout << "Original Loc : " << beforePatchLoc << endl;
@@ -512,14 +392,15 @@ void report_result(){
 
 }
 
+
+
 /*
  * ====================================================
  * ======= FUNCTIONS FOR TYPE 1(EXTRACT METHOD) =======
  * ====================================================
  */
 
-
-pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
 
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
     // 1.1. 일단 syntatic하게 비교해서 아예 같은 구간 먼저 찾아내기.
@@ -537,7 +418,7 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
 
     // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
     for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
-        if (!are_same((*it1), (*it2)) && idx != 0) diffInt.push_back(idx);
+        if (!strAreSame((*it1), (*it2)) && idx != 0) diffInt.push_back(idx);
         ///cout << (*it1) << endl << (*it2) << endl;
         idx++;
     }
@@ -548,11 +429,11 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
-    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
+    lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
 
-    vector< pair<NodeData, int> > returnVec1 = find_node_by_label(ndVec1, "return");
-    vector< pair<NodeData, int> > returnVec2 = find_node_by_label(ndVec2, "return");
+    vector< pair<NodeData, int> > returnVec1 = findNodeByLabel(ndVec1, "return");
+    vector< pair<NodeData, int> > returnVec2 = findNodeByLabel(ndVec2, "return");
     
     int diffFrontRet1 = returnVec1.front().first.lineNo + lineOffset1 - c1.from;
     int diffFrontRet2 = returnVec2.front().first.lineNo + lineOffset2 - c1.from;
@@ -562,12 +443,12 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
 
     int frt, rear;
     frt = diffInt.back();
-    rear = min_int(diffFrontRet1, diffFrontRet2) - 1;
+    rear = intMin(diffFrontRet1, diffFrontRet2) - 1;
 
     pair<int, int> tmpPair1 = pair<int, int>(frt + c1.from - lineOffset1, rear + c1.from - lineOffset1);
     pair<int, int> tmpPair2 = pair<int, int>(frt + c2.from - lineOffset2, rear + c2.from - lineOffset2);
-    pair<int, int> scp1 = find_biggest_bracket_in_scope(ndVec1, tmpPair1);
-    pair<int, int> scp2 = find_biggest_bracket_in_scope(ndVec2, tmpPair2);
+    pair<int, int> scp1 = findBiggestBracketInScope(ndVec1, tmpPair1);
+    pair<int, int> scp2 = findBiggestBracketInScope(ndVec2, tmpPair2);
     if (scp1.first == 0 && scp1.second == 0) return pair<int, int>(0, 0);
     if (scp2.first == 0 && scp2.second == 0) return pair<int, int>(0, 0);
     // if there is no bracket in the scope
@@ -581,7 +462,7 @@ pair<int, int> get_common_part(CloneData &c1, CloneData &c2, FtnType &f1, FtnTyp
 
 }
 
-vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
 // 사이드 이펙트에 영향을 받는 scope 위쪽 함수 변수 셋 모으기
 
     vector< pair<string, string> > seVarSet;
@@ -592,8 +473,8 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
-    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
+    lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
 
     vector< pair<string, string> > varBelowScope1;
     vector< pair<string, string> > varBelowScope2;
@@ -603,16 +484,16 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     int locScopeFrt1 = c1.from + scope.first - lineOffset1;
     int locScopeRear1 = c1.to - lineOffset1;
     pair<int, int> locScope1 = pair<int, int>(locScopeFrt1, locScopeRear1);
-    varBelowScope1 = find_prmtv_loc_var_in_scope(ndVec1, locScope1);
+    varBelowScope1 = findPrmtvLocVarInScope(ndVec1, locScope1);
     // varBelowScope is only primitive type
 
-    //print_node_vector(ndVec1);
+    //printNodeVector(ndVec1);
     //cout << endl << locScope1.first << "  " << locScope1.second << endl;
 
     int locScopeFrt2 = c2.from + scope.first - lineOffset2;
     int locScopeRear2 = c2.to - lineOffset2;
     pair<int, int> locScope2 = pair<int, int>(locScopeFrt2, locScopeRear2);
-    varBelowScope2 = find_prmtv_loc_var_in_scope(ndVec2, locScope2);
+    varBelowScope2 = findPrmtvLocVarInScope(ndVec2, locScope2);
     // varBelowScope is only primitive type
 
     if (varBelowScope1.size() == 0 || varBelowScope2.size() == 0) {
@@ -628,13 +509,13 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     for(int i=0; i<ndVec1.size(); i++){
         if(ndVec1.at(i).nodeId == 39){
             if(i>5 && ndVec1.at(i-1).label != "." && ndVec1.at(i-5).nodeId != 123 && ndVec1.at(i+1).label != "Exception" 
-                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)
+                && ndVec1.at(i+1).isTerminal && !strVecExists(usedVars1, ndVec1.at(i+1).label)
                 && ndVec1.at(i+1).lineNo >= brktScopeFrt1 && ndVec1.at(i+1).lineNo <= brktScopeRear1 ) usedVars1.push_back(ndVec1.at(i+1).label);
         }
     }
     vector< pair<string, string> > seVarSet1;
     for(int i=0; i<usedVars1.size(); i++){
-        int idx = str_sec_vec_exists(varBelowScope1, usedVars1.at(i));
+        int idx = ssPairVecSndExists(varBelowScope1, usedVars1.at(i));
         if (idx != -1){
             seVarSet1.push_back(varBelowScope1.at(idx));
         }
@@ -648,13 +529,13 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
     for(int i=0; i<ndVec2.size(); i++){
         if(ndVec2.at(i).nodeId == 39){
             if(i>5 && ndVec2.at(i-1).label != "." && ndVec2.at(i-5).nodeId != 123 && ndVec2.at(i+1).label != "Exception" 
-                && ndVec2.at(i+1).isTerminal && !str_vec_exists(usedVars2, ndVec2.at(i+1).label)
+                && ndVec2.at(i+1).isTerminal && !strVecExists(usedVars2, ndVec2.at(i+1).label)
                 && ndVec2.at(i+1).lineNo >= brktScopeFrt2 && ndVec2.at(i+1).lineNo <= brktScopeRear2 ) usedVars2.push_back(ndVec2.at(i+1).label);
         }
     }
     vector< pair<string, string> > seVarSet2;
     for(int i=0; i<usedVars2.size(); i++){
-        int idx = str_sec_vec_exists(varBelowScope2, usedVars2.at(i));
+        int idx = ssPairVecSndExists(varBelowScope2, usedVars2.at(i));
         if (idx != -1){
             seVarSet2.push_back(varBelowScope2.at(idx));
         }
@@ -662,7 +543,7 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
 
     // prune for primitive type vars (to return)
 
-    if(!comp_sp_vec(seVarSet1, seVarSet2)) {
+    if(!cmpSsPairVec(seVarSet1, seVarSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
         return seVarSet;
     }
@@ -674,7 +555,7 @@ vector< pair<string, string> > get_se_var_set(CloneData &c1, CloneData &c2, FtnT
 
 }
 
-vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
 
     vector< pair<string, string> > varSet;
 
@@ -684,8 +565,8 @@ vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    lineOffset1 = get_line_offset(ndVec1, f1.ftnName, c1.from);
-    lineOffset2 = get_line_offset(ndVec2, f2.ftnName, c2.from);
+    lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
 
     // 1. EXTERN & CLASS_MEMBER : 다른 함수에서 모은 import 객체, 클래스 멤버 변수
     // 2. FTN_ARG : 각 함수의 인자로 정의된 변수 모으기
@@ -699,12 +580,12 @@ vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType
     int locScopeFrt1 = c1.from + 1 - lineOffset1;
     int locScopeRear1 = c1.from + scope.first - 1 - lineOffset1;
     pair<int, int> locScope1 = pair<int, int>(locScopeFrt1, locScopeRear1);
-    varAboveScope1 = find_loc_var_in_scope(ndVec1, locScope1);
+    varAboveScope1 = findLocVarInScope(ndVec1, locScope1);
 
     int locScopeFrt2 = c2.from + 1 - lineOffset2;
     int locScopeRear2 = c2.from + scope.first - 1 - lineOffset2;
     pair<int, int> locScope2 = pair<int, int>(locScopeFrt2, locScopeRear2);
-    varAboveScope2 = find_loc_var_in_scope(ndVec2, locScope2);
+    varAboveScope2 = findLocVarInScope(ndVec2, locScope2);
 
     // 3.2 merge ftn arg with local var above scope
     varAboveScope1.insert(varAboveScope1.end(), f1.ftnArgs.begin(), f1.ftnArgs.end());
@@ -718,13 +599,13 @@ vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType
     for(int i=0; i<ndVec1.size(); i++){
         if(ndVec1.at(i).nodeId == 39){
             if(i>5 && ndVec1.at(i-1).label != "." && ndVec1.at(i-5).nodeId != 123 && ndVec1.at(i+1).label != "Exception" 
-                && ndVec1.at(i+1).isTerminal && !str_vec_exists(usedVars1, ndVec1.at(i+1).label)
+                && ndVec1.at(i+1).isTerminal && !strVecExists(usedVars1, ndVec1.at(i+1).label)
                 && ndVec1.at(i+1).lineNo >= brktScopeFrt1 && ndVec1.at(i+1).lineNo <= brktScopeRear1 ) usedVars1.push_back(ndVec1.at(i+1).label);
         }
     }
     vector< pair<string, string> > varSet1;
     for(int i=0; i<usedVars1.size(); i++){
-        int idx = str_sec_vec_exists(varAboveScope1, usedVars1.at(i));
+        int idx = ssPairVecSndExists(varAboveScope1, usedVars1.at(i));
         if (idx != -1){
             varSet1.push_back(varAboveScope1.at(idx));
         }
@@ -736,19 +617,19 @@ vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType
     for(int i=0; i<ndVec2.size(); i++){
         if(ndVec2.at(i).nodeId == 39){
             if(i>5 && ndVec2.at(i-1).label != "." && ndVec2.at(i-5).nodeId != 123 && ndVec2.at(i+1).label != "Exception" 
-                && ndVec2.at(i+1).isTerminal && !str_vec_exists(usedVars2, ndVec2.at(i+1).label)
+                && ndVec2.at(i+1).isTerminal && !strVecExists(usedVars2, ndVec2.at(i+1).label)
                 && ndVec2.at(i+1).lineNo >= brktScopeFrt2 && ndVec2.at(i+1).lineNo <= brktScopeRear2 ) usedVars2.push_back(ndVec2.at(i+1).label);
         }
     }
     vector< pair<string, string> > varSet2;
     for(int i=0; i<usedVars2.size(); i++){
-        int idx = str_sec_vec_exists(varAboveScope2, usedVars2.at(i));
+        int idx = ssPairVecSndExists(varAboveScope2, usedVars2.at(i));
         if (idx != -1){
             varSet2.push_back(varAboveScope2.at(idx));
         }
     }
 
-    if(!comp_sp_vec(varSet1, varSet2)) {
+    if(!cmpSsPairVec(varSet1, varSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
         return varSet;
     }
@@ -760,16 +641,7 @@ vector< pair<string, string> > get_var_set(CloneData &c1, CloneData &c2, FtnType
 
 }
 
-string get_clone_ftn_name(){
-
-    ostringstream ftnNum;
-    ftnNum << cloneFtnNum;
-    string ftnName = cloneFtnName + ftnNum.str() + "()";
-    return ftnName;
-
-}
-
-void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet){
+void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet){
 
     // 1. make new method name and decl line
     string newFtnName = f1.ftnName + f2.ftnName;
@@ -808,7 +680,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     if(runOption != COD){
         cout << "Patching clone..." << endl;
         cout << "Extracted method from clone part : " << newFtnName << "()" << endl << endl;
-        print_code(tempClone);
+        testPrintCode(tempClone);
     }
 
     // 3. replace clone part with new function call
@@ -838,7 +710,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
         cout << endl << "========================================" << endl;
         cout << "Patching clone..." << endl;
         cout << "Clone part 1 patched with ftn call." << endl << endl;
-        print_code(orgClone1);
+        testPrintCode(orgClone1);
     }
 
     // 3. replace clone part with new function call
@@ -868,7 +740,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
         cout << endl << "========================================" << endl;
         cout << "Patching clone..." << endl;
         cout << "Clone part 2 patched with ftn call." << endl << endl;
-        print_code(orgClone2);
+        testPrintCode(orgClone2);
     }
 
     // patch code to the entire file
@@ -885,7 +757,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
             patchCode.insert(patchCode.end(), orgClone2.begin(), orgClone2.end());
         }
         if(lineCnt == c2.to + 1) {
-            if(only_spaces(line)) { lineCnt++; continue; }
+            if(strOnlySpaces(line)) { lineCnt++; continue; }
         }
         if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
         
@@ -897,7 +769,7 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
     if(runOption != RST){
         cout << "Patching clones ...\n";
         cout << "(This will be replaced with actual file write operations)\n";
-        print_code(patchCode);
+        testPrintCode(patchCode);
     }
 
 }
@@ -910,23 +782,121 @@ void patch_code(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnT
  * ====================================================
  */
 
-bool int_vec_contains(vector<int> &iv, int i){
-// returns true if vector contains the element
-    return ( find(iv.begin(), iv.end(), i) != iv.end() );
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+    // function for getting diff part of two clone datas
+    vector<int> diffLine;
+
+    // 1. compare two clone datas (function-wise)
+    vector<string>::iterator it1 = c1.cloneSnippet.begin();
+    vector<string>::iterator it2 = c2.cloneSnippet.begin();
+    int idx = 0;
+
+    // 2. put diff part offset line in the vector (this should except first/last line - b.c. ftn decl & closure)
+    for(; it1 != c1.cloneSnippet.end() && it2 != c2.cloneSnippet.end(); ++it1, ++it2){
+        if (!strAreSame((*it1), (*it2)) && idx != 0) diffLine.push_back(idx);
+        idx++;
+    }
+
+    // <diff 알고리즘>
+    // 1-1. 일단 syntatic하게 라인별로 비교
+    // 1-2. 불일치 라인 트리 벡터로 찾아가 토큰 하나씩 비교
+    
+    // 1-2-a. 트리 벡터 이용시 사용할 라인 넘버 위한 라인 오프셋 계산.
+    int lineOffset1, lineOffset2; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
+                                  // offset = 실제 파일 라인 - 파스 트리 파일 라인
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
+
+    // 1-2-b. 불일치 라인 트리 벡터로 토큰 비교.
+    bool hasLvalue = false;
+
+    // 1-3. 비교해서 다른 토큰 각각 짚기
+    // 1-4. 다른 토큰이 L-value인 경우 알고리즘 종료(찾는 방법은 nodeID를 보고)
+    for(int i=0; i<diffLine.size(); i++){
+
+        vector< pair<NodeData, int> > tmpVec1 = findNodeByLine(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
+        vector< pair<NodeData, int> > tmpVec2 = findNodeByLine(ndVec2, c2.from+diffLine.at(i)-lineOffset2);
+        //cout << tmpVec1.size() << " " << tmpVec2.size() << endl;
+        //cout << diffLine.at(i) << endl;
+
+        // get same token (to except from diff token compare)
+        vector<int> tokSame1;
+        vector<int> tokSame2;
+        for(int j=0; j<tmpVec1.size() || j<tmpVec2.size(); j++){
+            if(tmpVec1.at(j).first.label == tmpVec2.at(j).first.label) {
+                tokSame1.push_back(j);
+                tokSame2.push_back(j);
+            }
+        }
+        //cout << tokSame1.size() << tokSame2.size() << endl;
+
+        vector<int> emptyVec;
+        // Diff line Lvalue check part
+        for(int j=0; j<tmpVec1.size(); j++){
+            if(intVecContains(tokSame1, j)) continue;
+            if(isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
+                cerr << "Error : lvalue found on vec1 diff line. merge should be aborted." << endl;
+                hasLvalue |= isLvalueNode(ndVec1, tmpVec1.at(j).second);
+            }
+        }
+        for(int j=0; j<tmpVec2.size(); j++){
+            if(intVecContains(tokSame2, j)) continue;
+            if(isLvalueNode(ndVec2, tmpVec2.at(j).second)) {
+                 cerr << "Error : lvalue found on vec2 diff line. merge should be aborted." << endl;
+                 hasLvalue |= isLvalueNode(ndVec2, tmpVec2.at(j).second);
+            }
+        }
+        if(hasLvalue) return emptyVec;
+
+    }
+
+    vector<int> tmpIntVec;
+
+    for(int i=0; i<diffLine.size(); i++){
+        if(lineParenthesisChk(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == 1 && lineParenthesisChk(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == 1){
+            if(i<diffLine.size()-1 && diffLine.at(i+1) != diffLine.at(i)+1) continue;
+            else{
+                //tmpIntVec.push_back(diffLine.at(i)-1);
+                //cout << diffLine.at(i) << endl;
+                diffLine.insert(diffLine.begin()+i+1, diffLine.at(i)+1);
+                i++;
+            }
+        }
+        else if(lineParenthesisChk(ndVec1, c1.from+diffLine.at(i)-lineOffset1) == -1 && lineParenthesisChk(ndVec2, c2.from+diffLine.at(i)-lineOffset2) == -1){
+            if(i>0 && diffLine.at(i-1) != diffLine.at(i)-1) continue;
+            else{
+                //tmpIntVec.push_back(diffLine.at(i)+1);
+                //cout << "-1" << endl;
+                diffLine.insert(diffLine.begin()+i, diffLine.at(i)-1);
+                i++;
+            }
+        }
+    }
+
+    // 구현시 주의사항
+    // * 라인 오프셋 주의하여 인자 전달
+    // * 알고리즘 종료조건 함수 반환시 전달하여 정상 종료 될 수 있게.
+
+    // return the vector
+    return diffLine;
 }
 
-void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     
     string newFtnName = f1.ftnName + f2.ftnName;
     // 1. substitute caller function name with new one.
     for(int i=0; i<c1.callers.size(); i++){
-        patch_callers(c1.callers[i], newFtnName, 0);
+        patchCaller(c1.callers[i], newFtnName, 0);
     }
     for(int i=0; i<c2.callers.size(); i++){
-        patch_callers(c2.callers[i], newFtnName, 1);
+        patchCaller(c2.callers[i], newFtnName, 1);
     }
 
-    vector<int> diffLine = get_diff(cloneDatas.front(), cloneDatas.back(), f1, f2); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2); // TODO: refactor this?
     if(diffLine.empty()) {
         cerr << "Diff line empty. Merging method aborted." << endl;
         return;
@@ -961,14 +931,14 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     string ifOpen;
 
     for(int i=1; i<c1.cloneSize; i++){
-        if (!int_vec_contains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
+        if (!intVecContains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
         else {
             tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
             tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
 
             if(!adjacent){
             // 처음 중복 라인 찾아서 브랜치 나누는 경우
-                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                if(i<c1.cloneSize-1 && intVecContains(diffLine, i+1)){
                 // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
                     cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
                     cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
@@ -983,7 +953,7 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
 
             } else {
             // 이미 인접한 중복 라인을 찾아서 브랜치 나누는 경우(parenthesis 안에 존재)
-                if(i<c1.cloneSize-1 && int_vec_contains(diffLine, i+1)){
+                if(i<c1.cloneSize-1 && intVecContains(diffLine, i+1)){
                 // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
                     cloneDummy1.push_back(c1.cloneSnippet[i]);
                     cloneDummy2.push_back(c2.cloneSnippet[i]);                    
@@ -1012,7 +982,7 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     while(getline(pfile, line)) {
         if(lineCnt == c1.from) patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
         if(lineCnt == c2.to + 1) {
-            if(only_spaces(line)) { lineCnt++; continue; }
+            if(strOnlySpaces(line)) { lineCnt++; continue; }
         }
         if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
         
@@ -1024,14 +994,14 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
     if (runOption != COD){
         cout << "Merging clone..." << endl;
         cout << "Clone part 1,2 merged to one ftn." << endl << endl;
-        print_code(tempClone);
+        testPrintCode(tempClone);
     }
 
     if (runOption != RST){
         cout << endl << "========================================" << endl;
         cout << "Patching clones ...\n";
         cout << "(This will be replaced with actual file write operations)\n";
-        print_code(patchCode); // TODO: need to replace this with file write operations
+        testPrintCode(patchCode); // TODO: need to replace this with file write operations
     }
 
 }
@@ -1044,25 +1014,25 @@ void merge_clone_ftn(string fileName, CloneData &c1, CloneData &c2, FtnType &f1,
  * ====================================================
  */
 
-void em_type1(){
+void patchT1(){
 
     CloneData c1, c2;
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
 
-    beforePatchLoc = get_file_line(c1.fileName);
+    beforePatchLoc = getFileLine(c1.fileName);
 
     FtnType f1, f2;
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
-    parse_ftn_type(c1.cloneSnippet.front(), f1);
-    parse_ftn_type(c2.cloneSnippet.front(), f2);
+    parseFtnType(c1.cloneSnippet.front(), f1);
+    parseFtnType(c2.cloneSnippet.front(), f2);
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    parse_ftype(ndVec1, f1);
-    parse_ftype(ndVec2, f2);
+    parseFtype(ndVec1, f1);
+    parseFtype(ndVec2, f2);
 
-    pair<int, int> p = get_common_part(c1, c2, f1, f2);
+    pair<int, int> p = getCommonPart(c1, c2, f1, f2);
     tempCodeLine = p.second - p.first + 1;
     
     if(p.first == 0 && p.second == 0) {
@@ -1076,15 +1046,15 @@ void em_type1(){
         return;
     }
 
-    parse_class_member_vars(c1.fileName);
+    parseClassMemVars(c1.fileName);
 
     // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
-    vector< pair<string, string> > varSet = get_var_set(c1, c2, f1, f2, p);
+    vector< pair<string, string> > varSet = getVarSet(c1, c2, f1, f2, p);
 
     pair<int, int> scopeUp;
     scopeUp.first = p.second+1;
     scopeUp.second = c1.cloneSnippet.size();
-    vector< pair<string, string> > seVarSet = get_se_var_set(c1, c2, f1, f2, scopeUp);
+    vector< pair<string, string> > seVarSet = getSeVarSet(c1, c2, f1, f2, scopeUp);
 
     if(seVarSet.size()>1){
         cerr << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
@@ -1092,11 +1062,11 @@ void em_type1(){
     }
 
     // b. 뽑은 인자 사용해서 함수 정의부 만들고 중복부분 함수 호출 대치
-    patch_code(c1.fileName, c1, c2, f1, f2, p, varSet, seVarSet);
+    extractMethod(c1.fileName, c1, c2, f1, f2, p, varSet, seVarSet);
 
     reducedLoc = beforePatchLoc - afterPatchLoc;
     
-    report_result();
+    reportResult();
 
     // TODO: refactor below instruction
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
@@ -1110,22 +1080,22 @@ void em_type1(){
 
 }
 
-void em_type2(){
+void patchT2(){
     
     CloneData c1, c2;
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
 
-    beforePatchLoc = get_file_line(c1.fileName);
+    beforePatchLoc = getFileLine(c1.fileName);
 
     FtnType f1, f2;
-    parse_ftn_type(c1.cloneSnippet.front(), f1);
-    parse_ftn_type(c2.cloneSnippet.front(), f2);
+    parseFtnType(c1.cloneSnippet.front(), f1);
+    parseFtnType(c2.cloneSnippet.front(), f2);
 
-    merge_clone_ftn(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
+    mergeMethod(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
 
     reducedLoc = beforePatchLoc - afterPatchLoc;
-    report_result();
+    reportResult();
 
     // TODO: refactor to below instruction
     // 1. diff 부분 확인하기. R-value만, L-value는 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
@@ -1143,10 +1113,10 @@ void refactor(clone_type ct){
 
     switch(ct) {
         case T1:
-            em_type1();
+            patchT1();
             break; 
         case T2:
-            em_type2();
+            patchT2();
             break;
 
     }
@@ -1161,7 +1131,7 @@ void refactor(clone_type ct){
  * ====================================================
  */
 
-void test_print(){
+void testPrintCloneData(){
 
     // test printer to check clone data read
     cout << "Number of clone pair : " << n << endl;
@@ -1177,7 +1147,7 @@ void test_print(){
 
 }
 
-void print_caller(CloneData &cd){
+void testPrintCaller(CloneData &cd){
 
     cout << "Number of callers : " << cd.callers.size() << endl;
     for(int i=0; i<cd.callers.size(); i++){
@@ -1195,13 +1165,13 @@ void print_caller(CloneData &cd){
 
 }
 
-void print_code(vector<string> code){
+void testPrintCode(vector<string> code){
     for(vector<string>::iterator it = code.begin(); it != code.end(); ++it){
         cout << (*it) << endl;
     }
 }
 
-void print_ftn_type(FtnType &f){
+void testPrintFtnType(FtnType &f){
     cout << " ===== Function type ===== " << endl;
     cout << "Keywords : ";
     for(int p=0; p<f.keywords.size(); p++){
@@ -1227,7 +1197,7 @@ void print_ftn_type(FtnType &f){
     //cout << "Def line# : " << f.lineNum << endl; // TODO: remove this from ftnType?
 }
 
-void print_arg_calls(CloneData &cd){
+void testPrintArgCalls(CloneData &cd){
     
     cout << "# of arg calls : " << cd.argCalls.size() << endl;
     vector< pair<string, int> >::iterator it = cd.argCalls.begin();
@@ -1237,7 +1207,7 @@ void print_arg_calls(CloneData &cd){
 
 }
 
-void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnTypeDef){
+void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnTypeDef){
 
     cout << " ===== Class Type Def ===== \n";
     cout << "Line#" << classNftnTypeDef.at(0).second << " | ";
@@ -1258,7 +1228,7 @@ void print_class_n_ftn_type(vector< pair< vector<string>, int > > &classNftnType
 
 }
 
-void print_class_type(ClassType &c){
+void testPrintClassType(ClassType &c){
     
     cout << " ===== Class Type ===== \n";
     cout << "Keywords : ";
@@ -1300,11 +1270,11 @@ int main(int argc, char** argv){
         return 1;
     }
 
-    read_file(argv[2]); // 1. reads input data
+    readFile(argv[2]); // 1. reads input data
 
-    clone_type ct = get_clone_type();
+    clone_type ct = getCloneType();
     refactor(ct); // 2. refactor the code according to the clone datas
-    //print_code(tempClone);
+    //testPrintCode(tempClone);
 
     // test for tree manipulation
     //string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
@@ -1313,12 +1283,12 @@ int main(int argc, char** argv){
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
     //FtnType ftype;
-    //parse_ftype(ndVec, ftype);
-    //print_ftn_type(ftype);
-    //print_node_vector(ndVec);
+    //parseFtype(ndVec, ftype);
+    //testPrintFtnType(ftype);
+    //printNodeVector(ndVec);
     //printss(fname);
-    //parse_class_member_vars(fname);
-    //print_node_vector(ndvec);
+    //parseClassMemVars(fname);
+    //printNodeVector(ndvec);
 
     return 0;
 
