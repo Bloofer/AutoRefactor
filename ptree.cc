@@ -426,6 +426,12 @@ void Tree::getFtnSubtree(std::stringstream &ss, string &fname) {
     }
 }
 
+void Tree::getAllFtnName(std::stringstream &ss) {
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getAllFtnName(ss);
+    }
+}
+
 long Tree::outputTree2Dot(ofstream & out, long n)
 {
    long c = n++;
@@ -541,6 +547,17 @@ void Terminal::getFtnSubtree(std::stringstream &ss, string &fname)
     if(Terminal::getValue() == fname && parent->parent->parent->parent->type == 113) parent->parent->parent->parent->print2ss(ss);
 }
 
+void Terminal::getAllFtnName(std::stringstream &ss)
+{
+    if( parent->parent->parent->parent != NULL
+            && parent->parent->parent->parent->type == 113 
+            && parent->parent->parent->type == 138 
+            && parent->parent->type == 187
+            && parent->type == 39
+            && Terminal::getValue() != "") ss << Terminal::getValue() << " ";
+    //ss << Terminal::getValue() << " ";
+}
+
 void NonTerminal::print2ss(std::stringstream &ss)
 {
     ss << type << " ";
@@ -556,6 +573,13 @@ void NonTerminal::getFtnSubtree(std::stringstream &ss, string &fname)
 {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getFtnSubtree(ss, fname);
+    }
+}
+
+void NonTerminal::getAllFtnName(std::stringstream &ss)
+{
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getAllFtnName(ss);
     }
 }
 

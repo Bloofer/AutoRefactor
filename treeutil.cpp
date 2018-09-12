@@ -4,54 +4,8 @@
  * Implemented by jmyang <jmyang@ropas.snu.ac.kr>
  */
 
-#include "include/ptree.h"
-#include <sys/types.h>
-#include <assert.h>
-#include <dirent.h>
-#include <errno.h>
-#include <ptree.h>
-#include <map>
-#include <list>
-#include <string>
-#include <string.h>
-#include <token-tree-map.h>
-#include <algorithm>
-#include <cmath>
-#include <cctype>
-#include <sstream>
-#include <fstream>
-#include <cstdlib>
-#include <functional>
-#include <iterator>
+#include "treeutil.h"
 using namespace std;
-
-typedef struct _ClassHierarchy {
-  string file_name;
-  string class_name;
-  string parent_class_name;
-  string parent_interface_name;
-} ClassHierarchy;
-
-// maybe needed to be expanded?
-typedef struct _CallGraph {
-//  string caller_path; // caller's full path   ex) fasoo.eprint.f1.blah....
-  string caller_cname;// caller's class name
-  string caller_fname;// caller's function name
-//  string callee_path; // callee's full path
-  string callee_cname;// callee's class name
-//  string callee_fname;// callee's function name
-} CallGraph;
-
-// type definition for refactor guide
-// EM - Extract Method, PM - Pull-up Method, ES - Extract Superclass
-// ES1 refers refactoring point which has different parent class & ES2 refers to refactoring point whose parent class is API class
-typedef enum {
-  EM, 
-  PM, 
-  ES1, 
-  ES2, 
-  DONTKNOW
-} refactor_pattern_t;
 
 map<string,int> name2id;
 map<int,string> id2name;
@@ -61,24 +15,6 @@ int yyparse();
 extern Tree *root;
 
 void id_init();
-
-typedef struct{
-  int nodeId;
-  bool isTerminal;
-  string label; // empty if non-terminal
-  int lineNo;   // empty if non-terminal
-  int depth;    // depth of tree. same if siblings
-}NodeData;
-
-typedef struct{
-    vector<string> keywords;
-    string returnType;
-    vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
-    string ftnName;
-    bool thrwExtn;
-    int lineNum;
-    int bopenLine;
-}FtnType;
 
 bool hasNodeId(vector<NodeData> &ndVec, int idx, int id){
 
@@ -641,6 +577,29 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   pt->getRoot()->getFtnSubtree(ss, ftnName);
 
   ss2NodeVec(ndVec, ss);
+
+}
+
+void getAllFtnData(string &fileName, vector<FtnData> &fdVec){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->getAllFtnName(ss);
+
+  cout << ss.str() << endl;
+
+  // 1. 모든 함수 이름 가져오기
+  // 2. 가져온 함수 이름으로 getFtnSubtree() 호출하고
+  // 3. 가져온 ndVec에서 앞 뒤 노드 from, to에 이름과 함께 삽입.
+
+  //ss2NodeVec(ndVec, ss);
 
 }
 

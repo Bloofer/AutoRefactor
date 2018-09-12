@@ -180,6 +180,7 @@ class Tree {
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getAllFtnName(std::stringstream &ss);
     virtual void print() {
         std::cout << " [ " << type << " ";
         //if (type == 113) std::cout << "\n===ftn decl===\n";
@@ -338,6 +339,7 @@ public:
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getAllFtnName(std::stringstream &ss);
     virtual void print()
     {
        std::cout << "<" << *value << ">";
@@ -373,7 +375,7 @@ public:
 
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
-    //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
+    virtual void getAllFtnName(std::stringstream &ss);
 };
 
 

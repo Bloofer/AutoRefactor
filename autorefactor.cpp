@@ -157,7 +157,7 @@ void parseFtnType(string s, FtnType &ftype){
     }
 
     vector<string> tokens;
-    string ns = s.substr(s.find_first_not_of(" \t\r\n"));
+    string ns = s.substr(s.find_first_not_of(" \t\r\n")); // no problem
     
     int prevPos = s.find_first_of(" \t\r\n");
     int emptyPoint = ns.find(' ');
@@ -1255,7 +1255,7 @@ void testPrintClassType(ClassType &c){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1274,21 +1274,16 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone);
+    //testPrintCode(tempClone); */
 
     // test for tree manipulation
-    //string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
-    //string ftnname = "checkAchieveMission";
+    string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
+    string ftnname = "checkAchieveMission";
     //vector<NodeData> ndVec;
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
-    //FtnType ftype;
-    //parseFtype(ndVec, ftype);
-    //testPrintFtnType(ftype);
-    //printNodeVector(ndVec);
-    //printss(fname);
-    //parseClassMemVars(fname);
-    //printNodeVector(ndvec);
+    vector<FtnData> fdVec;
+    getAllFtnData(fname, fdVec);
 
     return 0;
 

@@ -41,17 +41,6 @@ typedef struct _CallGraph {
 //  string callee_fname;// callee's function name
 } CallGraph;
 
-// type definition for refactor guide
-// EM - Extract Method, PM - Pull-up Method, ES - Extract Superclass
-// ES1 refers refactoring point which has different parent class & ES2 refers to refactoring point whose parent class is API class
-typedef enum {
-  EM, 
-  PM, 
-  ES1, 
-  ES2, 
-  DONTKNOW
-} refactor_pattern_t;
-
 typedef struct{
   int nodeId;
   bool isTerminal;
@@ -59,6 +48,12 @@ typedef struct{
   int lineNo;   // empty if non-terminal
   int depth;    // depth of tree. same if siblings
 }NodeData;
+
+typedef struct{
+  string ftnName;
+  int from;
+  int to;
+}FtnData;
 
 typedef struct{
     vector<string> keywords;
@@ -85,6 +80,7 @@ void printNodeVector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNum);
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
+void getAllFtnData(string &fileName, vector<FtnData> &fdVec);
 void dumpPtree(string &fileName);
 void print2ssFtnSubtree(string &fileName, string &ftnName);
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
