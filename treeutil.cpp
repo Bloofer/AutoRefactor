@@ -580,6 +580,62 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
 
 }
 
+NodeData findFstTnodeInNdvec(vector<NodeData> &ndVec){
+
+  bool found = false;
+  NodeData fstNode;
+  if(ndVec.size() == 0) {
+    cerr << "Error : ndVec is empty. cannot find first node." << endl;
+    return fstNode;
+  }
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).isTerminal) {
+      found = true;
+      fstNode = ndVec.at(i);
+      break;
+    }
+  }
+
+  if(found) return fstNode;
+  else {
+    cerr << "Error : cannot find first node." << endl;
+    return fstNode;
+  }
+
+}
+
+NodeData findLstTnodeInNdvec(vector<NodeData> &ndVec){
+
+  bool found = false;
+  NodeData lstNode;
+  if(ndVec.size() == 0) {
+    cerr << "Error : ndVec is empty. cannot find last node." << endl;
+    return lstNode;
+  }
+
+  for(int i=ndVec.size()-1; i>=0; i--){
+    if(ndVec.at(i).isTerminal) {
+      found = true;
+      lstNode = ndVec.at(i);
+      break;
+    }
+  }
+
+  if(found) return lstNode;
+  else {
+    cerr << "Error : Cannot find last node." << endl;
+    return lstNode;
+  }
+
+}
+
+bool isEmptyNodeData(NodeData &nd){
+
+  return (nd.depth == 0) && (nd.isTerminal == 0) && (nd.label == "") && (nd.lineNo == 0) && (nd.nodeId == 0);
+
+}
+
 void getAllFtnData(string &fileName, vector<FtnData> &fdVec){
   
   id_init();
@@ -590,17 +646,36 @@ void getAllFtnData(string &fileName, vector<FtnData> &fdVec){
     return;
   }
   
+  // 1. 모든 함수 이름 가져오기
   stringstream ss;
   pt->getRoot()->getAllFtnName(ss);
 
-  cout << ss.str() << endl;
+  string fname;
+  FtnData fdata;
+  vector<NodeData> ndVec;
+  while(ss >> fname){
+    // 2. 가져온 함수 이름으로 getFtnSubtree() 호출하고
+    stringstream fss;
+    pt->getRoot()->getFtnSubtree(fss, fname);
+    ss2NodeVec(ndVec, fss);
+    NodeData fstNode = findFstTnodeInNdvec(ndVec);
+    NodeData lstNode = findLstTnodeInNdvec(ndVec);
 
-  // 1. 모든 함수 이름 가져오기
-  // 2. 가져온 함수 이름으로 getFtnSubtree() 호출하고
-  // 3. 가져온 ndVec에서 앞 뒤 노드 from, to에 이름과 함께 삽입.
+    // 3. 가져온 ndVec에서 앞 뒤 노드 from, to에 이름과 함께 삽입.
+    if(isEmptyNodeData(fstNode) || isEmptyNodeData(lstNode)) {
+      cerr << "Error: parsed ftn subtree cannot find first | last node on ftn : " << fname << endl;
+      return;
+    }
 
-  //ss2NodeVec(ndVec, ss);
-
+    fdata.from = fstNode.lineNo;
+    fdata.to = lstNode.lineNo;
+    fdata.ftnName = fname;
+    fdVec.push_back(fdata);
+    fdata.from = fdata.to = 0;
+    fdata.ftnName = "";
+    ndVec.clear();
+  }  
+  
 }
 
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec){

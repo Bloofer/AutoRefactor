@@ -37,6 +37,7 @@ typedef struct{
     vector< pair<string, int> > argCalls; // for type4. <arg obj ftn call name, call line> vector
     int cloneSize;
     vector<Caller> callers;
+    string ftnName;
 }CloneData;
 vector<CloneData> cloneDatas;
 
@@ -56,7 +57,8 @@ typedef struct{
 
 typedef enum {
     T1,
-    T2
+    T2,
+    ERR
 } clone_type;
 
 typedef enum {
@@ -111,7 +113,6 @@ int ssPairVecSndExists(vector< pair<string, string> > &sv, string s);
 bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, string> > &sv2);
 
 // communal functions for all types
-void parseFtnType(string s, FtnType &ftype);
 void patchCaller(Caller c, string newFname, int flag);
 int getLineOffset(vector<NodeData> &ndVec, string &ftnName, int from);
 void parseClassMemVars(string fileName);
@@ -141,3 +142,4 @@ void testPrintFtnType(FtnType &f);
 void testPrintArgCalls(CloneData &cd);
 void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnTypeDef);
 void testPrintClassType(ClassType &c);
+void testPrintFdVec(vector<FtnData> &fdVec);

@@ -149,77 +149,6 @@ bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, stri
  * ====================================================
  */
 
-void parseFtnType(string s, FtnType &ftype){
-    
-    if (s.find(')') == string::npos) { 
-        cerr << "Error : parseFtnType() cannot parse \"" << s << "\" without parentheses closure" << endl;
-        return;
-    }
-
-    vector<string> tokens;
-    string ns = s.substr(s.find_first_not_of(" \t\r\n")); // no problem
-    
-    int prevPos = s.find_first_of(" \t\r\n");
-    int emptyPoint = ns.find(' ');
-    string token;
-
-    // 1. parse ftn type and ftn name
-    while(emptyPoint <= ns.find('(')){
-        token = ns.substr(0, emptyPoint);
-        tokens.push_back(token);
-        ns = ns.substr(emptyPoint);
-        ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-        prevPos += (emptyPoint + 1);
-        emptyPoint = ns.find(' ');
-    }
-
-    if (ns.find('(') > 0) {
-        token = ns.substr(0, ns.find('('));
-        tokens.push_back(token);
-    }
-
-    reverse(tokens.begin(), tokens.end());
-    ftype.ftnName = tokens[0];
-    ftype.returnType = tokens[1];
-
-    if(tokens.size() > 2){
-        for(int i=tokens.size()-1; i>=2; i--)
-        ftype.keywords.push_back(tokens[i]);
-    }
-
-    ns = s.substr(s.find('(') + 1);
-    ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-    pair<string, string> argPair;
-
-    // 2. parse arg type and arg name
-    emptyPoint = ns.find(' ');
-    while(emptyPoint <= ns.find(')') && ns.find_first_of('{') != 0){
-        argPair.first = ns.substr(0, emptyPoint);
-        ns = ns.substr(emptyPoint);
-        ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-        
-        emptyPoint = intMin(ns.find(' '), ns.find(','));
-        emptyPoint = intMin(emptyPoint, ns.find(')'));
-        argPair.second = ns.substr(0, emptyPoint);
-        ns = ns.substr(emptyPoint + 1);
-
-        if(ns.find(',') > 0){
-            ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-            if(ns.find(',') == 0) {
-                ns = ns.substr(1);
-                if(ns.find_first_of(' ') == 0) ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-            }
-        } else {
-            ns = ns.substr(1);
-            ns = ns.substr(ns.find_first_not_of(" \t\r\n"));
-        }
-
-        ftype.ftnArgs.push_back(argPair);
-        emptyPoint = ns.find(' ');
-    }
-
-}
-
 void patchCaller(Caller c, string newFname, int flag){
     // function for fetching caller datas
     // using data from the alarm file which are parsed from DOT file
@@ -360,21 +289,58 @@ bool compFtype(FtnType &f1, FtnType &f2){
 
 }
 
+string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
+
+    bool found = false;
+    int idx;
+    for(int i=0; i<fdVec.size(); i++){
+        if(frt >= fdVec.at(i).from && frt <= fdVec.at(i).to && 
+           bck >= fdVec.at(i).from && bck <= fdVec.at(i).to) {
+               found = true;
+               idx = i;   
+            }
+    }
+
+    if(found) return fdVec.at(idx).ftnName;
+    else {
+        cerr << "Error : clone scope is not inside the ftn def part." << endl;
+        return "";
+    }
+
+}
+
 clone_type getCloneType(){
 
     CloneData c1, c2;
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
 
+    vector<FtnData> fdVec;
+    getAllFtnData(c1.fileName, fdVec);
+    // 1. CloneData 내 알람 정보의 중복이 함수 정의부에 속하는 지 확인. 벗어난 경우 종료.
+
+    if(fdVec.empty()) {
+        cerr << "Error : ftn data vector is empty." << endl;
+        return ERR;
+    }
+
     FtnType f1, f2;
+    f1.ftnName = getFnameInScope(c1.from, c1.to, fdVec);
+    f2.ftnName = getFnameInScope(c2.from, c2.to, fdVec);
+    cloneDatas.front().ftnName = f1.ftnName;
+    cloneDatas.back().ftnName = f2.ftnName;
+
+    if(f1.ftnName == "" || f2.ftnName == "") {
+        cerr << "Error : clone scope is not inside the ftn def part." << endl;
+        return ERR;
+    }
+
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
-    parseFtnType(c1.cloneSnippet.front(), f1);
-    parseFtnType(c2.cloneSnippet.front(), f2);
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    //parseFtype(ndVec1, f1);
-    //parseFtype(ndVec2, f2);
+    parseFtype(ndVec1, f1);
+    parseFtype(ndVec2, f2);
 
     if (compFtype(f1, f2)) return T2;
     else return T1;
@@ -1025,10 +991,8 @@ void patchT1(){
     FtnType f1, f2;
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
-    parseFtnType(c1.cloneSnippet.front(), f1);
-    parseFtnType(c2.cloneSnippet.front(), f2);
-    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
-    getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
+    getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, c2.ftnName, ndVec2);
     parseFtype(ndVec1, f1);
     parseFtype(ndVec2, f2);
 
@@ -1089,8 +1053,12 @@ void patchT2(){
     beforePatchLoc = getFileLine(c1.fileName);
 
     FtnType f1, f2;
-    parseFtnType(c1.cloneSnippet.front(), f1);
-    parseFtnType(c2.cloneSnippet.front(), f2);
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, c2.ftnName, ndVec2);
+    parseFtype(ndVec1, f1);
+    parseFtype(ndVec2, f2);
 
     mergeMethod(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
 
@@ -1118,7 +1086,9 @@ void refactor(clone_type ct){
         case T2:
             patchT2();
             break;
-
+        case ERR:
+            cout << "Error : this clone data cannot be patched. procedure aborting..." << endl;
+            break;
     }
     
 }
@@ -1244,6 +1214,14 @@ void testPrintClassType(ClassType &c){
 
 }
 
+void testPrintFdVec(vector<FtnData> &fdVec){
+
+    cout << " ===== FtnData Vector ===== \n";
+    for(int i=0; i<fdVec.size(); i++){
+        cout << fdVec.at(i).ftnName << "\t" << fdVec.at(i).from << " ~ " << fdVec.at(i).to << endl;
+    }
+
+}
 
 
 /*
@@ -1255,7 +1233,7 @@ void testPrintClassType(ClassType &c){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1274,16 +1252,17 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone); */
+    //testPrintCode(tempClone);
 
     // test for tree manipulation
-    string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/3/DigitalPage_Server.com.fasoo.note.api.service.MissionServiceImpl.java";
-    string ftnname = "checkAchieveMission";
+    //string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/1/DigitalPage_Server.UserServiceImpl.java";
+    //string ftnname = "checkAchieveMission";
     //vector<NodeData> ndVec;
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
-    vector<FtnData> fdVec;
-    getAllFtnData(fname, fdVec);
+    //vector<FtnData> fdVec;
+    //getAllFtnData(fname, fdVec);
+    //testPrintFdVec(fdVec);
 
     return 0;
 
