@@ -56,7 +56,7 @@ typedef struct{
 }FtnData;
 
 typedef struct{
-    vector<string> keywords;
+    vector<string> modifiers;
     string returnType;
     vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
     string ftnName;
@@ -80,9 +80,10 @@ void printNodeVector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNum);
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
+void parseFtnType(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void getAllFtnData(string &fileName, vector<FtnData> &fdVec);
 void dumpPtree(string &fileName);
 void print2ssFtnSubtree(string &fileName, string &ftnName);
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
 void printss(string &fileName);
-string getClassKeyword(string &file_name, string &class_type);
+string getClassModifier(string &file_name, string &class_type);

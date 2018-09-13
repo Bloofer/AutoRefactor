@@ -180,6 +180,11 @@ class Tree {
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
+    virtual void findModFromSubtree(std::stringstream &ss);
+    virtual void findRtypeFromSubtree(std::stringstream &ss);
+    virtual void findFnameFromSubtree(std::stringstream &ss);
+    virtual void findArgFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
     virtual void print() {
         std::cout << " [ " << type << " ";
@@ -339,6 +344,11 @@ public:
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
+    virtual void findModFromSubtree(std::stringstream &ss);
+    virtual void findRtypeFromSubtree(std::stringstream &ss);
+    virtual void findFnameFromSubtree(std::stringstream &ss);
+    virtual void findArgFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
     virtual void print()
     {
@@ -375,6 +385,11 @@ public:
 
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
+    virtual void findModFromSubtree(std::stringstream &ss);
+    virtual void findRtypeFromSubtree(std::stringstream &ss);
+    virtual void findFnameFromSubtree(std::stringstream &ss);
+    virtual void findArgFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
 };
 

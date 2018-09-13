@@ -49,7 +49,7 @@ typedef enum {
 } class_type;
 
 typedef struct{
-    vector<string> keywords;
+    vector<string> modifiers;
     class_type ctype;
     string cname;
     int lineNum;

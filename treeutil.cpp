@@ -70,7 +70,7 @@ void clearFtype(FtnType &ftype){
   ftype.bopenLine = 0;
   ftype.ftnArgs.clear();
   ftype.ftnName = "";
-  ftype.keywords.clear();
+  ftype.modifiers.clear();
   ftype.lineNum = 0;
   ftype.returnType = "";
   ftype.thrwExtn = false;
@@ -107,7 +107,7 @@ void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
   }
 
   // parsed with given sequence
-  // KEYWORDS | RETURN_TYPE | FTN_NAME ( ARG_TYPE ARG_NAME, ... ) [EXCEPTION_THROW] {
+  // MODIFIERS | RETURN_TYPE | FTN_NAME ( ARG_TYPE ARG_NAME, ... ) [EXCEPTION_THROW] {
 
   vector<string> argTok;
   pair<string, string> argT;
@@ -118,7 +118,7 @@ void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
   int bnum = 0;
 
   for(int i=0; i<tokVec.size(); i++){
-    if(tokVec.at(i) != "|" && !tdeli) ftype.keywords.push_back(tokVec.at(i));
+    if(tokVec.at(i) != "|" && !tdeli) ftype.modifiers.push_back(tokVec.at(i));
     else if(tokVec.at(i) == "|" && !tdeli) tdeli = true;
     else if(tdeli && tokVec.at(i) != "|" && !ndeli) ftype.returnType += tokVec.at(i);
     else if(tdeli && tokVec.at(i) == "|" && !ndeli) ndeli = true;
@@ -580,6 +580,24 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
 
 }
 
+void parseFtnType(string &fileName, string &ftnName, vector<NodeData> &ndVec){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->getFtnPdata(ss, ftnName);
+  cout << ss.str() << endl;
+
+  ss2NodeVec(ndVec, ss);
+
+}
+
 NodeData findFstTnodeInNdvec(vector<NodeData> &ndVec){
 
   bool found = false;
@@ -729,7 +747,7 @@ void print2ssFtnSubtree(string &fileName, string &ftnName){
 
 }
 
-string getClassKeyword(string &file_name, string &class_type){
+string getClassModifier(string &file_name, string &class_type){
 
   ParseTree* pt = parseFile(file_name.c_str());
   if ( pt==NULL ) {

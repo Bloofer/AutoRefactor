@@ -426,6 +426,61 @@ void Tree::getFtnSubtree(std::stringstream &ss, string &fname) {
     }
 }
 
+void Tree::getFtnPdata(std::stringstream &ss, string &fname) {
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getFtnPdata(ss, fname);
+    }
+}
+
+void Tree::findModFromSubtree(std::stringstream &ss)
+{
+    if (type == 135) print2ss(ss);
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findModFromSubtree(ss);
+      }
+    }
+}
+
+void Tree::findRtypeFromSubtree(std::stringstream &ss)
+{
+    if (type == 138 && children.size() > 1) { 
+      children[1]->print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findRtypeFromSubtree(ss);
+      }
+    }
+}
+
+void Tree::findFnameFromSubtree(std::stringstream &ss)
+{
+    if (type == 187 && children.size() > 0 && children[0]->getType() == 39) {
+      children[0]->print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findFnameFromSubtree(ss);
+      }
+    }
+}
+
+void Tree::findArgFromSubtree(std::stringstream &ss)
+{
+    if (type == 21 && parent != NULL && parent->getType() == 187) {
+      print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findArgFromSubtree(ss);
+      }
+    }
+}
+
 void Tree::getAllFtnName(std::stringstream &ss) {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getAllFtnName(ss);
@@ -544,7 +599,46 @@ void Terminal::print2ss(std::stringstream &ss)
 
 void Terminal::getFtnSubtree(std::stringstream &ss, string &fname)
 {
-    if(Terminal::getValue() == fname && parent->parent->parent->parent->type == 113) parent->parent->parent->parent->print2ss(ss);
+    if(Terminal::getValue() == fname 
+      && parent->parent->parent->parent != NULL
+      && parent->parent->parent->parent->type == 113) parent->parent->parent->parent->print2ss(ss);
+}
+
+void Terminal::getFtnPdata(std::stringstream &ss, string &fname)
+{
+    if(Terminal::getValue() == fname 
+      && parent->parent->parent->parent != NULL
+      && parent->parent->parent->parent->type == 113) {
+        // found ftn subtree. now parse ftn type one by one.
+        parent->parent->parent->parent->findModFromSubtree(ss);
+        ss << endl;
+        parent->parent->parent->parent->findRtypeFromSubtree(ss);
+        ss << endl;
+        parent->parent->parent->parent->findFnameFromSubtree(ss);
+        ss << endl;
+        parent->parent->parent->parent->findArgFromSubtree(ss);
+        
+      }
+}
+
+void Terminal::findModFromSubtree(std::stringstream &ss)
+{
+    // empty ftn def for virtual call.
+}
+
+void Terminal::findRtypeFromSubtree(std::stringstream &ss)
+{
+    // empty ftn def for virtual call.
+}
+
+void Terminal::findFnameFromSubtree(std::stringstream &ss)
+{
+    // empty ftn def for virtual call.
+}
+
+void Terminal::findArgFromSubtree(std::stringstream &ss)
+{
+    // empty ftn def for virtual call.
 }
 
 void Terminal::getAllFtnName(std::stringstream &ss)
@@ -573,6 +667,62 @@ void NonTerminal::getFtnSubtree(std::stringstream &ss, string &fname)
 {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getFtnSubtree(ss, fname);
+    }
+}
+
+void NonTerminal::getFtnPdata(std::stringstream &ss, string &fname)
+{
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getFtnPdata(ss, fname);
+    }
+}
+
+void NonTerminal::findModFromSubtree(std::stringstream &ss)
+{
+    if (type == 135) print2ss(ss);
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findModFromSubtree(ss);
+      }
+    }
+}
+
+void NonTerminal::findRtypeFromSubtree(std::stringstream &ss)
+{
+    if (type == 138 && children.size() > 1) {
+      children[1]->print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findRtypeFromSubtree(ss);
+      }
+    }
+}
+
+void NonTerminal::findFnameFromSubtree(std::stringstream &ss)
+{
+    if (type == 187 && children.size() > 0 && children[0]->getType() == 39) {
+      children[0]->print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findFnameFromSubtree(ss);
+      }
+    }
+}
+
+void NonTerminal::findArgFromSubtree(std::stringstream &ss)
+{
+    if (type == 21 && parent != NULL && parent->getType() == 187) {
+      print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findArgFromSubtree(ss);
+      }
     }
 }
 

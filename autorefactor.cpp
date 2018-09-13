@@ -278,6 +278,9 @@ void parseClassMemVars(string fileName){
 
 bool compFtype(FtnType &f1, FtnType &f2){
 
+    testPrintFtnType(f1);
+    testPrintFtnType(f2);
+
     if(f1.ftnArgs.size() != f1.ftnArgs.size()) return false;
 
     bool same = true;
@@ -876,8 +879,8 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 3. insert flag at the ftn decl.
     // use FtnType to not get new function name & arg name
     string ftnDecl = tabStr;
-    for(int i=0; i<f1.keywords.size(); i++){
-        ftnDecl += (f1.keywords[i] + " ");
+    for(int i=0; i<f1.modifiers.size(); i++){
+        ftnDecl += (f1.modifiers[i] + " ");
     }
 
     ftnDecl += (f1.returnType + " " + newFtnName + "(");
@@ -1143,9 +1146,9 @@ void testPrintCode(vector<string> code){
 
 void testPrintFtnType(FtnType &f){
     cout << " ===== Function type ===== " << endl;
-    cout << "Keywords : ";
-    for(int p=0; p<f.keywords.size(); p++){
-        cout << f.keywords[p] << " ";
+    cout << "modifiers : ";
+    for(int p=0; p<f.modifiers.size(); p++){
+        cout << f.modifiers[p] << " ";
     }
     cout << endl << f.ftnName << " : ";
     if (f.ftnArgs.size() > 0) {
@@ -1201,8 +1204,8 @@ void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnType
 void testPrintClassType(ClassType &c){
     
     cout << " ===== Class Type ===== \n";
-    cout << "Keywords : ";
-    for(vector<string>::iterator it = c.keywords.begin(); it!=c.keywords.end(); ++it){
+    cout << "modifiers : ";
+    for(vector<string>::iterator it = c.modifiers.begin(); it!=c.modifiers.end(); ++it){
         cout << (*it) << " ";
     }
     cout << "\nClass Type : ";
@@ -1233,7 +1236,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1251,13 +1254,15 @@ int main(int argc, char** argv){
     readFile(argv[2]); // 1. reads input data
 
     clone_type ct = getCloneType();
+    cout << ct << endl;
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone);
+    //testPrintCode(tempClone); */
 
     // test for tree manipulation
-    //string fname = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/1/DigitalPage_Server.UserServiceImpl.java";
-    //string ftnname = "checkAchieveMission";
-    //vector<NodeData> ndVec;
+    string fname = "/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java";
+    string ftnname = "newerCreateUser";
+    vector<NodeData> ndVec;
+    parseFtnType(fname, ftnname, ndVec);
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
     //vector<FtnData> fdVec;
