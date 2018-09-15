@@ -1,12 +1,8 @@
 1c1
-< 	public ActionForward statsDate( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+< 	public ActionForward list( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
 ---
-> 	public ActionForward statsMonth( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
-33c33
-< 		List<UsageStatsDate> statsList = statsUsageApi.selectDateDay( searchMap );
+> 	public ActionForward logexport( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception {
+43c43
+< 		return mapping.findForward( "usage.historylog.historylog_list" );
 ---
-> 		List<UsageStatsDate> statsList = statsUsageApi.selectDateMonth( searchMap );
-38c38
-< 		return mapping.findForward( "fsp.motionstats.usage.date" );
----
-> 		return mapping.findForward( "fsp.motionstats.usage.month" );
+> 		return mapping.findForward( "usage.historylog.log_export" );

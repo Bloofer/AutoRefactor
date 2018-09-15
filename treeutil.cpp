@@ -506,7 +506,7 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
   int treeDepth = 0;
 
   while(ss >> tok){
-    
+
     if (tok.at(0) == '[') {
       // if token is right tree parenthesis, increase depth
       treeDepth++;
@@ -580,7 +580,7 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
 
 }
 
-void parseFtnType(string &fileName, string &ftnName, vector<NodeData> &ndVec){
+void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<NodeData> &ndVec){
   
   id_init();
 
@@ -592,9 +592,63 @@ void parseFtnType(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   
   stringstream ss;
   pt->getRoot()->getFtnPdata(ss, ftnName);
-  cout << ss.str() << endl;
+  //cout << ss.str() << endl;
 
-  ss2NodeVec(ndVec, ss);
+  vector<NodeData> tmpNdVec;
+  string modsSs, rtypeSs, fnameSs, argsSs, ExcsSs, line;
+  int lineCnt = 1;
+  while(getline(ss, line)){
+    stringstream tmpSs;
+    if(lineCnt == 1){
+      // 1. parse modifiers
+      tmpSs << line;
+      ss2NodeVec(tmpNdVec, tmpSs);
+      tmpNdVec.clear();
+      // 1-1. find modifier except annotations in tmpNdVec
+    } else if(lineCnt == 2){
+      // 2. parse return type
+      tmpSs << line;
+      //cout << tmpSs.str() << endl;
+      ss2NodeVec(tmpNdVec, tmpSs);
+      vector<string> rType = getTnodeLabelInNdVec(tmpNdVec);
+      string rTypeStr = "";
+      if(rType.size() == 0){
+        cerr << "Error : return type not parsed @ ftn : " << ftnName << endl;
+        return;
+      } else{
+        for(int i=0; i<rType.size(); i++){
+          rTypeStr += rType.at(i);
+        }
+        ftype.returnType = rTypeStr;
+      }
+      tmpNdVec.clear();
+    } else if(lineCnt == 3){
+      // 3. parse ftn name
+      tmpSs << line;
+      cout << tmpSs.str() << endl << endl;
+      tmpSs.str("");
+    } else if(lineCnt == 4){
+      // 4. delimeter line. this line should be compose of '|'. else return error.
+    } else {
+      // 5. parse args and if accept delimeter '|', then parse exceptions
+    }
+    
+    lineCnt++;  
+  }
+
+
+  //ss2NodeVec(ndVec, ss);
+
+}
+
+vector<string> getTnodeLabelInNdVec(vector<NodeData> &ndVec){
+
+  if(ndVec.empty()) cerr << "Error : ndVec is empty. tnode cannot be found. @ getTnodeLabelInNdVec()" << endl;
+  vector<string> tnodeLabelVec;
+  for(int i=0; i<ndVec.size(); i++){
+    if (ndVec.at(i).isTerminal) tnodeLabelVec.push_back(ndVec.at(i).label);
+  }
+  return tnodeLabelVec;
 
 }
 

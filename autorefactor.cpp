@@ -278,8 +278,8 @@ void parseClassMemVars(string fileName){
 
 bool compFtype(FtnType &f1, FtnType &f2){
 
-    testPrintFtnType(f1);
-    testPrintFtnType(f2);
+    //testPrintFtnType(f1);
+    //testPrintFtnType(f2);
 
     if(f1.ftnArgs.size() != f1.ftnArgs.size()) return false;
 
@@ -1236,7 +1236,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1254,15 +1254,16 @@ int main(int argc, char** argv){
     readFile(argv[2]); // 1. reads input data
 
     clone_type ct = getCloneType();
-    cout << ct << endl;
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone); */
+    //testPrintCode(tempClone);
 
     // test for tree manipulation
-    string fname = "/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java";
+    /* string fname = "/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java";
     string ftnname = "newerCreateUser";
     vector<NodeData> ndVec;
-    parseFtnType(fname, ftnname, ndVec);
+    FtnType ftype;
+    parseFtnType(fname, ftnname, ftype, ndVec);
+    testPrintFtnType(ftype); */
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
     //vector<FtnData> fdVec;

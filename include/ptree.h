@@ -185,6 +185,7 @@ class Tree {
     virtual void findRtypeFromSubtree(std::stringstream &ss);
     virtual void findFnameFromSubtree(std::stringstream &ss);
     virtual void findArgFromSubtree(std::stringstream &ss);
+    virtual void findExcFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
     virtual void print() {
         std::cout << " [ " << type << " ";
@@ -349,6 +350,7 @@ public:
     virtual void findRtypeFromSubtree(std::stringstream &ss);
     virtual void findFnameFromSubtree(std::stringstream &ss);
     virtual void findArgFromSubtree(std::stringstream &ss);
+    virtual void findExcFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
     virtual void print()
     {
@@ -390,6 +392,7 @@ public:
     virtual void findRtypeFromSubtree(std::stringstream &ss);
     virtual void findFnameFromSubtree(std::stringstream &ss);
     virtual void findArgFromSubtree(std::stringstream &ss);
+    virtual void findExcFromSubtree(std::stringstream &ss);
     virtual void getAllFtnName(std::stringstream &ss);
 };
 

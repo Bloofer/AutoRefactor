@@ -1,4 +1,4 @@
 2
-/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java 797 1083
-/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java 1085 1371
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/5/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageAction.java 237 275
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/5/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageAction.java 277 315
 0

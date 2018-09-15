@@ -1,4 +1,4 @@
 2
-/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/3/ePrint.com.fasoo.drmone.usage.struts.HistoryLogAction.java 145 188
-/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/3/ePrint.com.fasoo.drmone.usage.struts.HistoryLogAction.java 190 233
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/8/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsPPAction.java 228 263
+/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/8/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsPPAction.java 265 300
 0

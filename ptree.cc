@@ -481,6 +481,19 @@ void Tree::findArgFromSubtree(std::stringstream &ss)
     }
 }
 
+void Tree::findExcFromSubtree(std::stringstream &ss)
+{
+    if (type == 97) {
+      print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findExcFromSubtree(ss);
+      }
+    }
+}
+
 void Tree::getAllFtnName(std::stringstream &ss) {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getAllFtnName(ss);
@@ -616,8 +629,11 @@ void Terminal::getFtnPdata(std::stringstream &ss, string &fname)
         ss << endl;
         parent->parent->parent->parent->findFnameFromSubtree(ss);
         ss << endl;
+        ss << "|" << endl;
         parent->parent->parent->parent->findArgFromSubtree(ss);
-        
+        ss << endl;
+        ss << "|" << endl;
+        parent->parent->parent->parent->findExcFromSubtree(ss);
       }
 }
 
@@ -637,6 +653,11 @@ void Terminal::findFnameFromSubtree(std::stringstream &ss)
 }
 
 void Terminal::findArgFromSubtree(std::stringstream &ss)
+{
+    // empty ftn def for virtual call.
+}
+
+void Terminal::findExcFromSubtree(std::stringstream &ss)
 {
     // empty ftn def for virtual call.
 }
@@ -722,6 +743,19 @@ void NonTerminal::findArgFromSubtree(std::stringstream &ss)
     else {
       for (int i= 0; i < children.size(); i++) {
           children[i]->findArgFromSubtree(ss);
+      }
+    }
+}
+
+void NonTerminal::findExcFromSubtree(std::stringstream &ss)
+{
+    if (type == 97) {
+      print2ss(ss);
+      return;
+    }
+    else {
+      for (int i= 0; i < children.size(); i++) {
+          children[i]->findExcFromSubtree(ss);
       }
     }
 }
