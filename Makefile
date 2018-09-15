@@ -1,3 +1,4 @@
+.PHONY: clean all
 TREEHEADER=include/ptree.h
 TREESRC=ptree.cc
 TREEOBJS=ptree.o
@@ -16,8 +17,10 @@ CPPFLAGS+=-Iinclude -ItreeTra -Iptgen/java
 
 TARGET=autorefactor
 
-${TREEOBJS}:${TREESRC} ${TREEHEADER}
-	$(CXX) -o $@ $(CPPFLAGS) -c -DJAVA ${TREESRC}
+all:ptree treeutil ${TARGET}
+
+ptree:${TREEHEADER} ${TREESRC}
+	$(CXX) $(CPPFLAGS) -c ${TREESRC} -DJAVA -o ${TREEOBJS} 
 
 treeutil:${OBJS} ${HEADERS} treeutil.cpp
 	${CXX} $(CPPFLAGS) -c treeutil.cpp -o treeutil.o
@@ -26,7 +29,7 @@ autorefactor:${OBJS} autorefactor.o treeutil.o ${HEADERS} autorefactor.cpp
 	$(CXX) -o autorefactor $(CPPFLAGS) -c -g autorefactor.cpp
 	$(CXX) -o autorefactor $(CPPFLAGS) -g autorefactor.o treeutil.o ${OBJS} ${TREEOBJS} ${PTOBJS} ${TTOBJS}
 
-.PHONY: clean
 clean:
 	rm -f *.o
 	rm -f *.out
+	rm ./autorefactor
