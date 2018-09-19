@@ -33,7 +33,7 @@ typedef struct _ClassHierarchy {
 
 // maybe needed to be expanded?
 typedef struct _CallGraph {
-//  string caller_path; // caller's full path   ex) fasoo.eprint.f1.blah....
+//  string caller_path; // caller's full path   ex) fasoo.eprint.f1....
   string caller_cname;// caller's class name
   string caller_fname;// caller's function name
 //  string callee_path; // callee's full path
@@ -60,7 +60,8 @@ typedef struct{
     string returnType;
     vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
     string ftnName;
-    bool thrwExtn;
+    vector<string> exceptions;
+    vector<string> annotations;
     int lineNum;
     int bopenLine;
 }FtnType;

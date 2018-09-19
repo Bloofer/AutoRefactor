@@ -288,6 +288,9 @@ bool compFtype(FtnType &f1, FtnType &f2){
     for(int i=0; i<f1.ftnArgs.size(); i++){
         same &= (f1.ftnArgs.at(i).first == f2.ftnArgs.at(i).first) && (f1.ftnArgs.at(i).second == f2.ftnArgs.at(i).second);
     }
+    for(int i=0; i<f1.exceptions.size(); i++){
+        same &= (f1.exceptions.at(i) == f2.exceptions.at(i));
+    }
     return same;
 
 }
@@ -1163,10 +1166,11 @@ void testPrintFtnType(FtnType &f){
     } else {
         cout << "void -> " << f.returnType << endl;
     }
-    cout << "throws Exception : ";
-    if(f.thrwExtn) cout << "O" << endl;
-    else cout << "X" << endl;
-    cout << "Bracket opener offset : " << f.bopenLine << endl;
+    cout << "exceptions : ";
+    for(int i=0; i<f.exceptions.size(); i++){
+        cout << f.exceptions.at(i) << " ";
+    }
+    cout << "\nBracket opener offset : " << f.bopenLine << endl;
     //cout << "Def line# : " << f.lineNum << endl; // TODO: remove this from ftnType?
 }
 
@@ -1236,7 +1240,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1255,15 +1259,15 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone);
+    //testPrintCode(tempClone); */
 
     // test for tree manipulation
-    /* string fname = "/home/yang/Sources/AutoRefactor/demo/2/DigitalPage_Server.UserServiceImpl.java";
+    string fname = "/home/yang/Sources/AutoRefactor/test/2/DigitalPage_Server.UserServiceImpl.java";
     string ftnname = "newerCreateUser";
     vector<NodeData> ndVec;
     FtnType ftype;
     parseFtnType(fname, ftnname, ftype, ndVec);
-    testPrintFtnType(ftype); */
+    testPrintFtnType(ftype);
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
     //vector<FtnData> fdVec;

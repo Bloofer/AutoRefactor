@@ -10,6 +10,12 @@ using namespace std;
 map<string,int> name2id;
 map<int,string> id2name;
 
+static const string mods[] = {
+  "public", "protected", "private", "static", "abstract", "final", 
+  "native", "synchronized", "transient", "volatile", "strictfp"
+};
+vector<string> Modifiers(mods, mods+sizeof(mods)/sizeof(mods[0]));
+
 int yyparse();
 
 extern Tree *root;
@@ -73,7 +79,7 @@ void clearFtype(FtnType &ftype){
   ftype.modifiers.clear();
   ftype.lineNum = 0;
   ftype.returnType = "";
-  ftype.thrwExtn = false;
+  ftype.exceptions.clear();
 }
 
 void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
@@ -142,7 +148,7 @@ void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
     }
     else if(tdeli && ndeli && argOpen && argClose && tokVec.at(i)!="{") { 
       if(i<tokVec.size()-1 && tokVec.at(i) == "throws" && tokVec.at(i+1) == "Exception") {
-        ftype.thrwExtn = true;
+        ftype.exceptions.push_back("Exception");
         return;
       }
     }
@@ -575,8 +581,97 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   
   stringstream ss;
   pt->getRoot()->getFtnSubtree(ss, ftnName);
-
+  
   ss2NodeVec(ndVec, ss);
+  
+}
+
+vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck){
+
+  vector<NodeData> subNdVec;
+  for(int i=0; i<ndVec.size(); i++){
+    if(i>=frt && i<=bck) subNdVec.push_back(ndVec.at(i));
+  }
+  return subNdVec;
+
+}
+
+vector<string> getAnnotListFromModNdVec(vector<NodeData> &ndVec, int annotCnt){
+
+  vector<string> annotList;
+  vector<string> tnodeVec = getTnodeLabelInNdVec(ndVec);
+  string tmpAnnot = "";
+  bool annotChk = false;
+
+  for(int i=0; i<tnodeVec.size(); i++){
+    if(tnodeVec.at(i) == "@" && i != 0) {
+      annotList.push_back(tmpAnnot);
+      tmpAnnot = "";
+    } else if(tnodeVec.at(i) != "@"){
+      tmpAnnot += tnodeVec.at(i);
+    }
+  }
+  annotList.push_back(tmpAnnot);
+
+  if(annotList.size() == annotCnt){
+    return annotList;
+  } else {
+    cerr << "Error : ftn annotation parsing error. @ getAnnotListFromModNdVec()" << endl;
+    return annotList;
+  }
+
+}
+
+vector< pair<string, string> > getArgListFromArgNdVec(vector<NodeData> &ndVec, int argCnt){
+  // note : input should be multiple arg ndVec
+
+  int frt = 0;
+  int bck = 0;
+  int found = 0;
+  vector< pair<string, string> > argList;
+  vector<NodeData> tmpNdVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+
+    if(found == argCnt - 1){
+      tmpNdVec = getSubNdVec(ndVec, frt, ndVec.size()-1);
+      vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
+      string argT = "";
+      for(int i=0; i<labels.size()-1; i++){
+        argT += labels.at(i);
+      }
+      string argN = labels.back();
+      argList.push_back(pair<string, string>(argT, argN));
+      frt = bck+3;
+      found++;
+      tmpNdVec.clear();
+    } else if(i < ndVec.size() - 1 && ndVec.at(i).label == "," && ndVec.at(i+1).nodeId == 178){
+      // fetching arg scope
+      if(i > 0){
+        // push back args before last element
+        bck = i-1;
+        tmpNdVec = getSubNdVec(ndVec, frt, bck);
+        vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
+        string argT = "";
+        for(int i=0; i<labels.size()-1; i++){
+          argT += labels.at(i);
+        }
+        string argN = labels.back();
+        argList.push_back(pair<string, string>(argT, argN));
+        frt = bck+3;
+        found++;
+        tmpNdVec.clear();
+      }
+    }
+
+  }
+
+  if(found == argCnt){
+    return argList;
+  } else {
+    cerr << "Error : ftn arg parsing error. @ getArgListFromArgNdVec()" << endl;
+    return argList;
+  }
 
 }
 
@@ -597,14 +692,41 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
   vector<NodeData> tmpNdVec;
   string modsSs, rtypeSs, fnameSs, argsSs, ExcsSs, line;
   int lineCnt = 1;
+  bool fstDeli = false;
+  bool sndDeli = false;
+  bool argParsed = false;
+  bool exctParsed = false;
+
   while(getline(ss, line)){
     stringstream tmpSs;
     if(lineCnt == 1){
       // 1. parse modifiers
       tmpSs << line;
+      cout << tmpSs.str() << endl;
       ss2NodeVec(tmpNdVec, tmpSs);
+
+      // 1-1. split annot list and fetch annots  
+      int annotCnt = 0;
+      int annotDeli = 0;
+      bool found = false;
+      for(int i=0; i<tmpNdVec.size(); i++){
+        if (tmpNdVec.at(i).nodeId == 175) annotCnt++;
+        if (!found && i < tmpNdVec.size() - 1 && tmpNdVec.at(i).nodeId == 147 && tmpNdVec.at(i+1).nodeId != 175) {
+          annotDeli = i;
+          found = true;
+        }
+      }
+    
+      vector<NodeData> annotNdVec = getSubNdVec(tmpNdVec, 0, annotDeli-1);
+      vector<string> annotList = getAnnotListFromModNdVec(annotNdVec, annotCnt);
+      //ftype.annotations = annotList;
+
+      // 1-2. parse modifiers
+      vector<NodeData> modNdVec = getSubNdVec(tmpNdVec, annotDeli, tmpNdVec.size());
+      vector<string> modList = getTnodeLabelInNdVec(modNdVec);
+      //ftype.modifiers = modList;
+
       tmpNdVec.clear();
-      // 1-1. find modifier except annotations in tmpNdVec
     } else if(lineCnt == 2){
       // 2. parse return type
       tmpSs << line;
@@ -625,12 +747,85 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     } else if(lineCnt == 3){
       // 3. parse ftn name
       tmpSs << line;
-      cout << tmpSs.str() << endl << endl;
+      ss2NodeVec(tmpNdVec, tmpSs);
+      vector<string> fname = getTnodeLabelInNdVec(tmpNdVec);
+      if(fname.size() != 1){
+        cerr << "Error : ftn name not parsed @ ftn : " << ftnName << endl;
+        return;
+      } else{
+        ftype.ftnName = fname.front();
+      }
       tmpSs.str("");
+      tmpNdVec.clear();
     } else if(lineCnt == 4){
       // 4. delimeter line. this line should be compose of '|'. else return error.
-    } else {
+      if(line == "|") fstDeli = true;
+      else {
+        cerr << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
+        return;
+      }
+    } else if(lineCnt > 4 && fstDeli && !argParsed && !sndDeli && !exctParsed) {
       // 5. parse args and if accept delimeter '|', then parse exceptions
+      if(line == "|"){
+        // if there exists no ftn args, pass below process
+        argParsed = true;
+        sndDeli = true;
+        tmpSs.str("");
+      } else {
+        tmpSs << line;
+        argParsed = true;
+        ss2NodeVec(tmpNdVec, tmpSs);
+        // 1. check nt node which has id 178(formal_param) to get arg num
+        int argCnt = 0;
+        for(int i=0; i<tmpNdVec.size(); i++){
+          if(tmpNdVec.at(i).nodeId == 178) argCnt++;
+        }
+
+        if (argCnt == 0){
+          // if no args found.
+          tmpSs.str("");
+          tmpNdVec.clear();  
+        } else if (argCnt == 1){
+          // if one or more args found, parse arg one by one
+          vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
+          string argT = "";
+          for(int i=0; i<labels.size()-1; i++){
+            argT += labels.at(i);
+          }
+          string argN = labels.back();
+          ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
+          tmpSs.str("");
+          tmpNdVec.clear();
+        } else {
+          // get arg list from arg vec ()
+          // 1. split tnode list
+          // 2. push_back args from tnode list
+          vector< pair<string, string> > argList = getArgListFromArgNdVec(tmpNdVec, argCnt);
+          //ftype.ftnArgs.insert(ftype.ftnArgs.end(), argList.begin(), argList.end());
+          ftype.ftnArgs = argList;
+          tmpSs.str("");
+          tmpNdVec.clear();
+        }
+      }
+    } else if(lineCnt > 4 && fstDeli && argParsed && !sndDeli && !exctParsed) {
+      if(line == "|") sndDeli = true;
+      else {
+        cerr << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
+        return;
+      }
+    } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && !exctParsed) {
+      tmpSs << line;
+      exctParsed = true;
+      cout << "!!!parse exceptions" << endl;
+      // TODO: only 1 exception is parsed. need to expand to accept multi exception throws.
+      ss2NodeVec(tmpNdVec, tmpSs);
+      vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
+      ftype.exceptions.push_back(labels.back());
+      tmpNdVec.clear();
+      tmpSs.str("");
+    } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && exctParsed) {
+      cerr << "Error : something left to parse after exct? @ ftn : " << ftnName << endl; 
+      return;
     }
     
     lineCnt++;  
