@@ -77,6 +77,7 @@ void clearFtype(FtnType &ftype){
   ftype.ftnArgs.clear();
   ftype.ftnName = "";
   ftype.modifiers.clear();
+  ftype.annotations.clear();
   ftype.lineNum = 0;
   ftype.returnType = "";
   ftype.exceptions.clear();
@@ -685,9 +686,33 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     return;
   }
   
+  stringstream fss;
+  pt->getRoot()->getFtnSubtree(fss, ftnName);
+
+  vector<NodeData> fNdVec;
+  ss2NodeVec(fNdVec, fss);
+  int ftnDeclLine = -1;
+  int ftnBopenLine = -1;
+  bool fnd = false;
+
+  // find bracket opener offset
+  for(int i=0; i<fNdVec.size(); i++){
+    if(!fnd && i<fNdVec.size()-3 && fNdVec.at(i).nodeId == 187 && fNdVec.at(i+1).nodeId == 39) {
+      ftnDeclLine = fNdVec.at(i+2).lineNo;
+    } else if(!fnd && i<fNdVec.size()-4 && fNdVec.at(i).nodeId == 171 && fNdVec.at(i+1).nodeId == 98 && fNdVec.at(i+2).nodeId == 7) {
+      ftnBopenLine = fNdVec.at(i+3).lineNo;
+      fnd = true;
+      break;
+    }
+  }
+  if(ftnDeclLine == -1 || ftnBopenLine == -1){
+    cerr << "Error : parsing error during ftn decl line & bracket opener line parse @ parseFtnType" << endl;
+    return;
+  }
+  ftype.bopenLine = ftnBopenLine - ftnDeclLine;
+
   stringstream ss;
   pt->getRoot()->getFtnPdata(ss, ftnName);
-  //cout << ss.str() << endl;
 
   vector<NodeData> tmpNdVec;
   string modsSs, rtypeSs, fnameSs, argsSs, ExcsSs, line;
@@ -700,9 +725,8 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
   while(getline(ss, line)){
     stringstream tmpSs;
     if(lineCnt == 1){
-      // 1. parse modifiers
+      // 1. parse annotations & modifiers
       tmpSs << line;
-      cout << tmpSs.str() << endl;
       ss2NodeVec(tmpNdVec, tmpSs);
 
       // 1-1. split annot list and fetch annots  
@@ -719,18 +743,17 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     
       vector<NodeData> annotNdVec = getSubNdVec(tmpNdVec, 0, annotDeli-1);
       vector<string> annotList = getAnnotListFromModNdVec(annotNdVec, annotCnt);
-      //ftype.annotations = annotList;
+      ftype.annotations.insert(ftype.annotations.end(), annotList.begin(), annotList.end());
 
       // 1-2. parse modifiers
       vector<NodeData> modNdVec = getSubNdVec(tmpNdVec, annotDeli, tmpNdVec.size());
       vector<string> modList = getTnodeLabelInNdVec(modNdVec);
-      //ftype.modifiers = modList;
+      ftype.modifiers.insert(ftype.modifiers.end(), modList.begin(), modList.end());
 
       tmpNdVec.clear();
     } else if(lineCnt == 2){
       // 2. parse return type
       tmpSs << line;
-      //cout << tmpSs.str() << endl;
       ss2NodeVec(tmpNdVec, tmpSs);
       vector<string> rType = getTnodeLabelInNdVec(tmpNdVec);
       string rTypeStr = "";
@@ -816,7 +839,6 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && !exctParsed) {
       tmpSs << line;
       exctParsed = true;
-      cout << "!!!parse exceptions" << endl;
       // TODO: only 1 exception is parsed. need to expand to accept multi exception throws.
       ss2NodeVec(tmpNdVec, tmpSs);
       vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);

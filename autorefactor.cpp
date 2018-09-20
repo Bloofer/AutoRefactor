@@ -1149,9 +1149,13 @@ void testPrintCode(vector<string> code){
 
 void testPrintFtnType(FtnType &f){
     cout << " ===== Function type ===== " << endl;
-    cout << "modifiers : ";
+    cout << "annotations : ";
+    for(int i=0; i<f.annotations.size(); i++){
+        cout << f.annotations.at(i) << " ";
+    }
+    cout << "\nmodifiers : ";
     for(int p=0; p<f.modifiers.size(); p++){
-        cout << f.modifiers[p] << " ";
+        cout << f.modifiers.at(p) << " ";
     }
     cout << endl << f.ftnName << " : ";
     if (f.ftnArgs.size() > 0) {
@@ -1240,7 +1244,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1259,15 +1263,15 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone); */
+    //testPrintCode(tempClone);
 
     // test for tree manipulation
-    string fname = "/home/yang/Sources/AutoRefactor/test/2/DigitalPage_Server.UserServiceImpl.java";
+    /* string fname = "/home/yang/Sources/AutoRefactor/test/2/DigitalPage_Server.UserServiceImpl.java";
     string ftnname = "newerCreateUser";
     vector<NodeData> ndVec;
     FtnType ftype;
     parseFtnType(fname, ftnname, ftype, ndVec);
-    testPrintFtnType(ftype);
+    testPrintFtnType(ftype); */
     //getFtnSubtree(fname, ftnname, ndVec);
     //print2ssFtnSubtree(fname, ftnname);
     //vector<FtnData> fdVec;
