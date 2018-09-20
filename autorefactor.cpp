@@ -288,9 +288,9 @@ bool compFtype(FtnType &f1, FtnType &f2){
     for(int i=0; i<f1.ftnArgs.size(); i++){
         same &= (f1.ftnArgs.at(i).first == f2.ftnArgs.at(i).first) && (f1.ftnArgs.at(i).second == f2.ftnArgs.at(i).second);
     }
-    for(int i=0; i<f1.exceptions.size(); i++){
+    /* for(int i=0; i<f1.exceptions.size(); i++){
         same &= (f1.exceptions.at(i) == f2.exceptions.at(i));
-    }
+    } */
     return same;
 
 }
@@ -345,8 +345,15 @@ clone_type getCloneType(){
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, f2.ftnName, ndVec2);
-    parseFtype(ndVec1, f1);
-    parseFtype(ndVec2, f2);
+    parseFtnType(c1.fileName, f1.ftnName, f1, ndVec1);
+    parseFtnType(c2.fileName, f2.ftnName, f2, ndVec2);
+
+    //parseFtype(ndVec1, f1);
+    //parseFtype(ndVec2, f2);
+
+    cout << "Parsing method type..." << endl;
+    testPrintFtnType(f1);
+    testPrintFtnType(f2);
 
     if (compFtype(f1, f2)) return T2;
     else return T1;
@@ -1267,7 +1274,7 @@ int main(int argc, char** argv){
 
     // test for tree manipulation
     /* string fname = "/home/yang/Sources/AutoRefactor/test/2/DigitalPage_Server.UserServiceImpl.java";
-    string ftnname = "newerCreateUser";
+    string ftnname = "getUserByEmail";
     vector<NodeData> ndVec;
     FtnType ftype;
     parseFtnType(fname, ftnname, ftype, ndVec);

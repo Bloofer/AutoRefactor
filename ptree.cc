@@ -619,7 +619,7 @@ void Terminal::getFtnSubtree(std::stringstream &ss, string &fname)
 
 void Terminal::getFtnPdata(std::stringstream &ss, string &fname)
 {
-    if(Terminal::getValue() == fname 
+    if(Terminal::getValue() == fname
       && parent->parent->parent->parent != NULL
       && parent->parent->parent->parent->type == 113) {
         // found ftn subtree. now parse ftn type one by one.

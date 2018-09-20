@@ -600,6 +600,7 @@ vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck){
 vector<string> getAnnotListFromModNdVec(vector<NodeData> &ndVec, int annotCnt){
 
   vector<string> annotList;
+  if (annotCnt == 0) return annotList;
   vector<string> tnodeVec = getTnodeLabelInNdVec(ndVec);
   string tmpAnnot = "";
   bool annotChk = false;
@@ -750,6 +751,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       vector<string> modList = getTnodeLabelInNdVec(modNdVec);
       ftype.modifiers.insert(ftype.modifiers.end(), modList.begin(), modList.end());
 
+      tmpSs.str("");
       tmpNdVec.clear();
     } else if(lineCnt == 2){
       // 2. parse return type
@@ -766,6 +768,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
         }
         ftype.returnType = rTypeStr;
       }
+      tmpSs.str("");
       tmpNdVec.clear();
     } else if(lineCnt == 3){
       // 3. parse ftn name
