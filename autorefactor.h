@@ -13,9 +13,8 @@
 #include "treeTra/token-tree-map.h"
 using namespace std;
 
-int n; // number of clone sites
-
-// refactor data structures
+int n; // number of clones
+bool nc = true; // checker for code patch completes normally. nc stands for normal completion.
 
 // TODO: to impl read meaningful callers to patch
 // struct type for caller datas
@@ -40,6 +39,7 @@ typedef struct{
     string ftnName;
 }CloneData;
 vector<CloneData> cloneDatas;
+vector<FtnType> cloneFtnTypes;
 
 typedef enum {
     CLASS,
@@ -121,14 +121,14 @@ clone_type getCloneType();
 void reportResult();
 
 // functions for type 1 (extract method)
-pair<int, int> getCommonPart();
-vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope);
-vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope);
+pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
+vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, bool &normalCompletion);
+vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, bool &normalCompletion);
 void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
 
 // functions for type 2 (merge method)
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
-void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2);
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
+void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
 // clone patch main functions (for T1 & T2)
 void patchT1();

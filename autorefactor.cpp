@@ -348,12 +348,15 @@ clone_type getCloneType(){
     parseFtnType(c1.fileName, f1.ftnName, f1, ndVec1);
     parseFtnType(c2.fileName, f2.ftnName, f2, ndVec2);
 
-    //parseFtype(ndVec1, f1);
-    //parseFtype(ndVec2, f2);
-
     cout << "Parsing method type..." << endl;
+    cout << "========= Clone Ftn #1 =========" << endl;
     testPrintFtnType(f1);
+    cout << endl << "========= Clone Ftn #2 =========" << endl;
     testPrintFtnType(f2);
+    cout << endl;
+
+    cloneFtnTypes.push_back(f1);
+    cloneFtnTypes.push_back(f2);
 
     if (compFtype(f1, f2)) return T2;
     else return T1;
@@ -379,7 +382,7 @@ void reportResult(){
  * ====================================================
  */
 
-pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
 
     // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
     // 1.1. 일단 syntatic하게 비교해서 아예 같은 구간 먼저 찾아내기.
@@ -417,7 +420,10 @@ pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType 
     int diffFrontRet1 = returnVec1.front().first.lineNo + lineOffset1 - c1.from;
     int diffFrontRet2 = returnVec2.front().first.lineNo + lineOffset2 - c1.from;
 
-    if (diffInt.back() > diffFrontRet1 || diffInt.back() > diffFrontRet2) return pair<int, int>(0, 0);
+    if (diffInt.back() > diffFrontRet1 || diffInt.back() > diffFrontRet2) {
+        normalCompletion = false;
+        return pair<int, int>(0, 0);
+    }
     // error case
 
     int frt, rear;
@@ -426,13 +432,26 @@ pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType 
 
     pair<int, int> tmpPair1 = pair<int, int>(frt + c1.from - lineOffset1, rear + c1.from - lineOffset1);
     pair<int, int> tmpPair2 = pair<int, int>(frt + c2.from - lineOffset2, rear + c2.from - lineOffset2);
-    pair<int, int> scp1 = findBiggestBracketInScope(ndVec1, tmpPair1);
-    pair<int, int> scp2 = findBiggestBracketInScope(ndVec2, tmpPair2);
-    if (scp1.first == 0 && scp1.second == 0) return pair<int, int>(0, 0);
-    if (scp2.first == 0 && scp2.second == 0) return pair<int, int>(0, 0);
+    pair<int, int> scp1 = findBiggestBracketInScope(ndVec1, tmpPair1, normalCompletion);
+    pair<int, int> scp2 = findBiggestBracketInScope(ndVec2, tmpPair2, normalCompletion);
+    if (!normalCompletion) {
+        return pair<int, int>(0, 0);
+    }
+
+    if (scp1.first == 0 && scp1.second == 0) {
+        normalCompletion = false;
+        return pair<int, int>(0, 0);
+    }
+    if (scp2.first == 0 && scp2.second == 0) { 
+        normalCompletion = false;
+        return pair<int, int>(0, 0);
+    }
     // if there is no bracket in the scope
 
-    if (scp1.second - scp1.first != scp2.second - scp2.first) return pair<int, int>(0, 0);
+    if (scp1.second - scp1.first != scp2.second - scp2.first) {
+        normalCompletion = false;
+        return pair<int, int>(0, 0);
+    }
     // error case : cannot find the scope
  
     cp.first = scp1.first - c1.from + lineOffset1;
@@ -441,7 +460,7 @@ pair<int, int> getCommonPart(CloneData &c1, CloneData &c2, FtnType &f1, FtnType 
 
 }
 
-vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, bool &normalCompletion){
 // 사이드 이펙트에 영향을 받는 scope 위쪽 함수 변수 셋 모으기
 
     vector< pair<string, string> > seVarSet;
@@ -524,6 +543,7 @@ vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType
 
     if(!cmpSsPairVec(seVarSet1, seVarSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        normalCompletion = false;
         return seVarSet;
     }
 
@@ -534,7 +554,7 @@ vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType
 
 }
 
-vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope){
+vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, bool &normalCompletion){
 
     vector< pair<string, string> > varSet;
 
@@ -610,6 +630,7 @@ vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &
 
     if(!cmpSsPairVec(varSet1, varSet2)) {
         cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        normalCompletion = false;
         return varSet;
     }
 
@@ -761,7 +782,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
  * ====================================================
  */
 
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
     // function for getting diff part of two clone datas
     vector<int> diffLine;
 
@@ -805,7 +826,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
         // get same token (to except from diff token compare)
         vector<int> tokSame1;
         vector<int> tokSame2;
-        for(int j=0; j<tmpVec1.size() || j<tmpVec2.size(); j++){
+        for(int j=0; j<tmpVec1.size() && j<tmpVec2.size(); j++){
             if(tmpVec1.at(j).first.label == tmpVec2.at(j).first.label) {
                 tokSame1.push_back(j);
                 tokSame2.push_back(j);
@@ -818,14 +839,16 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
         for(int j=0; j<tmpVec1.size(); j++){
             if(intVecContains(tokSame1, j)) continue;
             if(isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
-                cerr << "Error : lvalue found on vec1 diff line. merge should be aborted." << endl;
+                cerr << "Error : Var decl diff(Lvalue diff) found on vec1 diff line. Merging aborted." << endl;
+                normalCompletion = false;
                 hasLvalue |= isLvalueNode(ndVec1, tmpVec1.at(j).second);
             }
         }
         for(int j=0; j<tmpVec2.size(); j++){
             if(intVecContains(tokSame2, j)) continue;
             if(isLvalueNode(ndVec2, tmpVec2.at(j).second)) {
-                 cerr << "Error : lvalue found on vec2 diff line. merge should be aborted." << endl;
+                 cerr << "Error : Var decl diff(Lvalue diff) found on vec2 diff line. Merging aborted." << endl;
+                 normalCompletion = false;
                  hasLvalue |= isLvalueNode(ndVec2, tmpVec2.at(j).second);
             }
         }
@@ -864,7 +887,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
     return diffLine;
 }
 
-void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2){
+void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
     
     string newFtnName = f1.ftnName + f2.ftnName;
     // 1. substitute caller function name with new one.
@@ -875,9 +898,10 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         patchCaller(c2.callers[i], newFtnName, 1);
     }
 
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, normalCompletion); // TODO: refactor this?
     if(diffLine.empty()) {
         cerr << "Diff line empty. Merging method aborted." << endl;
+        nc = false;
         return;
     }
 
@@ -1006,10 +1030,22 @@ void patchT1(){
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, c2.ftnName, ndVec2);
-    parseFtype(ndVec1, f1);
-    parseFtype(ndVec2, f2);
+    
+    if(cloneFtnTypes.size() == 2){
+        f1 = cloneFtnTypes.at(0);
+        f2 = cloneFtnTypes.at(1);
+    } else {
+        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        return;
+    }
+    //parseFtype(ndVec1, f1);
+    //parseFtype(ndVec2, f2);
 
-    pair<int, int> p = getCommonPart(c1, c2, f1, f2);
+    pair<int, int> p = getCommonPart(c1, c2, f1, f2, nc);
+    if(!nc) {
+        cerr << "Error getting common part. Aborting refactor..." << endl;
+        return;
+    }
     tempCodeLine = p.second - p.first + 1;
     
     if(p.first == 0 && p.second == 0) {
@@ -1026,12 +1062,20 @@ void patchT1(){
     parseClassMemVars(c1.fileName);
 
     // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
-    vector< pair<string, string> > varSet = getVarSet(c1, c2, f1, f2, p);
+    vector< pair<string, string> > varSet = getVarSet(c1, c2, f1, f2, p, nc);
+    if(!nc) {
+        cerr << "Error getting var set from clone method. Aborting refactor..." << endl;
+        return;
+    }
 
     pair<int, int> scopeUp;
     scopeUp.first = p.second+1;
     scopeUp.second = c1.cloneSnippet.size();
-    vector< pair<string, string> > seVarSet = getSeVarSet(c1, c2, f1, f2, scopeUp);
+    vector< pair<string, string> > seVarSet = getSeVarSet(c1, c2, f1, f2, scopeUp, nc);
+    if(!nc) {
+        cerr << "Error getting se var set from clone method. Aborting refactor..." << endl;
+        return;
+    }
 
     if(seVarSet.size()>1){
         cerr << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
@@ -1070,13 +1114,24 @@ void patchT2(){
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
     getFtnSubtree(c2.fileName, c2.ftnName, ndVec2);
-    parseFtype(ndVec1, f1);
-    parseFtype(ndVec2, f2);
+    if(cloneFtnTypes.size() == 2){
+        f1 = cloneFtnTypes.at(0);
+        f2 = cloneFtnTypes.at(1);
+    } else {
+        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        return;
+    }
+    //parseFtype(ndVec1, f1);
+    //parseFtype(ndVec2, f2);
 
-    mergeMethod(c1.fileName, c1, c2, f1, f2); // TODO: need to refactor?
+    mergeMethod(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
 
-    reducedLoc = beforePatchLoc - afterPatchLoc;
-    reportResult();
+    if(nc){
+        reducedLoc = beforePatchLoc - afterPatchLoc;
+        reportResult();
+    } else {
+        cout << "Patch completed abnormally. Couldn't patch this clone pair." << endl;
+    }
 
     // TODO: refactor to below instruction
     // 1. diff 부분 확인하기. R-value만, L-value는 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
@@ -1269,6 +1324,14 @@ int main(int argc, char** argv){
     readFile(argv[2]); // 1. reads input data
 
     clone_type ct = getCloneType();
+    if(ct == T1){
+        cout << "===== Clone patch type T1. Extract Method starting. =====" << endl << endl;
+    } else if(ct == T2){
+        cout << "===== Clone patch type T2. Merge Method starting. =====" << endl << endl;
+    } else {
+        cout << "Could not solve clone patch type. Abort refactor. =====" << endl << endl;
+        return 0;
+    }
     refactor(ct); // 2. refactor the code according to the clone datas
     //testPrintCode(tempClone);
 

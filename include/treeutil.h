@@ -74,7 +74,7 @@ bool isLvalueNode(vector<NodeData> &ndVec, int idx);
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
 void getPtree(string &fileName, stringstream &ss);
 vector< pair<NodeData, int> > findNodeByLabel(vector<NodeData> &ndVec, string label);
-pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope);
+pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope, bool &normalCompletion);
 vector< pair<string, string> > findPrmtvLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope);
 vector< pair<string, string> > findLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope);
 void printNodeVector(vector<NodeData> &ndVec);

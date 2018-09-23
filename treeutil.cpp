@@ -231,7 +231,7 @@ vector< pair<NodeData, int> > findNodeByLabel(vector<NodeData> &ndVec, string la
 
 }
 
-pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope){
+pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope, bool &normalCompletion){
   // returns vector line pair of the biggest bracket
 
   // 구간 내 터미널 라인 번호 터미널 노드 먼저 짚기
@@ -286,6 +286,13 @@ pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int>
       }
     }
 
+  }
+
+  pair<int, int> emptyPair = pair<int, int>(0, 0);
+  if(stmtScopeVec.empty()) {
+    cerr << "Error : Couldn't get bracket in the scope. Abort method extraction." << endl;
+    normalCompletion = false;
+    return emptyPair;
   }
 
   // find biggest bracket pair
@@ -814,12 +821,17 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
         } else if (argCnt == 1){
           // if one or more args found, parse arg one by one
           vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
-          string argT = "";
-          for(int i=0; i<labels.size()-1; i++){
-            argT += labels.at(i);
+          if(!labels.empty()){
+            string argT = "";
+            for(int i=0; i<labels.size()-1; i++){
+              argT += labels.at(i);
+            }
+            string argN = labels.back();
+            ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
+          } else {
+            cerr << "Error : parsing error in processing ftn return type." << endl;
+            return;
           }
-          string argN = labels.back();
-          ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
           tmpSs.str("");
           tmpNdVec.clear();
         } else {
@@ -827,8 +839,8 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
           // 1. split tnode list
           // 2. push_back args from tnode list
           vector< pair<string, string> > argList = getArgListFromArgNdVec(tmpNdVec, argCnt);
-          //ftype.ftnArgs.insert(ftype.ftnArgs.end(), argList.begin(), argList.end());
-          ftype.ftnArgs = argList;
+          ftype.ftnArgs.insert(ftype.ftnArgs.end(), argList.begin(), argList.end());
+          //ftype.ftnArgs = argList;
           tmpSs.str("");
           tmpNdVec.clear();
         }
@@ -845,7 +857,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       // TODO: only 1 exception is parsed. need to expand to accept multi exception throws.
       ss2NodeVec(tmpNdVec, tmpSs);
       vector<string> labels = getTnodeLabelInNdVec(tmpNdVec);
-      ftype.exceptions.push_back(labels.back());
+      if(!labels.empty()) ftype.exceptions.push_back(labels.back());
       tmpNdVec.clear();
       tmpSs.str("");
     } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && exctParsed) {
@@ -856,6 +868,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     lineCnt++;  
   }
 
+  
 
   //ss2NodeVec(ndVec, ss);
 
