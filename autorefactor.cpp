@@ -288,9 +288,9 @@ bool compFtype(FtnType &f1, FtnType &f2){
     for(int i=0; i<f1.ftnArgs.size(); i++){
         same &= (f1.ftnArgs.at(i).first == f2.ftnArgs.at(i).first) && (f1.ftnArgs.at(i).second == f2.ftnArgs.at(i).second);
     }
-    /* for(int i=0; i<f1.exceptions.size(); i++){
+    for(int i=0; i<f1.exceptions.size(); i++){
         same &= (f1.exceptions.at(i) == f2.exceptions.at(i));
-    } */
+    }
     return same;
 
 }
@@ -316,6 +316,11 @@ string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
 }
 
 clone_type getCloneType(){
+
+    if(cloneDatas.size() < 2){
+        cerr << "Clone datas not parsed. Abort process." << endl;
+        return ERR;
+    }
 
     CloneData c1, c2;
     c1 = cloneDatas.front();
@@ -924,7 +929,27 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         ftnDecl += f1.ftnArgs[i].second;
         ftnDecl += ", ";
     }
-    ftnDecl += "int flag) {"; // TODO: maybe need to refactor b.c. parenthesis not in first line?
+    ftnDecl += "int flag)";
+    
+    if(f1.exceptions.empty() && f1.bopenLine == 0) ftnDecl += " {";
+    // else if(f1.exceptions.empty() && f1.bopenLine != 0) // skip b.c. bracket opener appear next line.
+    else if(f1.exceptions.size() == 1 && f1.bopenLine == 0) ftnDecl += " throws " + f1.exceptions.front() + " {";
+    else if(f1.exceptions.size() == 1 && f1.bopenLine != 0) ftnDecl += " throws " + f1.exceptions.front();
+    else if(f1.exceptions.size() > 1  && f1.bopenLine == 0) {
+        ftnDecl += " throws ";
+        for(int i=0; i<f1.exceptions.size()-1; i++){
+            ftnDecl += f1.exceptions.at(i) + ", ";
+        }
+        ftnDecl += f1.exceptions.back() + " {";
+    } else if(f1.exceptions.size() > 1  && f1.bopenLine != 0) {
+        ftnDecl += " throws ";
+        for(int i=0; i<f1.exceptions.size()-1; i++){
+            ftnDecl += f1.exceptions.at(i) + ", ";
+        }
+        ftnDecl += f1.exceptions.back();
+    }
+
+    // TODO: maybe need to refactor b.c. parenthesis not in first line?
     tempClone.push_back(ftnDecl);
 
     // check for adjacent clone lines;
@@ -1329,7 +1354,7 @@ int main(int argc, char** argv){
     } else if(ct == T2){
         cout << "===== Clone patch type T2. Merge Method starting. =====" << endl << endl;
     } else {
-        cout << "Could not solve clone patch type. Abort refactor. =====" << endl << endl;
+        cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
     refactor(ct); // 2. refactor the code according to the clone datas
