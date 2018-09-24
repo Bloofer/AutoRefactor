@@ -1045,3 +1045,108 @@ string getClassModifier(string &file_name, string &class_type){
   string find = pt->getRoot()->findCnode("class", class_type);
 
 }
+
+bool has_arrow(string &s) {
+	std::size_t found = s.find("->");
+  	return (found!=std::string::npos);
+}
+
+string mytrim(string s) {
+	std::size_t first_comma = s.find("\"");
+	std::size_t second_comma = s.find("\"", first_comma + 1);
+	return s.substr(first_comma + 1, second_comma - first_comma - 1);
+}
+
+void mysplit(string &line, string &caller, string &callee) {
+	std::size_t found = line.find("->");
+	caller = mytrim(line.substr(0, found));
+	callee = mytrim(line.substr(found + 2, line.length() - found - 2));
+}
+
+bool has_java(string &str) {
+  std::size_t found = str.find("java");
+  return (found == 0);
+}
+
+bool c_exists(vector<string> &c_list, string &s)
+{
+  vector<string>::iterator it = c_list.begin();
+  for (; it != c_list.end(); ++it)
+  {  
+    if ((*it).compare(s) == 0) return true;
+  }
+  return false;
+}
+
+string getCname(string &str) {
+  std::size_t p_occur = str.find("(");
+  std::size_t d_fst_occur = str.rfind(".", p_occur);
+  std::size_t d_snd_occur = str.rfind(".", d_fst_occur - 1);
+
+  if (d_fst_occur == 0 || d_snd_occur == 0) return "";
+  else return str.substr(d_snd_occur + 1, (d_fst_occur - d_snd_occur - 1));
+}
+
+string getFname(string &str) {
+  std::size_t p_occur = str.find("(");
+  std::size_t d_occur = str.rfind(".", p_occur);
+
+  if (p_occur == 0 || d_occur == 0) return "";
+  else return str.substr(d_occur + 1, (p_occur - d_occur - 1));
+}
+
+void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list){
+	
+  ifstream infile(dotfile.c_str());	
+	string lin;
+  CallGraph cg;
+	while (getline(infile, lin))
+	{
+		if (has_arrow(lin)) {
+			string caller;
+			string callee;
+			mysplit(lin, caller, callee);
+      if (!has_java(callee)) //std::cout << caller << " ---- " << callee << std::endl; // to except std library call
+      {
+        //cg.caller_path = caller;
+        cg.caller_cname = getCname(caller);
+        cg.caller_fname = getFname(caller);
+        //cg.callee_path = callee;
+        cg.callee_cname = getCname(callee);
+        //cg.callee_fname = getFname(callee);
+
+        if (c_exists(c_list, cg.callee_cname)) cg_list.push_back(cg);
+        
+        cg.caller_cname = cg.caller_fname = cg.callee_cname = "";
+      }
+		}
+	}
+
+}
+
+// comparison, not case sensitive.
+bool compare_cg (CallGraph &fst, CallGraph &snd)
+{
+  unsigned int i=0;
+  string first = fst.callee_cname;
+  string second = snd.callee_cname;
+
+  while ( (i<first.length()) && (i<second.length()) )
+  {
+    if (tolower(first[i])<tolower(second[i])) return true;
+    else if (tolower(first[i])>tolower(second[i])) return false;
+    ++i;
+  }
+  return ( first.length() < second.length() );
+}
+
+// functor for CG list unique function call
+bool same_cg (CallGraph cg1, CallGraph cg2)
+{ 
+  bool rddc_chk = (cg1.caller_cname.compare(cg2.caller_cname) == 0) &&
+                  (cg1.caller_fname.compare(cg2.caller_fname) == 0) &&
+                  (cg1.callee_cname.compare(cg2.callee_cname) == 0); // &&
+                  //(cg1.callee_fname.compare(cg2.callee_fname) == 0);
+
+  return rddc_chk;
+}

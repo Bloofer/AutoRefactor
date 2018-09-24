@@ -89,3 +89,14 @@ void print2ssFtnSubtree(string &fileName, string &ftnName);
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
 void printss(string &fileName);
 string getClassModifier(string &file_name, string &class_type);
+bool has_arrow(string &s);
+string mytrim(string s);
+void mysplit(string &line, string &caller, string &callee);
+bool has_java(string &str);
+bool c_exists(vector<string> &c_list, string &s);
+string getCname(string &str);
+string getFname(string &str);
+void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list);
+bool compare_cg (CallGraph &fst, CallGraph &snd);
+bool same_cg (CallGraph cg1, CallGraph cg2);
+

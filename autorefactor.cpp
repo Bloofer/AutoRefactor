@@ -1331,7 +1331,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1357,21 +1357,25 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); // 2. refactor the code according to the clone datas
-    //testPrintCode(tempClone);
+    refactor(ct); // 2. refactor the code according to the clone datas */
 
-    // test for tree manipulation
-    /* string fname = "/home/yang/Sources/AutoRefactor/test/2/DigitalPage_Server.UserServiceImpl.java";
-    string ftnname = "getUserByEmail";
-    vector<NodeData> ndVec;
-    FtnType ftype;
-    parseFtnType(fname, ftnname, ftype, ndVec);
-    testPrintFtnType(ftype); */
-    //getFtnSubtree(fname, ftnname, ndVec);
-    //print2ssFtnSubtree(fname, ftnname);
-    //vector<FtnData> fdVec;
-    //getAllFtnData(fname, fdVec);
-    //testPrintFdVec(fdVec);
+    // test for callgraph patching
+    // test with eprint/3/
+    vector<string> cname_lst;
+    cname_lst.push_back("HistoryLogAction");
+    
+    vector<CallGraph> cg_lst;
+
+    getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
+    sort(cg_lst.begin(), cg_lst.end(), compare_cg);
+    vector<CallGraph>::iterator it;
+    it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
+    cg_lst.resize(distance(cg_lst.begin(), it));
+
+    cout << cg_lst.size() << endl;
+    for(int i=0; i<cg_lst.size(); i++){
+        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
+    }
 
     return 0;
 
