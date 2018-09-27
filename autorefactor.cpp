@@ -1362,20 +1362,35 @@ int main(int argc, char** argv){
     // test for callgraph patching
     // test with eprint/3/
     vector<string> cname_lst;
-    cname_lst.push_back("HistoryLogAction");
+    cname_lst.push_back("ViewFspPolicyConsoleAction");
     
     vector<CallGraph> cg_lst;
 
-    getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
+    //getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
+    string cname = "ViewFspPolicyConsoleAction";
+    string fname = "getParameter";
+    getFtnCallerData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname, fname);
+    
     sort(cg_lst.begin(), cg_lst.end(), compare_cg);
-    vector<CallGraph>::iterator it;
-    it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
-    cg_lst.resize(distance(cg_lst.begin(), it));
+    
+    // make unique (i think this should be deprecated)
+    //vector<CallGraph>::iterator it;
+    //it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
+    //cg_lst.resize(distance(cg_lst.begin(), it));
 
     cout << cg_lst.size() << endl;
     for(int i=0; i<cg_lst.size(); i++){
-        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
+        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).callee_fname << " " << cg_lst.at(i).caller_path << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
     }
+
+    // test for method invocation checking
+    // method invocation : 122
+    /* string fileName = "/home/yang/Sources/Fasoo/bench/ePrint/ePrint.com.fasoo.drmone.fsp.service.console.struts.ViewFspPolicyConsoleAction.java";
+    string ftnName = "getParameter";
+
+    vector<NodeData> ndVec;
+    getFtnSubtree(fileName, ftnName, ndVec);
+    printNodeVector(ndVec); */
 
     return 0;
 

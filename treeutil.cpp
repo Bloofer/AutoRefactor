@@ -1078,6 +1078,12 @@ bool c_exists(vector<string> &c_list, string &s)
   return false;
 }
 
+bool cls_exists(string &cName, string &s)
+{  
+  if (cName.compare(s) == 0) return true;
+  else return false;
+}
+
 string getCname(string &str) {
   std::size_t p_occur = str.find("(");
   std::size_t d_fst_occur = str.rfind(".", p_occur);
@@ -1113,11 +1119,40 @@ void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string>
         cg.caller_fname = getFname(caller);
         //cg.callee_path = callee;
         cg.callee_cname = getCname(callee);
-        //cg.callee_fname = getFname(callee);
+        cg.callee_fname = getFname(callee);
 
         if (c_exists(c_list, cg.callee_cname)) cg_list.push_back(cg);
         
         cg.caller_cname = cg.caller_fname = cg.callee_cname = "";
+      }
+		}
+	}
+
+}
+
+void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, string &fName){
+	
+  ifstream infile(dotfile.c_str());	
+	string lin;
+  CallGraph cg;
+	while (getline(infile, lin))
+	{
+		if (has_arrow(lin)) {
+			string caller;
+			string callee;
+			mysplit(lin, caller, callee);
+      if (!has_java(callee)) //std::cout << caller << " ---- " << callee << std::endl; // to except std library call
+      {
+        cg.caller_path = caller;
+        cg.caller_cname = getCname(caller);
+        cg.caller_fname = getFname(caller);
+        //cg.callee_path = callee;
+        cg.callee_cname = getCname(callee);
+        cg.callee_fname = getFname(callee);
+
+        if (cls_exists(cName, cg.callee_cname) && cls_exists(fName, cg.callee_fname)) cgList.push_back(cg);
+        
+        cg.caller_path = cg.caller_cname = cg.caller_fname = cg.callee_cname = cg.callee_fname = "";
       }
 		}
 	}

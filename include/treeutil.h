@@ -33,12 +33,12 @@ typedef struct _ClassHierarchy {
 
 // maybe needed to be expanded?
 typedef struct _CallGraph {
-//  string caller_path; // caller's full path   ex) fasoo.eprint.f1....
+  string caller_path; // caller's full path   ex) fasoo.eprint.f1....
   string caller_cname;// caller's class name
   string caller_fname;// caller's function name
 //  string callee_path; // callee's full path
   string callee_cname;// callee's class name
-//  string callee_fname;// callee's function name
+  string callee_fname;// callee's function name
 } CallGraph;
 
 typedef struct{
@@ -97,6 +97,7 @@ bool c_exists(vector<string> &c_list, string &s);
 string getCname(string &str);
 string getFname(string &str);
 void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list);
+void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, string &fName);
 bool compare_cg (CallGraph &fst, CallGraph &snd);
 bool same_cg (CallGraph cg1, CallGraph cg2);
 
