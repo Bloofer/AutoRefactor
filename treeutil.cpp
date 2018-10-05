@@ -1084,6 +1084,15 @@ bool cls_exists(string &cName, string &s)
   else return false;
 }
 
+string getPath(string &str) {
+  std::size_t p_occur = str.find("(");
+  std::size_t d_fst_occur = str.rfind(".", p_occur);
+  std::size_t d_snd_occur = str.rfind(".", d_fst_occur - 1);
+
+  if (d_fst_occur == 0 || d_snd_occur == 0) return "";
+  else return str.substr(0, d_fst_occur);
+}
+
 string getCname(string &str) {
   std::size_t p_occur = str.find("(");
   std::size_t d_fst_occur = str.rfind(".", p_occur);
@@ -1143,7 +1152,7 @@ void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, 
 			mysplit(lin, caller, callee);
       if (!has_java(callee)) //std::cout << caller << " ---- " << callee << std::endl; // to except std library call
       {
-        cg.caller_path = caller;
+        cg.caller_path = getPath(caller);
         cg.caller_cname = getCname(caller);
         cg.caller_fname = getFname(caller);
         //cg.callee_path = callee;

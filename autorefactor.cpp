@@ -33,6 +33,10 @@ void readFile(char* alarmFile){
         tmpCdata.cloneSnippet.clear();
     }
 
+    // TODO: analyze call graph and insert caller data here!
+    // 1. analyze call graph (fetch caller data for clone ftn 1 & 2)
+    // 2. parse caller ftn tree and insert caller data (need to get caller's obj name, call args etc...)
+
     int callerNum;
     Caller tmpCaller;
 
@@ -954,12 +958,52 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     // check for adjacent clone lines;
     bool adjacent = false;
+    bool asserted = false;
     vector<string> cloneDummy1; 
     vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
     string ifOpen;
 
     for(int i=1; i<c1.cloneSize; i++){
-        if (!intVecContains(diffLine, i)) tempClone.push_back(c1.cloneSnippet[i]);
+        if (!intVecContains(diffLine, i)) {
+
+            // Flag 값에 대한 Assertion 삽입
+            // Merge case가 2개인 경우에 대한 Flag Assertion
+            if(!asserted && f1.bopenLine == 0) {
+                bool strFnd = false;
+                int strIdx = i;
+                while(!strFnd && strIdx<c1.cloneSize){
+                    if(strOnlySpaces(c1.cloneSnippet[strIdx])) strIdx++;
+                    else strFnd = true;
+                }
+                if(!strFnd) { 
+                    cerr << "Error : String parse error on processing assertion insertion." << endl;
+                    return;
+                }
+                tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
+                tabStr = c1.cloneSnippet[strIdx].substr(0, tabIdx);
+                string assertStr = tabStr + "assert flag >= 0 && flag <= 1;";
+                tempClone.push_back(assertStr);
+                asserted = true;
+            } else if(!asserted && f1.bopenLine != 0 && i>1) {
+                bool strFnd = false;
+                int strIdx = i;
+                while(!strFnd && strIdx<c1.cloneSize){
+                    if(strOnlySpaces(c1.cloneSnippet[strIdx])) strIdx++;
+                    else strFnd = true;
+                }
+                if(!strFnd) { 
+                    cerr << "Error : String parse error on processing assertion insertion." << endl;
+                    return;
+                }
+                tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
+                tabStr = c1.cloneSnippet[strIdx].substr(0, tabIdx);
+                string assertStr = tabStr + "assert flag >= 0 && flag <= 1;";
+                tempClone.push_back(assertStr);
+                asserted = true;
+            }
+
+            tempClone.push_back(c1.cloneSnippet[i]);
+        }
         else {
             tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
             tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
@@ -1331,7 +1375,7 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1357,18 +1401,18 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); // 2. refactor the code according to the clone datas */
+    refactor(ct); // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
-    vector<string> cname_lst;
-    cname_lst.push_back("ViewFspPolicyConsoleAction");
+    /* vector<string> cname_lst;
+    cname_lst.push_back("FasooMessageParser");
     
     vector<CallGraph> cg_lst;
 
     //getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
-    string cname = "ViewFspPolicyConsoleAction";
-    string fname = "getParameter";
+    string cname = "FasooMessageParser";
+    string fname = "parse2";
     getFtnCallerData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname, fname);
     
     sort(cg_lst.begin(), cg_lst.end(), compare_cg);
@@ -1381,7 +1425,7 @@ int main(int argc, char** argv){
     cout << cg_lst.size() << endl;
     for(int i=0; i<cg_lst.size(); i++){
         cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).callee_fname << " " << cg_lst.at(i).caller_path << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
-    }
+    } */
 
     // test for method invocation checking
     // method invocation : 122
