@@ -58,6 +58,7 @@ typedef struct{
 typedef struct{
     vector<string> modifiers;
     string returnType;
+    bool rTypeRef; // if the return type of ftn is reference, else primitive
     vector< pair<string, string> > ftnArgs; // pair for (arg_type, arg_name). vector for multiple args
     string ftnName;
     vector<string> exceptions;

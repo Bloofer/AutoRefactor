@@ -92,6 +92,20 @@ void parseFtype(vector<NodeData> &ndVec, FtnType &ftype){
   bool ndeli = false;
   int fstL;
 
+  bool rTypeFnd = false;
+  for(int i=0; i<ndVec.size()-1; i++){
+    if(ndVec.at(i).nodeId == 123 && ndVec.at(i+1).nodeId == 117){
+      ftype.rTypeRef = false;
+      rTypeFnd = true;
+      break;
+    } else if(ndVec.at(i).nodeId == 123 && ndVec.at(i+1).nodeId == 62){
+      ftype.rTypeRef = true;
+      rTypeFnd = true;
+      break;
+    }
+  }
+  if(!rTypeFnd) cerr << "Error parsing ftype on rType ref checking." << endl;
+
   vector<string> tokVec;
 
   for(int i=0; i<ndVec.size()-2; i++){

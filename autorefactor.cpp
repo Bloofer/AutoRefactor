@@ -1035,6 +1035,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     bool asserted = false;
     vector<string> cloneDummy1; 
     vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
+    vector<string> dummyRear; // dummy to put return stmt on the rear
     string ifOpen;
     int dInfoIdx = 0;
 
@@ -1081,6 +1082,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         else {
             tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
             tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
+            string retStr = tabStr;
 
             // NOTE
             // Statement 분기 알고리즘
@@ -1103,6 +1105,18 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
                 dInfoIdx++;
                 tempClone.push_back(declStr);
+            } else if (diffInfo.at(dInfoIdx).diffType == 1){
+                if (f1.rTypeRef) {
+                    retStr += "return null;";
+                } else {
+                    if (f1.returnType == "boolean") {
+                        retStr += "return false;";
+                    } else {
+                        retStr += "return 0;";
+                    }
+                }
+
+                dInfoIdx++;
             } else {
                 dInfoIdx++;
             }
@@ -1120,7 +1134,6 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                     if (diffInfo.at(dInfoIdx-1).diffType == 2){
                         cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
                         cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
-                        cout << c1.cloneSnippet[i] << endl;
                         int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
                         int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
                         cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
@@ -1130,6 +1143,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                         cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
                         cloneDummy1.push_back(tabStr + c1.cloneSnippet[i]);
                         cloneDummy2.push_back(tabStr + c2.cloneSnippet[i]);
+                        if (diffInfo.at(dInfoIdx-1).diffType == 1) dummyRear.push_back(retStr);
                     }
                     ifOpen = tabStr;
                     adjacent = true;
@@ -1140,12 +1154,12 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                     if (diffInfo.at(dInfoIdx-1).diffType == 2){
                         int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
                         int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
-                        cout << c1.cloneSnippet[i] << endl;
                         tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(varIdx1));
                         tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(varIdx2));
                     } else {
                         tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
                         tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
+                        if (diffInfo.at(dInfoIdx-1).diffType == 1) tempClone.push_back(retStr);
                     }
                 }
 
@@ -1156,20 +1170,18 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                     if (diffInfo.at(dInfoIdx-1).diffType == 2) {
                         int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
                         int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
-                        cout << "inner" << endl;
-                        cout << c1.cloneSnippet[i] << endl;
                         cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
                         cloneDummy2.push_back(tabStr + c2.cloneSnippet[i].substr(varIdx2));
                     } else {
                         cloneDummy1.push_back(c1.cloneSnippet[i]);
-                        cloneDummy2.push_back(c2.cloneSnippet[i]);                    
+                        cloneDummy2.push_back(c2.cloneSnippet[i]);
+                        if (diffInfo.at(dInfoIdx-1).diffType == 1) dummyRear.push_back(retStr);                    
                     }
                 } else {
 
                     if (diffInfo.at(dInfoIdx-1).diffType == 2) {
                         int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
                         int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
-                        cout << c1.cloneSnippet[i] << endl;
                         cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
                         cloneDummy1.push_back(ifOpen + "}");
                         cloneDummy2.push_back(tabStr + c2.cloneSnippet[i].substr(varIdx2));
@@ -1179,14 +1191,17 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                         cloneDummy1.push_back(ifOpen + "}");
                         cloneDummy2.push_back(c2.cloneSnippet[i]);
                         cloneDummy2.push_back(ifOpen + "}");
+                        if (diffInfo.at(dInfoIdx-1).diffType == 1) dummyRear.push_back(retStr);
                     }
 
                     // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
                     tempClone.insert(tempClone.end(), cloneDummy1.begin(), cloneDummy1.end());
                     tempClone.insert(tempClone.end(), cloneDummy2.begin(), cloneDummy2.end());
+                    tempClone.insert(tempClone.end(), dummyRear.begin(), dummyRear.end());
 
                     cloneDummy1.clear();
                     cloneDummy2.clear();      
+                    dummyRear.clear();      
                     adjacent = false;              
                 }
             }
