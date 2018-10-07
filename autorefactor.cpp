@@ -791,7 +791,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
  * ====================================================
  */
 
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion){
     // function for getting diff part of two clone datas
     vector<int> diffLine;
 
@@ -843,8 +843,16 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool
         }
         //cout << tokSame1.size() << tokSame2.size() << endl;
 
+        // testPrintNdPairVec(tmpVec1);
+        // TODO: tmpVec은 해당 라인에 대한 터미널 노드 정보만 가짐. 나중에 타입 파싱시 사용하자.
+
+        vector<NodeData> testNdVec = findNodeByLineWithNt(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
+        printNodeVector(testNdVec);
+        cout << endl << endl;
+
         vector<int> emptyVec;
         // Diff line Lvalue check part
+        // Diff line Var Decl & Retur Stmt check part
         for(int j=0; j<tmpVec1.size(); j++){
             if(intVecContains(tokSame1, j)) continue;
             if(isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
@@ -907,7 +915,9 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         patchCaller(c2.callers[i], newFtnName, 1);
     }
 
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, normalCompletion); // TODO: refactor this?
+    vector<DiffInfo> diffInfo;
+
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, normalCompletion); // TODO: refactor this?
     if(diffLine.empty()) {
         cerr << "Diff line empty. Merging method aborted." << endl;
         nc = false;
@@ -965,7 +975,6 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     for(int i=1; i<c1.cloneSize; i++){
         if (!intVecContains(diffLine, i)) {
-
             // Flag 값에 대한 Assertion 삽입
             // Merge case가 2개인 경우에 대한 Flag Assertion
             if(!asserted && f1.bopenLine == 0) {
@@ -1008,10 +1017,22 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             tabIdx = c1.cloneSnippet[i].find_first_not_of(" \t\r\n"); // this is for code formatting
             tabStr = c1.cloneSnippet[i].substr(0, tabIdx);
 
+            // NOTE
+            // Statement 분기 알고리즘
+            // 한 줄 분기 -> Var Decl 아닌 경우 - 그대로
+            //          -> Var Decl 인 경우 - Ref 타입은 분기문 위로 변수 선언을 빼서 null로 초기화 후 assign은 분기에 각각
+            //                             - Prmtv 타입은 bool일 때 false로, 나머지는 0으로 초기화 후 assign은 분기에 각각
+            // 여러 줄 분기 -> 위와 상동. Var Decl 변수 선언 모두 모아서 분기문 위쪽으로 올리기.
+
+            // Return 문 분기 알고리즘
+            // 위와 상동. Var Decl과 다르게, 함수의 반환 타입 보고 이건 분기 아래로 빼야 함.
+
             if(!adjacent){
             // 처음 중복 라인 찾아서 브랜치 나누는 경우
                 if(i<c1.cloneSize-1 && intVecContains(diffLine, i+1)){
                 // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
+
+                    // Statement 분기가 여러 줄인 경우
                     cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
                     cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
                     cloneDummy1.push_back(c1.cloneSnippet[i]);
@@ -1019,6 +1040,8 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                     ifOpen = tabStr;
                     adjacent = true;
                 } else {
+
+                    // Statement 분기가 한 줄인 경우
                     tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
                     tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
                 }
@@ -1365,6 +1388,18 @@ void testPrintFdVec(vector<FtnData> &fdVec){
 
 }
 
+void testPrintNdPairVec(vector< pair<NodeData, int> > &ndPairVec){
+
+    cout << " ===== Pair of NodeData & Line Num Vector ===== \n";
+    for(int i=0; i<ndPairVec.size(); i++){
+        cout << "#" << ndPairVec.at(i).second << " | ";
+        if (ndPairVec.at(i).first.isTerminal) cout << "T  | ";
+        else cout << "NT | ";
+        cout << ndPairVec.at(i).first.label << " | " << ndPairVec.at(i).first.nodeId << " | " << ndPairVec.at(i).first.lineNo << endl;
+    }
+    cout << endl;
+
+}
 
 /*
  * ====================================================

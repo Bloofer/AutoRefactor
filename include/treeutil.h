@@ -73,12 +73,16 @@ bool hasNodeId(vector<NodeData> &ndVec, int idx, int id);
 bool isLvalueNode(vector<NodeData> &ndVec, int idx);
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
 void getPtree(string &fileName, stringstream &ss);
+
 vector< pair<NodeData, int> > findNodeByLabel(vector<NodeData> &ndVec, string label);
 pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int> &scope, bool &normalCompletion);
 vector< pair<string, string> > findPrmtvLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope);
 vector< pair<string, string> > findLocVarInScope(vector<NodeData> &ndVec, pair<int, int> &scope);
 void printNodeVector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNum);
+vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum);
+vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck);
+
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<NodeData> &ndVec);
@@ -88,6 +92,7 @@ void dumpPtree(string &fileName);
 void print2ssFtnSubtree(string &fileName, string &ftnName);
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
 void printss(string &fileName);
+
 string getClassModifier(string &file_name, string &class_type);
 bool has_arrow(string &s);
 string mytrim(string s);
@@ -96,6 +101,7 @@ bool has_java(string &str);
 bool c_exists(vector<string> &c_list, string &s);
 string getCname(string &str);
 string getFname(string &str);
+
 void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list);
 void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, string &fName);
 bool compare_cg (CallGraph &fst, CallGraph &snd);

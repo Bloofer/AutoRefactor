@@ -55,6 +55,14 @@ typedef struct{
     int lineNum;
 }ClassType;
 
+typedef struct{
+    int diffType; // var decl : 0, return stmt : 1, others : 2
+    int lineNum; // line num in the file
+    bool isRef; // (if diff stmt is var decl,) check the decl type is reference
+    string typeName; // (if diff stmt is var decl,) fetch the decl type name
+    string varName; // (if diff stmt is var decl,) fetch the decl var name
+}DiffInfo;
+
 typedef enum {
     T1,
     T2,
@@ -127,7 +135,7 @@ vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &
 void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
 
 // functions for type 2 (merge method)
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion);
 void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
 // clone patch main functions (for T1 & T2)
@@ -143,3 +151,4 @@ void testPrintArgCalls(CloneData &cd);
 void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnTypeDef);
 void testPrintClassType(ClassType &c);
 void testPrintFdVec(vector<FtnData> &fdVec);
+void testPrintNdPairVec(vector< pair<NodeData, int> > &ndPairVec);

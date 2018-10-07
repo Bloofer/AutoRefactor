@@ -462,6 +462,30 @@ vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNu
 
 }
 
+vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum){
+
+  vector<NodeData> outVec;
+  int frt, bck;
+  bool frtFnd = false;
+  bool bckFnd = false;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if (ndVec.at(i).lineNo == lineNum) {
+      frtFnd = true;
+      bck = i;
+      bckFnd = true;
+    } else if (!frtFnd && (ndVec.at(i).lineNo < lineNum)) {
+      frt = i;
+    }
+  }
+
+  if (!bckFnd) cerr << "Error during analysis on parse tree data" << endl;
+
+  outVec = getSubNdVec(ndVec, frt, bck);
+  return outVec;
+
+}
+
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum){
 
   // checks if specific line has pair of parenthesis
