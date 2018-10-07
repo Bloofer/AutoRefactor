@@ -56,7 +56,7 @@ typedef struct{
 }ClassType;
 
 typedef struct{
-    int diffType; // var decl : 0, return stmt : 1, others : 2
+    int diffType; // others : 0, return stmt : 1, var decl : 2
     int lineNum; // line num in the file
     bool isRef; // (if diff stmt is var decl,) check the decl type is reference
     string typeName; // (if diff stmt is var decl,) fetch the decl type name
@@ -152,3 +152,4 @@ void testPrintClassNftnType(vector< pair< vector<string>, int > > &classNftnType
 void testPrintClassType(ClassType &c);
 void testPrintFdVec(vector<FtnData> &fdVec);
 void testPrintNdPairVec(vector< pair<NodeData, int> > &ndPairVec);
+void testPrintDiffInfo(DiffInfo &dInfo);

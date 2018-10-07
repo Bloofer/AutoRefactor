@@ -470,18 +470,18 @@ vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum){
   bool bckFnd = false;
 
   for(int i=0; i<ndVec.size(); i++){
-    if (ndVec.at(i).lineNo == lineNum) {
+    if (ndVec.at(i).isTerminal && ndVec.at(i).lineNo == lineNum) {
       frtFnd = true;
       bck = i;
       bckFnd = true;
-    } else if (!frtFnd && (ndVec.at(i).lineNo < lineNum)) {
+    } else if (!frtFnd && ndVec.at(i).isTerminal && (ndVec.at(i).lineNo < lineNum)) {
       frt = i;
     }
   }
 
   if (!bckFnd) cerr << "Error during analysis on parse tree data" << endl;
 
-  outVec = getSubNdVec(ndVec, frt, bck);
+  outVec = getSubNdVec(ndVec, frt + 1, bck);
   return outVec;
 
 }

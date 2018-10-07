@@ -791,6 +791,60 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
  * ====================================================
  */
 
+DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
+
+    DiffInfo dinfo;
+    bool fnd = false;
+
+    for(int i=0; i<ndVec.size(); i++){
+        if(!fnd && !ndVec.at(i).isTerminal && i<ndVec.size()-1){
+            if(ndVec.at(i).nodeId == 162) {
+                dinfo.diffType = 1; // return stmt
+                fnd = true;
+                break;
+            }
+            else if(ndVec.at(i).nodeId == 23 && ndVec.at(i+1).nodeId == 145) {
+                dinfo.diffType = 2; // var decl
+                fnd = true;
+            }
+        } else if(fnd && dinfo.diffType == 2 && i<ndVec.size()-1) {
+            if(ndVec.at(i).nodeId == 123 && ndVec.at(i).nodeId == 62) {
+                dinfo.isRef = true; // var type is reference
+                break;
+            } else if(ndVec.at(i).nodeId == 123 && ndVec.at(i).nodeId == 117) {
+                dinfo.isRef = false; // var type is primitive
+                break;
+            }
+        }
+    }
+    if(!fnd) dinfo.diffType = 0; // others
+
+    if(dinfo.diffType == 2){
+        // if stmt type is var decl, parse type & var name
+        vector<string> tnodeVec = getTnodeLabelInNdVec(ndVec);
+        int assignIdx = 0;
+        bool asnFnd = false;
+        for(int i=0; i<tnodeVec.size(); i++){
+            if(!asnFnd && tnodeVec.at(i) == "=") { 
+                asnFnd = true;
+                break;
+            } else assignIdx++;
+        }
+
+        if(!asnFnd) cerr << "Error on DiffInfo parsing. Cannot parse stmt var types." << endl;
+        else {
+            string varType = "";
+            for(int i=0; i<assignIdx-1; i++) varType += tnodeVec.at(i);
+            string varName = tnodeVec.at(assignIdx-1);
+            dinfo.typeName = varType;
+            dinfo.varName = varName;
+        }
+    }
+
+    return dinfo;
+
+}
+
 vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion){
     // function for getting diff part of two clone datas
     vector<int> diffLine;
@@ -842,13 +896,16 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
             }
         }
         //cout << tokSame1.size() << tokSame2.size() << endl;
-
-        // testPrintNdPairVec(tmpVec1);
-        // TODO: tmpVec은 해당 라인에 대한 터미널 노드 정보만 가짐. 나중에 타입 파싱시 사용하자.
-
+        
+        // TODO: diffInfo 채우기.
+        // testNdVec : 해당 라인에 해당하는 노드 벡터
+        // testNdVec 이용해서 stmt 구분 먼저 
+        // 23-145 : var_decl, 162 : return, 나머지 : others
+        // 만약 var_decl 이면, var 타입 구하기
+        // 123-62 : ref_type, 123-117: prmtv_type
         vector<NodeData> testNdVec = findNodeByLineWithNt(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
-        printNodeVector(testNdVec);
-        cout << endl << endl;
+        DiffInfo dinfo = getDiffInfo(testNdVec);
+        testPrintDiffInfo(dinfo);
 
         vector<int> emptyVec;
         // Diff line Lvalue check part
@@ -1401,6 +1458,20 @@ void testPrintNdPairVec(vector< pair<NodeData, int> > &ndPairVec){
 
 }
 
+void testPrintDiffInfo(DiffInfo &dInfo){
+
+    cout << " ===== Diff Line Statement Info ===== \n";
+    if(dInfo.diffType == 0) cout << "Others" << endl;
+    else if(dInfo.diffType == 1) cout << "Return Stmt" << endl;
+    else if(dInfo.diffType == 2) { 
+        cout << "Var Decl | ";
+        if (dInfo.isRef) cout << "Ref type | ";
+        else cout << "Prmtv type | ";
+        cout << dInfo.typeName << " | " << dInfo.varName << endl;
+    }
+
+}
+
 /*
  * ====================================================
  * ================= MAIN FUNCTION ====================
@@ -1464,8 +1535,8 @@ int main(int argc, char** argv){
 
     // test for method invocation checking
     // method invocation : 122
-    /* string fileName = "/home/yang/Sources/Fasoo/bench/ePrint/ePrint.com.fasoo.drmone.fsp.service.console.struts.ViewFspPolicyConsoleAction.java";
-    string ftnName = "getParameter";
+    /* string fileName = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6/ePrint.com.fasoo.sqlclient.SqlClient.java";
+    string ftnName = "queryForLong";
 
     vector<NodeData> ndVec;
     getFtnSubtree(fileName, ftnName, ndVec);
