@@ -905,6 +905,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         // 123-62 : ref_type, 123-117: prmtv_type
         vector<NodeData> testNdVec = findNodeByLineWithNt(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
         DiffInfo dinfo = getDiffInfo(testNdVec);
+        diffInfo.push_back(dinfo);
         testPrintDiffInfo(dinfo);
 
         vector<int> emptyVec;
@@ -981,6 +982,12 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         return;
     }
 
+    if(diffInfo.size() != diffLine.size()) {
+        cerr << "Diff Info parsing error. Merging method aborted." << endl;
+        nc = false;
+        return;
+    }
+
     // 2. insert procedure branches using if/else statements using flag.
     // use diffLine to get the diff lines
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
@@ -1029,6 +1036,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     vector<string> cloneDummy1; 
     vector<string> cloneDummy2; // clone dummy for adjacent clone snippets
     string ifOpen;
+    int dInfoIdx = 0;
 
     for(int i=1; i<c1.cloneSize; i++){
         if (!intVecContains(diffLine, i)) {
@@ -1080,6 +1088,24 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             //          -> Var Decl 인 경우 - Ref 타입은 분기문 위로 변수 선언을 빼서 null로 초기화 후 assign은 분기에 각각
             //                             - Prmtv 타입은 bool일 때 false로, 나머지는 0으로 초기화 후 assign은 분기에 각각
             // 여러 줄 분기 -> 위와 상동. Var Decl 변수 선언 모두 모아서 분기문 위쪽으로 올리기.
+            if (diffInfo.at(dInfoIdx).diffType == 2) {
+                string declStr = tabStr;
+
+                if (diffInfo.at(dInfoIdx).isRef) {
+                    declStr += diffInfo.at(dInfoIdx).typeName + " " + diffInfo.at(dInfoIdx).varName + " = null;";
+                } else {
+                    if (diffInfo.at(dInfoIdx).typeName == "boolean") {
+                        declStr += diffInfo.at(dInfoIdx).typeName + " " + diffInfo.at(dInfoIdx).varName + " = false;";
+                    } else {
+                        declStr += diffInfo.at(dInfoIdx).typeName + " " + diffInfo.at(dInfoIdx).varName + " = 0;";
+                    }
+                }
+
+                dInfoIdx++;
+                tempClone.push_back(declStr);
+            } else {
+                dInfoIdx++;
+            }
 
             // Return 문 분기 알고리즘
             // 위와 상동. Var Decl과 다르게, 함수의 반환 타입 보고 이건 분기 아래로 빼야 함.
@@ -1090,30 +1116,70 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                 // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
 
                     // Statement 분기가 여러 줄인 경우
-                    cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
-                    cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);
+                    
+                    if (diffInfo.at(dInfoIdx-1).diffType == 2){
+                        cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
+                        cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
+                        cout << c1.cloneSnippet[i] << endl;
+                        int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
+                        cloneDummy2.push_back(tabStr + c2.cloneSnippet[i].substr(varIdx2));
+                    } else {
+                        cloneDummy1.push_back(tabStr + "if(flag == 0){ ");
+                        cloneDummy2.push_back(tabStr + "else if(flag == 1){ ");
+                        cloneDummy1.push_back(tabStr + c1.cloneSnippet[i]);
+                        cloneDummy2.push_back(tabStr + c2.cloneSnippet[i]);
+                    }
                     ifOpen = tabStr;
                     adjacent = true;
                 } else {
 
                     // Statement 분기가 한 줄인 경우
-                    tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
-                    tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
+
+                    if (diffInfo.at(dInfoIdx-1).diffType == 2){
+                        int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        cout << c1.cloneSnippet[i] << endl;
+                        tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(varIdx1));
+                        tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(varIdx2));
+                    } else {
+                        tempClone.push_back(tabStr + "if(flag == 0) " + c1.cloneSnippet[i].substr(tabIdx));
+                        tempClone.push_back(tabStr + "else if(flag == 1) " + c2.cloneSnippet[i].substr(tabIdx));                    
+                    }
                 }
 
             } else {
             // 이미 인접한 중복 라인을 찾아서 브랜치 나누는 경우(parenthesis 안에 존재)
                 if(i<c1.cloneSize-1 && intVecContains(diffLine, i+1)){
                 // 마지막 라인이 아니면서 뒤에 인접한 중복 라인 존재시
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);                    
+                    if (diffInfo.at(dInfoIdx-1).diffType == 2) {
+                        int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        cout << "inner" << endl;
+                        cout << c1.cloneSnippet[i] << endl;
+                        cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
+                        cloneDummy2.push_back(tabStr + c2.cloneSnippet[i].substr(varIdx2));
+                    } else {
+                        cloneDummy1.push_back(c1.cloneSnippet[i]);
+                        cloneDummy2.push_back(c2.cloneSnippet[i]);                    
+                    }
                 } else {
-                    cloneDummy1.push_back(c1.cloneSnippet[i]);
-                    cloneDummy1.push_back(ifOpen + "}");
-                    cloneDummy2.push_back(c2.cloneSnippet[i]);
-                    cloneDummy2.push_back(ifOpen + "}");
+
+                    if (diffInfo.at(dInfoIdx-1).diffType == 2) {
+                        int varIdx1 = c1.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        int varIdx2 = c2.cloneSnippet[i].find(diffInfo.at(dInfoIdx-1).varName, tabIdx+diffInfo.at(dInfoIdx-1).typeName.size());
+                        cout << c1.cloneSnippet[i] << endl;
+                        cloneDummy1.push_back(tabStr + c1.cloneSnippet[i].substr(varIdx1));
+                        cloneDummy1.push_back(ifOpen + "}");
+                        cloneDummy2.push_back(tabStr + c2.cloneSnippet[i].substr(varIdx2));
+                        cloneDummy2.push_back(ifOpen + "}");
+                    } else {
+                        cloneDummy1.push_back(c1.cloneSnippet[i]);
+                        cloneDummy1.push_back(ifOpen + "}");
+                        cloneDummy2.push_back(c2.cloneSnippet[i]);
+                        cloneDummy2.push_back(ifOpen + "}");
+                    }
 
                     // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
                     tempClone.insert(tempClone.end(), cloneDummy1.begin(), cloneDummy1.end());

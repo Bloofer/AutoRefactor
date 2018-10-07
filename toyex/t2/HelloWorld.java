@@ -26,6 +26,8 @@ public class HelloWorld {
 
         HelloWorld hw = new HelloWorld();
         char c = 0;
+        long[] l = null;
+        l = new long[] {123, 456, 789};
 
         System.out.println("f() returns "+hw.f());
         System.out.println("g() returns "+hw.g());
