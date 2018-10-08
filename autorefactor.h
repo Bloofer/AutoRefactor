@@ -11,6 +11,7 @@
 #include "include/ptree.h"
 #include "include/treeutil.h"
 #include "treeTra/token-tree-map.h"
+#include "include/fileioutil.h"
 using namespace std;
 
 int n; // number of clones

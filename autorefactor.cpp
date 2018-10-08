@@ -1623,6 +1623,8 @@ int main(int argc, char** argv){
     getFtnSubtree(fileName, ftnName, ndVec);
     printNodeVector(ndVec); */
 
+    read_dir_files("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6");
+
     return 0;
 
 } 
