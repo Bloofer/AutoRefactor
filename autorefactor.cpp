@@ -1632,9 +1632,8 @@ int main(int argc, char** argv){
     getFtnSubtree(fileName, ftnName, ndVec);
     printNodeVector(ndVec); */
 
-    vector< pair<string, string> > tmpPairVec;
-    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", tmpPairVec);
-    testPrintPairVec(tmpPairVec);
+    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", fpath2CnamePairVec);
+    testPrintPairVec(fpath2CnamePairVec);
 
     return 0;
 

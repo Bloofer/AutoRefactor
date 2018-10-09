@@ -86,6 +86,12 @@ map<string, string> classHierarchy;
 // class hierarchy of the whole project.
 // TODO: need to impl the ftn which gathers this data
 
+vector< pair<string, string> > fpath2CnamePairVec;
+// (File absolute path, Class name) pair vector
+// 파일 I/O에 사용.
+// 디렉토리를 읽은 후 자바 파일들에 대해서만 (절대경로, 클래스명) 벡터를 생성
+// T2 Caller Patch에 사용
+
 map<string, string> classToFileMap;
 // (class name -> file location) map
 // this directs the exact location of the class file

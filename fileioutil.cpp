@@ -34,6 +34,8 @@ void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec
 // TODO: 일단은 하나의 디렉토리에 모아놓고 실험 후 추후 확장하기(recursive하게 디렉토리 찾아서)
 // pair vec of [ full path - class name ]
 
+    int cnt = 0;
+
     DIR *dir;
     struct dirent *ent;
     if ((dir = opendir(dirName.c_str())) != NULL) {
@@ -47,6 +49,7 @@ void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec
                 string cname, pcname, piname;
                 fetchClassHierarchy(fname, cname, pcname, piname);
                 // cout << fname << " | " << cname << endl;
+                if(cname == "") cnt++;
                 pairVec.push_back(pair<string, string>(fname, cname));
             }
         }
@@ -57,5 +60,6 @@ void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec
         return;
     }
 
-}
+    cout << "Missed : " << cnt << endl;
 
+}
