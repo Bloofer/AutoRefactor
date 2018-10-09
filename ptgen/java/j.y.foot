@@ -7,6 +7,6 @@ extern int line;
 void yyerror( char *s)
 {
 fflush(stdout);
-fprintf(stderr,"%s: %d.%d\n",s,line,column);
+//fprintf(stderr,"%s: %d.%d\n",s,line,column);
 }
 

@@ -45,7 +45,7 @@ extern Tree *root;
 
 void id_init();
 
-int test()
+int main()
 {
     id_init();
     yyparse();
