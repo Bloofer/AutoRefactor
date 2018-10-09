@@ -193,6 +193,21 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
 
 }
 
+void fetchClassName(string &file_name, string &classname){
+
+  // parse .java file and get class or interface name
+
+  ParseTree* pt = parseFile(file_name.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << file_name << endl;
+    return;
+  }
+
+  // method for finding class label. works only on fetching class names
+  string find = pt->getRoot()->getClassName(classname);
+
+}
+
 void getPtree(string &fileName, stringstream &ss){
 
   ParseTree* pt = parseFile(fileName.c_str());
@@ -1171,6 +1186,34 @@ void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string>
         if (c_exists(c_list, cg.callee_cname)) cg_list.push_back(cg);
         
         cg.caller_cname = cg.caller_fname = cg.callee_cname = "";
+      }
+		}
+	}
+
+}
+
+void getAllCallGraphData(string dotfile, vector<CallGraph> &cgVec){
+	
+  ifstream infile(dotfile.c_str());	
+	string lin;
+  CallGraph cg;
+	while (getline(infile, lin))
+	{
+		if (has_arrow(lin)) {
+			string caller;
+			string callee;
+			mysplit(lin, caller, callee);
+      if (!has_java(callee)) //std::cout << caller << " ---- " << callee << std::endl; // to except std library call
+      {
+        cg.caller_path = getPath(caller);
+        cg.caller_cname = getCname(caller);
+        cg.caller_fname = getFname(caller);
+        //cg.callee_path = callee;
+        cg.callee_cname = getCname(callee);
+        cg.callee_fname = getFname(callee);
+
+        cgVec.push_back(cg);
+        cg.caller_path = cg.caller_cname = cg.caller_fname = cg.callee_cname = cg.callee_fname = "";
       }
 		}
 	}

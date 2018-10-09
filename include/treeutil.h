@@ -73,6 +73,7 @@ void parseFtype(vector<NodeData> &ndVec, FtnType &ftype);
 bool hasNodeId(vector<NodeData> &ndVec, int idx, int id);
 bool isLvalueNode(vector<NodeData> &ndVec, int idx);
 void fetchClassHierarchy(string &file_name, string &classname, string &parent_classname, string &parent_intername);
+void fetchClassName(string &file_name, string &classname);
 void getPtree(string &fileName, stringstream &ss);
 
 vector< pair<NodeData, int> > findNodeByLabel(vector<NodeData> &ndVec, string label);
@@ -103,6 +104,7 @@ bool c_exists(vector<string> &c_list, string &s);
 string getCname(string &str);
 string getFname(string &str);
 
+void getAllCallGraphData(string dotfile, vector<CallGraph> &cgVec);
 void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list);
 void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, string &fName);
 bool compare_cg (CallGraph &fst, CallGraph &snd);

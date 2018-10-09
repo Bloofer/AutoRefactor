@@ -226,6 +226,20 @@ class Tree {
         return found;
     }
 
+    virtual std::string getClassName(std::string &cname) {
+        std::string found, temp;
+        Tree *tt;
+        for (int i= 0; i < children.size(); i++) {
+            temp = children[i]->getClassName(cname);
+            // if found s node, then get silbing of the node to fetch label
+            if ( !temp.empty() && i < (children.size()-1) ) {
+                if (temp.compare("class") == 0) cname = children[i+1]->children[0]->getValue();
+                else if (temp.compare("interface") == 0) cname = children[i+1]->children[0]->getValue();
+            }
+        }
+        return found;
+    }
+
     virtual std::string findCnode(std::string s, std::string &ctype) {
         std::string found, temp;
         Tree *tt;
@@ -359,6 +373,11 @@ public:
 
     virtual std::string findNode(std::string s, std::string &cname, std::string &parent_cname, std::string &parent_iname) {
         if (((*value).compare(s) == 0) || ((*value).compare("extends") == 0) || ((*value).compare("implements") == 0)) return (*value);
+        else return "";
+    }
+
+    virtual std::string getClassName(std::string &cname) {
+        if ((*value).compare("class") == 0 || (*value).compare("interface") == 0) return (*value);
         else return "";
     }
 

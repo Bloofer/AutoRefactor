@@ -28,6 +28,26 @@ int read_dir_files(string dirName){
 
 }
 
+bool mapFullPath(vector< pair<string, string> > &pairVec, string &path, string &cname, string &realPath){
+// CallGraph에서 찾은 Path, Class name 가지고 Caller의 실제 Path 찾기
+// CallGraph에서는 실제 Caller의 절대경로 위치를 알려주지 않기 때문에
+// pairVec에서 실제 절대경로를 찾아 Caller 패치에 사용한다.
+
+    for(int i=0; i<pairVec.size(); i++){
+        if(pairVec.at(i).first.find(path) != string::npos){
+        // pairVec에서 해당 path를 발견한 경우, 실제 path와 매핑해준다.
+            if(pairVec.at(i).second.find(cname) != string::npos){
+                realPath = pairVec.at(i).first;
+                return true;
+            }
+        }
+    }
+
+    return false;
+    // 아무것도 찾지 못한 경우 false 반환.
+
+}
+
 void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec){
 // 디렉토리 이름받아서 디렉토리 내 .java 파일들 파싱, [fname, cname] 벡터 생성
 // T2 Caller 패치시 사용.
@@ -47,9 +67,10 @@ void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec
                 if(dirName.at(dirName.size()-1) != '/') dirName += '/';
                 fname = dirName + fname;
                 string cname, pcname, piname;
-                fetchClassHierarchy(fname, cname, pcname, piname);
-                // cout << fname << " | " << cname << endl;
-                if(cname == "") cnt++;
+                fetchClassName(fname, cname);
+                if(cname == "") {
+                    cnt++;
+                }
                 pairVec.push_back(pair<string, string>(fname, cname));
             }
         }
@@ -59,7 +80,5 @@ void fetchFname2CnameVec(string dirName, vector< pair<string, string> > &pairVec
         cerr << "could not open directory" << endl;
         return;
     }
-
-    cout << "Missed : " << cnt << endl;
 
 }

@@ -86,6 +86,12 @@ map<string, string> classHierarchy;
 // class hierarchy of the whole project.
 // TODO: need to impl the ftn which gathers this data
 
+vector<CallGraph> callGraphVec;
+// 전체 프로젝트의 CallGraph 정보를 가지는 벡터
+// 처음에 fpath2CnamePairVec와 같이 한번 전체 프로젝트 내 생성되고
+// 각 중복 인스턴스별로 유지되어 사용된다.
+// T2 Caller Patch에 사용
+
 vector< pair<string, string> > fpath2CnamePairVec;
 // (File absolute path, Class name) pair vector
 // 파일 I/O에 사용.

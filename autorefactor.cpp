@@ -1562,6 +1562,18 @@ void testPrintPairVec(vector< pair<string, string> > &pairVec){
 
 }
 
+void testPrintCallGraphVec(vector<CallGraph> &cgVec){
+
+    cout << " ===== Print CallGraph Vector ===== \n";
+    cout << " Total CallGraph Data : " << cgVec.size() << endl;
+    for(int i=0; i<cgVec.size(); i++){
+        cout << "[ " << cgVec.at(i).callee_cname << "." << cgVec.at(i).callee_fname 
+             << " <- " << cgVec.at(i).caller_cname << "." << cgVec.at(i).caller_fname 
+             << " (" << cgVec.at(i).caller_path << ") ]" << endl;
+    }
+
+}
+
 /*
  * ====================================================
  * ================= MAIN FUNCTION ====================
@@ -1587,6 +1599,9 @@ int main(int argc, char** argv){
     }
 
     readFile(argv[2]); // 1. reads input data
+
+    // TODO: 여기에 CallGraph 파싱 및 디렉토리 (파일명->클래스명) 맵 생성 함수 호출부 삽입하기
+    // TODO: 알람에 따른 코드 패치는 인스턴스 여러번 수행하고 위 전체 디렉토리 정보 생성은 한번만 하도록
 
     clone_type ct = getCloneType();
     if(ct == T1){
@@ -1632,8 +1647,32 @@ int main(int argc, char** argv){
     getFtnSubtree(fileName, ftnName, ndVec);
     printNodeVector(ndVec); */
 
+    // TODO: 테스트에 해당 callee 이름 사용
+    string path = "com.fasoo.util.FasooMessageParser";
+    string cname = "FasooMessageParser";
+    string fname = "parse2";
+
+    // CallGraph 파싱과 Caller 패치 구현 테스트
+    // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
+    // 1. CallGraph를 추출하여 전역 CallGraph 벡터를 생성
+    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", callGraphVec);
+    //testPrintCallGraphVec(callGraphVec);
+
+    // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
+    // 2. 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
     fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", fpath2CnamePairVec);
-    testPrintPairVec(fpath2CnamePairVec);
+    //testPrintPairVec(fpath2CnamePairVec);
+
+    // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
+
+    // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
+    string realPath;
+    if(mapFullPath(fpath2CnamePairVec, path, cname, realPath)) {
+        cout << "Path found! : " << realPath << endl;
+    }
+
+    // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
+
 
     return 0;
 
