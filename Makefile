@@ -25,8 +25,8 @@ ptree:${TREEHEADER} ${TREESRC}
 treeutil:${OBJS} ${HEADERS} treeutil.cpp
 	${CXX} $(CPPFLAGS) -c treeutil.cpp -o treeutil.o
 
-fileioutil: fileioutil.cpp
-	${CXX} fileioutil.cpp -o fileioutil.o
+fileioutil: ${OBJS} treeutil.o ${HEADERS} fileioutil.cpp
+	${CXX} $(CPPFLAGS) -c fileioutil.cpp -o fileioutil.o
 
 autorefactor:${OBJS} autorefactor.o treeutil.o fileioutil.o ${HEADERS} autorefactor.cpp
 	$(CXX) -o autorefactor $(CPPFLAGS) -c -g autorefactor.cpp

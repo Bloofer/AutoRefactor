@@ -1553,6 +1553,15 @@ void testPrintDiffInfo(DiffInfo &dInfo){
 
 }
 
+void testPrintPairVec(vector< pair<string, string> > &pairVec){
+
+    cout << " ===== Print <str, str> pair vector ===== \n";
+    for(int i=0; i<pairVec.size(); i++){
+        cout << pairVec.at(i).first << " | " << pairVec.at(i).second << endl;
+    }
+
+}
+
 /*
  * ====================================================
  * ================= MAIN FUNCTION ====================
@@ -1562,7 +1571,7 @@ void testPrintDiffInfo(DiffInfo &dInfo){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -1588,7 +1597,7 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); // 2. refactor the code according to the clone datas
+    refactor(ct); */ // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -1623,7 +1632,9 @@ int main(int argc, char** argv){
     getFtnSubtree(fileName, ftnName, ndVec);
     printNodeVector(ndVec); */
 
-    read_dir_files("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6");
+    vector< pair<string, string> > tmpPairVec;
+    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", tmpPairVec);
+    testPrintPairVec(tmpPairVec);
 
     return 0;
 

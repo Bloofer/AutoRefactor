@@ -1,0 +1,1531 @@
+ ===== Print <str, str> pair vector ===== 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.ChangePasswordServiceAction.java | ChangePasswordServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmVirtualGroupManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPPSessionImpl.java | FspPPSessionImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.struts.CSDApprovalServiceAction.java | CSDApprovalServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspApproval.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.EntityObject.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspStatisticsUserDelegate.java | CSDFspStatisticsUserDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.bl.DefaultDeptBL.java | DefaultDeptBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.struts.CSDApprovalServiceForm.java | CSDApprovalServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.FasooUrlString.java | FasooUrlString
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.util.ApprovalException.java | ApprovalException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmSysManageManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.common.IpAccessControl.java | IpAccessControl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.SearchOption.java | SearchOption
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmVirtualGroupManagerRepository.java | DrmVirtualGroupManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.impl.EntityObjectKeyImpl.java | EntityObjectKeyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.config.ui.IssueSetting.java | IssueSetting
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalListProcessBlock.java | ApprovalListProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPApprovalServerTPLProcessInfo.java | FspPPApprovalServerTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.EntityObjectKey.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.LicenseCheckProcessBlock.java | LicenseCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.DeptReplaceForm.java | DeptReplaceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.WatFileAction.java | WatFileAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspStatisticsUserManagerRepository.java | CSDFspStatisticsUserManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessWebInfo.java | ProcessWebInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.OrganMainAction.java | OrganMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.StatisticsManager.java | StatisticsManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.IdentityTempSessionForm.java | IdentityTempSessionForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspTakeInOutInfoImpl.java | FspTakeInOutInfoImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspDsdXmlServiceBL.java | FspDsdXmlServiceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.DataFieldList.java | DataFieldList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintRuleProcessBlock.java | CSDPrintRuleProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.StorageConfigLoader.java | StorageConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.UsageFileID.java | UsageFileID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspExceptPrintManagerRepository.java | FspExceptPrintManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDLogMaskRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmMemberShipImpl.java | DrmMemberShipImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.organ.DeptTreeForm.java | DeptTreeForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LogConsoleAction.java | LogConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.secapp.util.SecAppFileLoader.java | SecAppFileLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspTakeInOutDelegate.java | FspTakeInOutDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.righter.service.DirectoryPolicyChecker.java | DirectoryPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.qr.block.FspQRLogMobileProcessBlock.java | FspQRLogMobileProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.DomainSettingsAction.java | DomainSettingsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPNotifyJobsServiceProcessBlock.java | PPNotifyJobsServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.SendPasswordMailServiceProcessBlock.java | SendPasswordMailServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.struts.FspWatPrintTPLAction.java | FspWatPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspExceptPrint.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.app.struts.FspAppForm.java | FspAppForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailPrintViewerTextForm.java | FutDetailPrintViewerTextForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspLogApprovalCancelPush.java | SendFspLogApprovalCancelPush
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspLicenseUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.TableConfigDivide.java | TableConfigDivide
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.LocalTokenVerifyAction.java | LocalTokenVerifyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.beans.impl.DrmProductLicenseImpl.java | DrmProductLicenseImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ClientPolicyMainAction.java | ClientPolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.PositionListBL.java | PositionListBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspExceptPrintImpl.java | FspExceptPrintImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPDomainRuleAction.java | FspPPDomainRuleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmAclScopeDelegate.java | DrmAclScopeDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspMaskingPatternImpl.java | CSDFspMaskingPatternImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDPrintRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmRoleImpl.java | DrmRoleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDSearchPolicyProcessInfo.java | CSDSearchPolicyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.ViewPolicyConsoleForm.java | ViewPolicyConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.SearchUserForm.java | SearchUserForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspTcoPolicyRuleImpl.java | FspTcoPolicyRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDPrintRuleTplManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentityTokenUtil.java | SignatureUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspPolicyTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Additionalrights.java | Additionalrights
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspClientPolicyCheckServiceAction.java | FspClientPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsDateAction.java | FspStatisticsDateAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.SysManageBL.java | SysManageBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsServiceAction.java | StrutsServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.DeptReplaceAction.java | DeptReplaceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.ApprovalDeputyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspClientPolicyTargetBL.java | FspClientPolicyTargetBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmRoleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.IpAccessControlForm.java | IpAccessControlForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.CommonUtil.java | CommonUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPPLogManagerRepository.java | FspPPLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FutPrintDriver.java | FutPrintDriver
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspUsageFileManagerRepository.java | FspUsageFileManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspPolicyUIDTarget.java | FspPolicyUIDTarget
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsTcoAction.java | FutMotionStatsTcoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspClientPolicyRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.CSDSearchPatternID.java | CSDSearchPatternID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspTakeInOutManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.SystemEncode.java | SystemEncode
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.ChangePasswordServiceForm.java | ChangePasswordServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.PolicyZoneMenuBL.java | PolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.session.InvalidLicense.java | InvalidLicense
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.EntityKey.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentitySessionUtil.java | IdentitySessionUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ProductPolicyMainAction.java | ProductPolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.UserTree2BL.java | UserTree2BL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspDsdExtensionPolicyBuilder.java | FspDsdExtensionPolicyBuilder
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.OrganManagerAction.java | OrganManagerAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintTPLAction.java | CSDPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.DrmoneRegularScheduler.java | DrmoneRegularScheduler
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.exceptprint.delegate.FspExceptPrintDelegate.java | FspExceptPrintDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.struts.TargetAction.java | TargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.impl.ApprovalLineTargetImpl.java | ApprovalLineTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmAclTargetManagerRepository.java | DrmAclTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.ReportResultStruct.java | ReportResultStruct
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.manager.DrmProductLicenseManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.UsageLogID.java | UsageLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.TestMain.java | TestMain
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.ReportDefaultStrutsForm.java | ReportDefaultStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.RetrieveRootService.java | RetrieveRootService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDsdExtensionPolicyCheckProcessInfo.java | FspDsdExtensionPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDPrintRuleTplImpl.java | CSDPrintRuleTplImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Owner.java | Owner
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.ProductEntityList.java | ProductEntityList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.TokenVerifyProcessInfo.java | TokenVerifyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmAclPermissionImpl.java | DrmAclPermissionImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.StrongPasswordValidator.java | StrongPasswordValidator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.FspMainAction.java | FspMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsMonthManagerRepository.java | FspStatisticsMonthManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPolicyCacheManagerRepository.java | FspPolicyCacheManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uuid.jug.EthernetAddress.java | EthernetAddress
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseInitConsoleAction.java | LicenseInitConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.delegate.ApprovalLineLevelDelegate.java | ApprovalLineLevelDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.SqlStatement.java | SqlStatement
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.framework.jetty.utils.JettyEnvManager.java | ResourceDTO
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspPrintPolicyCheckServiceAction.java | FspPrintPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspAbstractServiceProcessInfo.java | FspAbstractServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.ListPageService.java | ListPageService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDMaskRuleTplManagerRepository.java | CSDMaskRuleTplManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.version.VersionCompareUtil.java | VersionCompareUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsYearBL.java | StatisticsYearBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.util.FileUtil.java | FileUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Target.java | Target
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.LogoutCallbackProcessInfo.java | LogoutCallbackProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.bl.BasicIdentity.java | BasicIdentity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessClientServiceInfo.java | ProcessClientServiceInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.exceptprint.struts.FspExceptPrintServiceAction.java | FspExceptPrintServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmHistoryLogDelegate.java | DrmHistoryLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.server.FEDServerInfo.java | FEDServerInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentityTempSessionProcessInfo.java | ErrorEntity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.DomainSettingsBL.java | DomainSettingsBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.block.CSDApprovalInquiryProcessInfo.java | CSDApprovalInquiryProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmTableConfig.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintTPLProcessInfo.java | CSDPrintTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.delegate.DrmProductLicenseUserCountDelegate.java | DrmProductLicenseUserCountDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.block.UserSearchListPorcessInfo.java | UserSearchListPorcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspOffLineFileLogAction.java | CSDFspOffLineFileLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.LogoutCallbackAction.java | LogoutCallbackAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspWatPolicyID.java | FspWatPolicyID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspClientPolicyManagerRepository.java | FspClientPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPPPolicyTargetManagerRepository.java | FspPPPolicyTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmUserManagerRepository.java | DrmUserManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyServiceAction.java | CSDFspPolicyServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspClientPolicyCheckProcessBlock.java | FspClientPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.impl.ApprovalLineLevelManagerRepository.java | ApprovalLineLevelManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.organ.DeptTreeProcessBlock.java | DeptTreeProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FspReceivePolicyLogForm.java | FspReceivePolicyLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.righter.module.DirectoryRighterGetDrmUser.java | DirectoryRighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsPPAction.java | FutMotionStatsPPAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPPPolicyRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsWebAction.java | StrutsWebAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.DrmonePeriodicScheduler.java | DrmonePeriodicScheduler
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPPPolicyTargetImpl.java | FspPPPolicyTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.LogStorageForm.java | LogStorageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.mobile.MobileRemoteCall.java | MobileRemoteCall
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmHistoryDataDetailLogManagerRepository.java | DrmHistoryDataDetailLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspClientPolicyDelegate.java | FspClientPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDLogMaskRuleManagerRepository.java | CSDLogMaskRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.watpolicy.module.FspRighterGetWatPolicy.java | FspRighterGetWatPolicy
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.TableConfig.java | TableConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.pplog.PPLogNotifyAction.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.line.struts.ApprovalLineTargetForm.java | ApprovalLineTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.TokenVerifyCallbackProcessBlock.java | TokenVerifyCallbackProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.NullArgumentException.java | NullArgumentException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.struts.VirtualGroupTargetAction.java | VirtualGroupTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionContentAction.java | FutMotionContentAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DormancyLicenseInfoProcessInfo.java | DormancyLicenseInfoProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspWatTargetForm.java | FspWatTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.usage.bl.HistoryLogBeans.java | HistoryLogBeans
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmIdentityTempSession.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPNotifyJobsServiceProcessInfo.java | PPNotifyJobsServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspDomainRuleImpl.java | FspDomainRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.pplog.PPLogNotifyStatus.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.PPChangePasswordServiceProcessInfo.java | PPChangePasswordServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.LocalTokenVerifyProcessInfo.java | LocalTokenVerifyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmAclRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspDomainPolicyCheck.java | FspDomainPolicyCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.UserLicenseInfoID.java | UserLicenseInfoID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDMaskRuleProcessBlock.java | CSDMaskRuleProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.ClientUploadAction.java | ClientUploadAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmAclRuleManagerRepository.java | DrmAclRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspRevokeLogDelegate.java | FspRevokeLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspStatisticsDeptManagerRepository.java | CSDFspStatisticsDeptManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.StringUtil.java | StringUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FspRevokeLogAction.java | FspRevokeLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.ApprovalLineTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.PPRetrieveJobsServiceAction.java | PPRetrieveJobsServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.ContentKey.java | ContentKey
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.SendPasswordMailAction.java | SendPasswordMailAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDsdExtensionPolicyServiceForm.java | FspDsdExtensionPolicyServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseInfoConsoleAction.java | LicenseInfoConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.bl.TargetID.java | TargetID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmAclTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDLogMaskRuleTplImpl.java | CSDLogMaskRuleTplImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.bl.PermissionID.java | PermissionID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.deputy.ApprovalDeputyEnum.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.RepositoryConfigLoader.java | RepositoryConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.DefaultEntityKey.java | DefaultEntityKey
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.IpAccessControlAction.java | IpAccessControlAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.bl.TakeInOutID.java | TakeInOutID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyCheckProcessInfo.java | CSDFspPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspReceivePolicyLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.UserTreeBL.java | UserTreeBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPolicyCacheManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.exceptprint.bl.FspExceptPrintBL.java | FspExceptPrintBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmSqlDelegate.java | DrmSqlDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.SendPasswordMailForm.java | SendPasswordMailForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.IJavaTableDrawerFactory.java | IJavaTableDrawerFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.struts.TakeInOutForm.java | TakeInOutForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmSysLoginTryInfoManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspUsageManagerSqlClient.java | FspUsageManagerSqlClient
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.qr.block.FspQRLogProcessInfo.java | FspQRLogProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.UsageLogDecodeConsoleAction.java | UsageLogDecodeConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.OtherConfig.java | OtherConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.block.FspPrintProcessBlock.java | PrintDriverInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPrintPolicyRuleImpl.java | FspPrintPolicyRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPPolicyTargetForm.java | FspPPPolicyTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsDocDelegate.java | FspStatisticsDocDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspClientPolicyTargetForm.java | FspClientPolicyTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDSearchPatternImpl.java | CSDSearchPatternImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspDomainExtensionRuleManagerRepository.java | FspDomainExtensionRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsMonthImpl.java | FspStatisticsMonthImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.doc.righter.csd.service.CSDFspPolicyManager.java | CSDFspPolicyManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsUserDelegate.java | FspStatisticsUserDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmAclScope.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.bl.IAuthMethod.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspClientPolicyXmlServiceAction.java | FspClientPolicyXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspPolicyTargetDelegate.java | CSDFspPolicyTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.line.struts.ApprovalLineTargetAction.java | ApprovalLineTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspPrintPolicyXmlServiceBL.java | FspPrintPolicyXmlServiceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.client.api.util.StringUtil.java | StringUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.SearchCondition.java | SearchCondition
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmUserManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.struts.FspExceptPrintTPLAction.java | FspExceptPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.fspusage.ReportFSPProcessInfo.java | ReportFSPProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.server.ServerConfig.java | ServerConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.DataDecoder.java | DataDecoder
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.WatFileForm.java | WatFileForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DocPolicyMainAction.java | DocPolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.SendPasswordMailServiceAction.java | SendPasswordMailServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.StorageSettingsID.java | StorageSettingsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.struts.RuleAction.java | RuleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.LicenseApiProcessBlock.java | LicenseApiProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspRegExpressionManagerRepository.java | FspRegExpressionManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.DataEntityList.java | DataEntityList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.DeptListID.java | DeptListID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.takeinout.manager.FspTakeInOutManager.java | FspTakeInOutManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.thread.FedThreadTaskFactory.java | FedThreadTaskFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DocPolicyZoneMenuAction.java | DocPolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPApprovalServerTPLProcessBlock.java | FspPPApprovalServerTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.RefreshDirectoryServiceAction.java | RefreshDirectoryServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.csdusage.ReportCSDPrintUsageProcessInfo.java | ReportCSDPrintUsageProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.csdusage.ReportCSDPrintUsageForm.java | ReportCSDPrintUsageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.AclPolicyZoneMenuID.java | AclPolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintTPLForm.java | CSDPrintTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.purpose.PurposeNo2String.java | PurposeNo2String
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.JsonUtil.java | JsonUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseConsoleForm.java | LicenseConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.printapi.block.FspWatPrintTPLProcessBlock.java | FspWatPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.ContentCategory.java | ContentCategory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspExceptionRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPPrintTPLProcessInfo.java | FspPPPrintTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.PasswordValidatorChain.java | PasswordValidatorChain
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.WatEditorComID.java | WatEditorComID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FspRevokeLogForm.java | FspRevokeLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.DateUtil.java | DateUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDSearchPatternManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DocPolicyZoneMenuBL.java | DocPolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmAclScopeImpl.java | DrmAclScopeImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspExternApiAction.java | CSDFspExternApiAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspOffLineLogProcessInfo.java | CSDFspOffLineLogProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.RightsGroup.java | RightsGroup
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.manager.DrmProductLicenseUserCountManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.DrmoneScheduler.java | DrmoneSchedulerException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDLogMaskHandleForm.java | CSDLogMaskHandleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPPPolicyDelegate.java | FspPPPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyInfoProcessBlock.java | CSDFspPolicyInfoProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsUserImpl.java | FspStatisticsUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPolicyTargetProcessInfo.java | FspTcoPolicyTargetProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDPolicyRuleImpl.java | CSDPolicyRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.delegate.ReportCSDFspStatisticsDeptDelegate.java | ReportCSDFspStatisticsDeptDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.IdentityTempSessionAction.java | IdentityTempSessionAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.ViewPolicyConsoleAction.java | ViewPolicyConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspLogMaskRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspUsageManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.CSDStatisticsBL.java | CSDStatisticsBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspApprovalDelegate.java | CSDFspApprovalDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPApprovalServerTPLAction.java | FspPPApprovalServerTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.DataEncoder.java | DataEncoder
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.ServerInfoAction.java | ServerInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.UserLicenseInfoProcessInfo.java | UserLicenseInfoProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspTakeInOutInfo.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspWatPolicyCheckServiceForm.java | FspWatPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspExceptPrintTPLRuleManagerRepository.java | FspExceptPrintTPLRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmPositionDelegate.java | DrmPositionDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.FasooMessageParser.java | FasooMessageParser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDsdXmlServiceAction.java | FspDsdXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.bl.VirtualGroupID.java | VirtualGroupID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmAclScopeManagerRepository.java | DrmAclScopeManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutDetailLogProcessInfo.java | FutDetailLogProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDLogMaskRuleTplDelegate.java | CSDLogMaskRuleTplDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.PrintImage.java | PrintImage
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsMonthDelegate.java | FspStatisticsMonthDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.AddOn.java | AddOn
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPrintManagerRepository.java | FspPrintManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspExternApiProcessInfo.java | SearchBasisInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.console.bl.ViewPolicyFspClientConsoleBL.java | ViewPolicyFspClientConsoleBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.PPDispatcherServiceAction.java | PPDispatcherServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.DataStore.java | DataStore
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authsso.bl.AuthSSOID.java | AuthSSOID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspDsdXmlServiceID.java | FpnsDispatchServer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.CSDSearchBasisProcessBlock.java | CSDSearchBasisProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.server.util.ServerConfigLoader.java | ServerConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.pplog.PPLogNotifyManager.java | PPLogNotifyManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDPolicyUIDImpl.java | CSDPolicyUIDImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.InstallInfoDTO.java | ConnectionInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintMaskHandleAction.java | CSDPrintMaskHandleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspLogApprovalApplyMail.java | SendFspLogApprovalApplyMail
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.TakeInOutMainAction.java | TakeInOutMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmAclRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.client.algorithm.AlgorithmID.java | AlgorithmID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.struts.FspExceptPrintTPLForm.java | FspExceptPrintTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ExceptPrintZoneMenuAction.java | ExceptPrintZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspTcoPolicyRuleDelegate.java | FspTcoPolicyRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspWatFileImpl.java | FspWatFileImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.watpolicy.service.FspWatPolicyChecker.java | FspWatPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspClientPolicyID.java | FspClientPolicyID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPPLogDelegate.java | FspPPLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspDomainRuleDelegate.java | FspDomainRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspClientPolicyRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.CommonSettingsForm.java | CommonSettingsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.acl.module.RighterUserCheck.java | RighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.line.block.ApprovalLineTargetProcessInfo.java | ApprovalLineTargetProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspPrintPolicyCheckProcessInfo.java | FspPrintPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.UserReplaceAction.java | UserReplaceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.api.CSDFspStatisticsDeptUserManagerAPI.java | CSDFspStatisticsDeptUserManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspExceptPrintTPLImpl.java | FspExceptPrintTPLImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.FspExceptPrintTPLProcessInfo.java | FspExceptPrintTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.acl.module.RighterGetDrmUser.java | RighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageExportStrutsAction.java | UsageExportStrutsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspPolicyManagerRepository.java | CSDFspPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.struts.ApprovalTakeoutApiServiceAction.java | ApprovalTakeoutApiServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.RepositoryConfiguration.java | RepositoryConfiguration
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.LocalTokenVerifyForm.java | LocalTokenVerifyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ProductPolicyZoneMenuBL.java | ProductPolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspExceptPrintTPLDelegate.java | FspExceptPrintTPLDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.PPPrintJobsServiceAction.java | PPPrintJobsServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.LogConfig.java | LogConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspWatPolicyAction.java | FspWatPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.EntityParameterList.java | EntityParameterList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDPolicyRuleDelegate.java | CSDPolicyRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.XMLUtil.java | EmptyNodeList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspPolicyUtil.java | FspPolicyUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.thread.DrmoneThreadFactory.java | DrmoneThreadFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsDateDelegate.java | FspStatisticsDateDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintUsageProcessInfo.java | CSDPrintUsageProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.beans.impl.ReportFspLicenseListImpl.java | ReportFspLicenseListImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyCheckProcessBlock.java | CSDFspPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.TakeInOutZoneMenuID.java | TakeInOutZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDPrintRuleImpl.java | CSDPrintRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintRuleProcessInfo.java | CSDPrintRuleProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPPSession.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AutoInstallSettingAction.java | AutoInstallSettingAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.RefreshDirectoryServiceProcessInfo.java | RefreshDirectoryServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.api.CSDFspStatisticsUserManagerAPI.java | CSDFspStatisticsUserManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspWatPolicyDelegate.java | FspWatPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDSearchPolicyProcessBlock.java | CSDSearchPolicyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.struts.VirtualGroupTargetForm.java | VirtualGroupTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspPolicyTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspClientPolicyRuleDelegate.java | FspClientPolicyRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.CsdReportTableDrawer.java | CsdReportTableDrawer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspExceptPrintTPLRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.OrganManagerBL.java | OrganManagerBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspWatTargetAction.java | FspWatTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authsso.struts.AuthSSOAction.java | AuthSSOAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspApprovalManagerRepository.java | CSDFspApprovalManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.UsageLogBL.java | UsageLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.StoreMethod.java | StoreMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPLogProcessInfo.java | FspPPLogProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.struts.RuleForm.java | RuleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspCachePolicyUtil.java | FspCachePolicyUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.TokenVerifyCallbackForm.java | TokenVerifyCallbackForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmUserBeans.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.printpolicy.service.FspPrintPolicyChecker.java | FspPrintPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.ExceptPrintLabelID.java | ExceptPrintLabelID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendApprovalResult.java | SendApprovalResult
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.struts.CSDSearchBasisAction.java | CSDSearchBasisAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspWatPolicyXmlServiceBL.java | FspWatPolicyXmlServiceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmSysLoginTryInfo.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPPrintTPLAction.java | FspPPPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPolicyProcessInfo.java | FspTcoPolicyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspAppRuleDelegate.java | FspAppRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.deputy.struts.ApprovalDeputyAction.java | ApprovalDeputyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDSearchBasisManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.machine.MachineBank.java | MachineBank
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmRoleManagerRepository.java | DrmRoleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmPolicyStatusDelegate.java | DrmPolicyStatusDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.config.ui.UsageSetting.java | UsageSetting
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.CsdMainAction.java | CsdMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.beans.DrmProductLicenseUserCount.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.TableManagerConsoleForm.java | TableManagerConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspOffLineFileLogBL.java | FspOffLineFileLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.DomainExtensionRuleAction.java | DomainExtensionRuleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.server.util.PrivateSettingsLoader.java | PrivateSettingsLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDsdExtensionPolicyServiceAction.java | FspDsdExtensionPolicyServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Writer.java | Writer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPrintPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.DeptTree2BL.java | DeptTree2BL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uuid.jug.UUIDGenerator.java | UUIDGenerator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.WatEditorDownLoadAction.java | WatEditorDownLoadAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspExceptPrintManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.chain.ProcessChainUtil.java | ProcessChainUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessDispatchBlock.java | ProcessDispatchBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessInfo.java | ProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspUsageFileImpl.java | CSDFspUsageFileImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.PrivateSettingsConsoleAction.java | PrivateSettingsConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmUserBeansImpl.java | DrmUserBeansImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.block.DomainExtensionRuleProcessBlock.java | DomainExtensionRuleProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspClientPolicyTargetImpl.java | FspClientPolicyTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmDeptDelegate.java | DrmDeptDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmVirtualGroup.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPolicyTargetProcessBlock.java | FspTcoPolicyTargetProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDPolicyRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.tableconfig.MoveToDivideThread.java | MoveToDivideThread
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.bl.ApprovalManager.java | ApprovalManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.ConfigLoadException.java | ConfigLoadException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.OrganManagerID.java | OrganManagerID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintFileHandleForm.java | CSDPrintFileHandleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmAclRuleImpl.java | DrmAclRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.mail.TakeOutMail.java | TakeOutMail
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.DeleteMethod.java | DeleteMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPolicyTargetForm.java | FspTcoPolicyTargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsDeptBL.java | StatisticsDeptBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmRoleDelegate.java | DrmRoleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspExceptionRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.http.auth.PreemptiveAuth.java | PreemptiveAuth
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.TopMenuAction.java | TopMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.LogoutCallbackForm.java | LogoutCallbackForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.struts.ApprovalExceptApiServiceAction.java | ApprovalExceptApiServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.UsedPasswordMatchValidator.java | UsedPasswordMatchValidator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.thread.FedThreadTask.java | FedThreadTask
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmUserImpl.java | DrmUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspTakeInOutManagerRepository.java | FspTakeInOutManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspPrintPolicyXmlServiceAction.java | FspPrintPolicyXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.righter.module.DirectoryRighterDeptCheck.java | DirectoryRighterDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.manager.impl.DrmProductLicenseManagerRepository.java | DrmProductLicenseManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.bl.ChangePasswdID.java | ChangePasswdID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmTableConfigDivideManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.RetrieveService.java | RetrieveService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.DefaultDeptAction.java | DefaultDeptAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.fed.FedSecurityLevelServerApi.java | FedSecurityLevelServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalListProcessInfo.java | ApprovalListProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.ProductLicense.java | ProductLicense
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspApprovalImpl.java | CSDFspApprovalImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.doc.righter.csd.module.RighterFspUserCheck.java | RighterFspUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.HttpLogConfig.java | HttpLogConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AutoInstallSettingForm.java | AutoInstallSettingForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.PPSendPasswordMailServiceProcessBlock.java | PPSendPasswordMailServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDLogMaskHandleAction.java | CSDLogMaskHandleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.FspDomainRuleManagerRepository.java | FspDomainRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.DefaultPatternFromXML.java | DefaultPatternFromXML
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.DomainSettingsForm.java | DomainSettingsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.DeptTree2Action.java | DeptTree2Action
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.ContextSearchOption.java | ContextSearchOption
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspWatTargetBL.java | FspWatTargetBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.util.DefaultPolicyConfigLoader.java | DefaultPolicyConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDomainPolicyCheckServiceAction.java | FspDomainPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspWatPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmAclRuleDelegate.java | DrmAclRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.mail.MailUtil.java | MailUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMobileDetailPrintViewerImageProcessBlock.java | FutMobileDetailPrintViewerImageProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.AutoSecPolicyMainAction.java | AutoSecPolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.PolicyProtocolConsoleAction.java | PolicyProtocolConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmAclTargetImpl.java | DrmAclTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.FspDomainRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.common.SystemEnv.java | SystemEnv
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.CabUpLoadConsoleAction.java | CabUpLoadConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmCSDFspStatisticsUserImpl.java | DrmCSDFspStatisticsUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspOffLineFileLogID.java | FspOffLineFileLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPLogForm.java | FspPPLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.deputy.block.ApprovalDeputyProcessBlock.java | ApprovalDeputyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPolicyForm.java | FspTcoPolicyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policyapi.struts.WatFileAction.java | WatFileAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.StatisticsConfiguration.java | StatisticsConfiguration
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspTcoPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPolicyStatusManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.struts.PatternForm.java | PatternForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.FspWatFileDelegate.java | FspWatFileDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintUsageAction.java | CSDPrintUsageAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDSearchBasis.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.data.Text.java | Text
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsUserManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageListAction.java | UsageListAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.DomainRuleAction.java | DomainRuleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ProductLicenseInfoForm.java | ProductLicenseInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmVirtualGroupTargetDelegate.java | DrmVirtualGroupTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalExceptApiProcessBlock.java | ApprovalExceptApiProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspWatPolicyCheckProcessBlock.java | FspWatPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.bl.TakeInOutLabelID.java | TakeInOutLabelID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPPolicyTargetProcessBlock.java | FspPPPolicyTargetProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.ReceivePolicyProcessInfo.java | ReceivePolicyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.PositionListForm.java | PositionListForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageFileAction.java | UsageFileAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageStrutsForm.java | UsageStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.api.CSDFspUsageManagerAPI.java | CSDFspUsageManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsActionPostProcessable.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.WatFileID.java | WatFileID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspWatTargetImpl.java | FspWatTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.SendPasswordMailServiceProcessInfo.java | SendPasswordMailServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Moduleinfo.java | Moduleinfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.exceptprint.beans.FspExceptPrint.java | FspExceptPrint
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDMaskRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.ApprovalLineTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.sqlclient.SqlBuilder.java | SqlBuilder
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.block.CSDApprovalInquiryExportProcessInfo.java | CSDApprovalInquiryExportProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPLogMobileProcessBlock.java | FspPPLogMobileProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspUsageFile.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.MessageUtil.java | MessageUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspOffLineFileLogMotionServiceAction.java | FspOffLineFileLogMotionServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspWatTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspWatFileDelegate.java | FspWatFileDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.MobileAuthAction.java | MobileAuthAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPPPolicyRuleImpl.java | FspPPPolicyRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ProductLicenseInfoProcessInfo.java | ProductLicenseInfoProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmSqlManagerRepository.java | DrmSqlManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsDocAction.java | FspStatisticsDocAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionDeptProcessBlock.java | FutMotionDeptProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.DataStoreList.java | DataStoreList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspWatFile.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionDeptProcessInfo.java | FutMotionDeptProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDMaskRuleTplManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsPPForm.java | FutMotionStatsPPForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspPolicyImpl.java | CSDFspPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmAclPermissionManagerRepository.java | DrmAclPermissionManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsUserAction.java | FspStatisticsUserAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.MyDrmZoneMenuID.java | MyDrmZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmTableConfigDivide.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspReceivePolicyLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspWatPolicyBL.java | FspWatPolicyBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmPosition.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmVirtualGroupTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.LoginTryInfoAction.java | LoginTryInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmObjectImpl.java | DrmObjectImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FspRevokeLogProcessBlock.java | FspRevokeLogProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspClientPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.manager.api.ReportFspStatisticsDeptManagerAPI.java | ReportFspStatisticsDeptManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.qr.struts.FspQRLogForm.java | FspQRLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.TokenVerifyProcessBlock.java | TokenVerifyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.statistics.bl.DrmStatisticsList.java | DrmStatisticsList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalTakeoutApiProcessBlock.java | ApprovalTakeoutApiProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmIdentityTempSessionDelegate.java | DrmIdentityTempSessionDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.bl.RuleBL.java | RuleBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPrintPolicyImpl.java | FspPrintPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.JDBCDefaultMethod.java | JDBCDefaultMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.HeaderBody.java | HeaderBody
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDomainPolicyCheckProcessInfo.java | FspDomainPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPrintPolicyDelegate.java | FspPrintPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionApplicationProcessInfo.java | FutMotionApplicationProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentitySessionManager.java | IdentitySessionManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.TreeID.java | TreeID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.server.util.ConfigLoader.java | ConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.TableManagerConsoleAction.java | TableManagerConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspClientPolicyXmlServiceID.java | Revoke
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.struts.CSDSearchBasisForm.java | CSDSearchBasisForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.struts.CSDApprovalInquiryForm.java | CSDApprovalInquiryForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsYearDelegate.java | FspStatisticsYearDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionUserForm.java | FutMotionUserForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FspReceivePolicyLogAction.java | FspReceivePolicyLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDPolicyUID.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmIdentityTempSessionManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmRole.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspPrintPolicyXmlServiceID.java | FspPrintPolicyXmlServiceID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.usage.util.UserInfo.java | UserInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDLogMaskRuleImpl.java | CSDLogMaskRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspWatTargetID.java | FspWatTargetID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPolicyCacheDelegate.java | FspPolicyCacheDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmVirtualGroupTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.AutoSecPolicyZoneMenuBL.java | AutoSecPolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.doc.righter.csd.module.RighterGetDrmUser.java | RighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.Bundle.java | Bundle
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmSysLoginTryInfoImpl.java | DrmSysLoginTryInfoImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.exceptprint.struts.FspExceptPrintServiceForm.java | FspExceptPrintServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmAclTargetDelegate.java | DrmAclTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.ApiAction.java | ApiAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDsdExtensionPolicyCheckServiceAction.java | FspDsdExtensionPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FspRevokeLogProcessInfo.java | FspRevokeLogProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmVirtualGroupTargetManagerRepository.java | DrmVirtualGroupTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.organ.DeptTreeAction.java | DeptTreeAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionPrintDriverProcessBlock.java | FutMotionPrintDriverProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.tcopolicy.service.FspTcoPolicyChecker.java | FspTcoPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageAction.java | FutMotionStatsUsageAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmHistoryDataLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspExceptionRuleImpl.java | FspExceptionRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmAclDeptImpl.java | DrmAclDeptImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspWatPolicyXmlServiceAction.java | FspWatPolicyXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.block.UserInfoID.java | UserInfoID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.VirtualGroupXmlServiceAction.java | VirtualGroupXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsServiceForm.java | StrutsServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDSearchBasisDelegate.java | CSDSearchBasisDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDStatisticsProcessInfo.java | CSDStatisticsProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsDeptManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ClientPolicyZoneMenuAction.java | ClientPolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.UpdateMethod.java | UpdateMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDPolicyUIDDelegate.java | CSDPolicyUIDDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.util.DomainConfigLoader.java | DomainConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDsdExtensionPolicyServiceProcessBlock.java | FspDsdExtensionPolicyServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPrintPolicyRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspRetrievePrinterInfoServiceForm.java | FspRetrievePrinterInfoServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDFspSearchStatisticsForm.java | CSDFspSearchStatisticsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmUserDelegate.java | DrmUserDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmVirtualGroupImpl.java | DrmVirtualGroupImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.CommonMainAction.java | CommonMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.UserTreeAction.java | UserTreeAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmSysLoginTryInfoManagerRepository.java | DrmSysLoginTryInfoManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDLogMaskRuleProcessBlock.java | CSDLogMaskRuleProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPrintPolicyRuleDelegate.java | FspPrintPolicyRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmOrgan.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.pppolicy.module.FspRighterGetDrmUser.java | FspRighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmVirtualGroupTargetImpl.java | DrmVirtualGroupTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.RequestUtils.java | RequestUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsDeptAction.java | FspStatisticsDeptAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.impl.ApprovalDeputyImpl.java | ApprovalDeputyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.takeinout.bl.FspTakeInOutBL.java | FspTakeInOutBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspTcoPolicyDelegate.java | FspTcoPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailPrintViewerTextAction.java | FutDetailPrintViewerTextAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.tableconfig.TableManager.java | TableManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyServiceProcessBlock.java | CSDFspPolicyServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.ServerMessage.java | ServerMessage
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPolicyUIDImpl.java | FspPolicyUIDImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspClientPolicyTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPrintTPLProcessInfo.java | FspTcoPrintTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.takeinout.bl.TakeInOutID.java | TakeInOutID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspWatPolicyCheckServiceAction.java | FspWatPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.app.block.FspAppProcessInfo.java | FspAppProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.UsageMainAction.java | UsageMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.DomainRuleID.java | DomainRuleID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.PPSendPasswordMailServiceAction.java | PPSendPasswordMailServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsDateManagerRepository.java | FspStatisticsDateManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uuid.jug.UUIDTimer.java | UUIDTimer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.struts.TargetForm.java | TargetForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authmapp.block.AuthPPAppProcessBlock.java | AuthPPAppProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmMemberShip.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspTcoPolicyImpl.java | FspTcoPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.LocaleLangUtil.java | LocaleLangUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.UserLicenseInfoForm.java | UserLicenseInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.licenseusage.ReportLicenseListProcessInfo.java | ReportLicenseListProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspApprovalApplyPush.java | SendFspApprovalApplyPush
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.beans.DrmProductLicense.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspRegExpressionManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.ChangePasswdForm.java | ChangePasswdForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.OrganManagerForm.java | OrganManagerForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.clientpolicy.module.FspRighterDeptCheck.java | FspRighterDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDFspSearchStatisticsAction.java | CSDFspSearchStatisticsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspWatPolicyImpl.java | FspWatPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.util.ApprovalScheduleUtil.java | ApprovalScheduleUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.UsageExportProcessBlock.java | UsageExportProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fse.header.FSEHeaderParser.java | FSEHeaderParser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmIdentityTempSessionManagerRepository.java | DrmIdentityTempSessionManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.struts.LicenseCheckServiceForm.java | LicenseCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.bl.BasicListBL.java | BasicListBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.TimeServerProcessInfo.java | TimeServerProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspRetrievePrinterInfoServiceProcessBlock.java | FspRetrievePrinterInfoServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.data.Action.java | Action
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspDomainExtensionRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.StringBufferUtil.java | StringBufferUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspUsageFile.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.block.SendPasswordMailProcessBlock.java | SendPasswordMailProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmUserTinyImpl.java | DrmUserTinyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspAppRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sso.FSD3SSOParserUtf8.java | FSD3SSOParserUtf8
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDomainPolicyCheckServiceForm.java | FspDomainPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspDomainExtensionRuleDelegate.java | FspDomainExtensionRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.PatternFromXML.java | PatternFromXML
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.licenseusage.LicenseReportAction.java | LicenseReportAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDMaskRuleTplDelegate.java | CSDMaskRuleTplDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPrintPolicyRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPolicyStatus.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessBlock.java | ProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.TokenVerifyCallbackProcessInfo.java | TokenVerifyCallbackProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspTcoPolicyTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.TakeInOutZoneMenuBL.java | TakeInOutZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspWatFileManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.UrlUtils.java | UrlQueryBuilder
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.UsageProcessBlock.java | UsageProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.StatisticsZoneMenuID.java | StatisticsZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.bl.AuthID.java | AuthID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.bl.AuthManager.java | AuthManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.ApprovalDeputy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.RollingDateFileHandler.java | RollingDateFileHandler
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspWatTargetManagerRepository.java | FspWatTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.ChangePasswordServiceProcessInfo.java | ChangePasswordServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspTakeInOutInfoDelegate.java | FspTakeInOutInfoDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspTakeInOutInfoManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPDispatcherServiceProcessBlock.java | PPDispatcherServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmTableConfigDivideImpl.java | DrmTableConfigDivideImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsList.java | StatisticsList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.CabUpLoadConsoleForm.java | CabUpLoadConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPPSessionDelegate.java | FspPPSessionDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPolicyStatusImpl.java | FspPolicyStatusImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.console.bl.ViewPolicyFspWatConsoleBL.java | ViewPolicyFspWatConsoleBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ProcessClientJsonServiceInfo.java | ProcessClientJsonServiceInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.bl.util.DrmoneBLUtil.java | DrmoneBLUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.pppolicy.module.FspRighterDeptCheck.java | FspRighterDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.bl.ChangePasswdBL.java | ChangePasswdBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyCheckServiceAction.java | CSDFspPolicyCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmMemberShipDelegate.java | DrmMemberShipDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspStatisticsUserManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPLogAction.java | FspPPLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDPrintRuleManagerRepository.java | CSDPrintRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspUsageFileManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.SearchUserID.java | SearchUserID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.impl.FspRevokeCheckJob.java | FspRevokeCheckJob
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmHistoryDataDetailLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspWatPolicyCheckProcessInfo.java | FspWatPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspStatisticsUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.WebStringUtil.java | WebStringUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.block.FspWatPrintTPLProcessInfo.java | FspWatPrintTPLProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.TokenVerifyAction.java | TokenVerifyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmIDNO.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsDate.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutDetailPrintViewerTextProcessBlock.java | FutDetailPrintViewerTextProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspUsage.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.UsageZoneMenuAction.java | UsageZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.LocalTokenVerifyProcessBlock.java | LocalTokenVerifyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPRetrieveJobsServiceProcessBlock.java | PPRetrieveJobsServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.ChangePasswordServiceProcessBlock.java | ChangePasswordServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspTcoPolicyTargetDelegate.java | FspTcoPolicyTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.bl.RuleID.java | RuleID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmHistoryLogImpl.java | DrmHistoryLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.fspusage.ReportFSPAction.java | ReportFSPAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPrintDelegate.java | FspPrintDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.futmotion.FutDetailLogServerApi.java | FutDetailLogServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.TableConfigLoader.java | TableConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.UpdateService.java | UpdateService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.StorageFactory.java | StorageFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.util.DirectoryServerUtil.java | DirectoryServerUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmIDNOImpl.java | DrmIDNOImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.secapp.service.SecApp.java | SecApp
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.stats.TcoStats.java | TcoStats
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policyapi.struts.FspClientPolicyTargetAction.java | FspClientPolicyTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.bl.util.KeyPairStorageManager.java | KeyPairStorageManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Right.java | Right
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintUsageExportProcessInfo.java | CSDPrintUsageExportProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.client.api.util.CryptUtil.java | CryptUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmHistoryDataLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspDomainRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmDeptManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.util.DateUtil.java | DateUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.UserTree2Action.java | UserTree2Action
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.db.IllegalDBStateException.java | IllegalDBStateException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspClientPolicyRuleImpl.java | FspClientPolicyRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.DefaultPolicyAction.java | DefaultPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.clientpolicy.module.FspRighterGetDrmUser.java | FspRighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.PatternProcessBlock.java | PatternProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.ReceivePolicyProcessBlock.java | ReceivePolicyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspExceptionRuleDelegate.java | FspExceptionRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.Log.java | Log
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalExceptApiProcessInfo.java | Error
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ClientPolicyZoneMenuID.java | ClientPolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.MyDrmZoneMenuAction.java | MyDrmZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspCheckApprovalProcessBlock.java | CSDFspCheckApprovalProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.util.DrmUserUtil.java | DrmUserUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDSearchPatternManagerRepository.java | CSDSearchPatternManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.FspDomainRuleImpl.java | FspDomainRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.serverinfo.ServerInfo.java | ServerInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPolicyUIDDelegate.java | FspPolicyUIDDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.deputy.block.ApprovalDeputyProcessInfo.java | ApprovalDeputyProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.DataEntityManager.java | DataEntityManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.utils.FutDataSourceUtils.java | FutDataSourceUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspUsageImpl.java | FspUsageImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.struts.ExceptPrintAction.java | ExceptPrintAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmStatisticsManagerRepository.java | DrmStatisticsManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.org.eclipse.jetty.util.security.Password.java | Password
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPPPolicyImpl.java | FspPPPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsUsageForm.java | FutMotionStatsUsageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspRegExpressionImpl.java | FspRegExpressionImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmDeptManagerRepository.java | DrmDeptManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.FspDomainRuleDelegate.java | FspDomainRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.stats.LicenseStats.java | LicenseStats
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPApprovalServerTPLForm.java | FspPPApprovalServerTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDSearchPolicySettingForm.java | CSDSearchPolicySettingForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.AuthForm.java | AuthForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDSearchPatternDelegate.java | CSDSearchPatternDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.MappingList.java | MappingList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.TableConfigManager.java | TableConfigManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspClientPolicyCheckServiceForm.java | FspClientPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.ApprovalLineLevelManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspPrintPolicyCheckProcessBlock.java | FspPrintPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.Activation.java | Activation
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.DSDConfigFactory.java | DSDConfigFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.block.FspPrintProcessInfo.java | FspPrintProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.usage.factory.UsageConfigManager.java | UsageConfigManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageStrutsAction.java | UsageStrutsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDsdExtensionPolicyCheckProcessBlock.java | FspDsdExtensionPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailPrintViewerImageForm.java | FutDetailPrintViewerImageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.PrivateSettingsConsoleForm.java | PrivateSettingsConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.EmptyArgumentException.java | EmptyArgumentException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.util.ApprovalCommonUtil.java | ApprovalCommonUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.bl.BasicIdentityList.java | BasicIdentityList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.clientpolicy.module.FspRighterUserCheck.java | FspRighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspTcoPolicyTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspUsageFileManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmPolicyStatusImpl.java | DrmPolicyStatusImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.bl.CSDFspOffLineFileLogBL.java | CSDFspOffLineFileLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspClientPolicyTargetID.java | FspClientPolicyTargetID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.SettingsFileID.java | SettingsFileID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspUsageManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.StorageServiceLocator.java | StorageServiceLocator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmAclDeptManagerRepository.java | DrmAclDeptManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.RepositoryManager.java | RepositoryManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmDept.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.organ.DeptTreeProcessInfo.java | DeptTreeProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspAppRuleImpl.java | FspAppRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.FspWatFile.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspTcoPolicyRuleManagerRepository.java | FspTcoPolicyRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsMonthAction.java | FspStatisticsMonthAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.block.CSDApprovalInquiryExtendedProcessInfo.java | CSDApprovalInquiryExtendedProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspUsageDelegate.java | FspUsageDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.ExceptPrintBL.java | ExceptPrintBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.PPChangePasswordServiceProcessBlock.java | PPChangePasswordServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspUsageFileImpl.java | FspUsageFileImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.struts.LicenseApiServiceAction.java | LicenseApiServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.usage.util.UsageConfigLoader.java | UsageConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.secapp.service.SecAppFactory.java | SecAppFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsDateBL.java | StatisticsDateBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.UserReplaceForm.java | UserReplaceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.UsageFileBL.java | UsageFileBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fut.utils.FutContextUserUtils.java | FutContextUserUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.LoginFormAction.java | LoginFormAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspApprovalManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.SysLoginTryInfoBL.java | SysLoginTryInfoBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmIDNODelegate.java | DrmIDNODelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.AclPolicyZoneMenuBL.java | AclPolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.PolicyMainAction.java | PolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspClientPolicyTargetManagerRepository.java | FspClientPolicyTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.CSDCommonMainAction.java | CSDCommonMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AdminInfoConsoleAction.java | AdminInfoConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDLogMaskRuleDelegate.java | CSDLogMaskRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmPositionManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDsdExtensionPolicyCheckServiceForm.java | FspDsdExtensionPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPPPolicyRuleDelegate.java | FspPPPolicyRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspLogMaskRuleTpl.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.config.RighterConfigFactory.java | RighterConfigFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPrintManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmMemberShipManagerRepository.java | DrmMemberShipManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspOffLineLogBL.java | FspOffLineLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspExceptPrintTPLRuleDelegate.java | FspExceptPrintTPLRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspAppDelegate.java | FspAppDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.ChangeUserInfoAction.java | ChangeUserInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPolicyUIDManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.framework.utils.XPathUtils.java | XPathUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDomainPolicyCheckProcessBlock.java | FspDomainPolicyCheckProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmIDNOManagerRepository.java | DrmIDNOManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsWebForm.java | StrutsWebForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.MyDrmMainAction.java | MyDrmMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.bl.TakeInOutBL.java | TakeInOutBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.StorageEntity.java | StorageEntity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseConsoleAction.java | LicenseConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyCheckServiceForm.java | CSDFspPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.ApprovalLineLevel.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.DeptTreeAction.java | DeptTreeAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmOrganImpl.java | DrmOrganImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.bl.AuthBL.java | AuthBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.delegate.ApprovalDeputyDelegate.java | ApprovalDeputyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.DefaultPolicyForm.java | DefaultPolicyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.righter.module.DirectoryRighterUserCheck.java | DirectoryRighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.ChangePasswdAction.java | ChangePasswdAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.FspWatFileImpl.java | FspWatFileImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.ReportDefaultProcessBlock.java | AjaxResult
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ProductLicenseInfoAction.java | ProductLicenseInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.config.ui.UsageLogSetting.java | UsageLogSetting
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.WriterInfo.java | WriterInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDPolicyUIDManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.UsageProcessInfo.java | UsageProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.statistics.bl.DrmStatisticsID.java | DrmStatisticsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.sqlclient.JsdSqlClientUtils.java | JsdSqlClientUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.usage.bl.HistoryLogID.java | HistoryLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspTcoPolicyRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmHistoryDataLogManagerRepository.java | DrmHistoryDataLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.clientpolicy.service.FspClientPolicyChecker.java | FspClientPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsDeptManagerRepository.java | FspStatisticsDeptManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.util.SeclogStorageMailLoader.java | SeclogStorageMailLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.util.UserTypeUtil.java | UserTypeUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.struts.FspPrintForm.java | FspPrintForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.UserNeedable.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.tcopolicy.module.FspRighterDeptCheck.java | FspRighterDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.tcopolicy.module.FspRighterGetDrmUser.java | FspRighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmHistoryDataLogImpl.java | DrmHistoryDataLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.ClientUploadID.java | ClientUploadID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.chain.ProcessChainModule.java | ProcessChainModule
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.struts.TimeServerServiceAction.java | TimeServerServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.OrganZoneMenuBL.java | OrganZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.AutoSecPolicyZoneMenuAction.java | AutoSecPolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.console.struts.ViewFspPolicyConsoleAction.java | ViewFspPolicyConsoleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DomainRuleMainAction.java | DomainRuleMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.futmotion.FutMotionDeptServerApi.java | FutMotionDeptServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.ApiHandler.java | ApiHandler
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.fed.FedDomainServerApi.java | FedDomainServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ClientPolicyZoneMenuBL.java | ClientPolicyZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmHistoryLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.pppolicy.service.FspPPPolicyChecker.java | FspPPPolicyChecker
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspClientPolicyRuleManagerRepository.java | FspClientPolicyRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPPolicyTargetProcessInfo.java | FspPPPolicyTargetProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspClientPolicyTargetDelegate.java | FspClientPolicyTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspRetrievePrinterInfoServiceAction.java | FspRetrievePrinterInfoServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailLogAction.java | FutDetailLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.util.ProductLicenseLoader.java | ProductLicenseLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.bl.VirtualGroupTargetID.java | VirtualGroupTargetID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDMaskRuleDelegate.java | CSDMaskRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.SysLoginTryInfoID.java | SysLoginTryInfoID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.util.EncryptUtil.java | EncryptUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.ModuleUtil.java | ModuleUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspClientPolicyForm.java | FspClientPolicyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPPPolicyManagerRepository.java | FspPPPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmAclTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.session.LicenseNotFoundException.java | LicenseNotFoundException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authsso.bl.AuthSSOBL.java | AuthSSOBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.DeptTreeBL.java | DeptTreeBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspDomainExtensionRuleImpl.java | FspDomainExtensionRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.TokenVerifyForm.java | TokenVerifyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspWatTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AutoInstallLicSettingAction.java | AutoInstallLicSettingAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsDateManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspStatisticsDeptDelegate.java | FspStatisticsDeptDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.struts.ApprovalListServiceAction.java | ApprovalListServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.DomainRuleBL.java | DomainRuleResult
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.AclPolicyZoneMenuAction.java | AclPolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPrint.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionUserProcessInfo.java | FutMotionUserProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.TimeServerProcessBlock.java | TimeServerProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmObject.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ProductPolicyZoneMenuID.java | ProductPolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspUsageFileDelegate.java | CSDFspUsageFileDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.ClientUploadForm.java | ClientUploadForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.LogoutAction.java | LogoutAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.RefreshDirectoryServiceForm.java | RefreshDirectoryServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.ExceptPrintID.java | ExceptPrintID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspCheckApprovalProcessInfo.java | CSDFspCheckApprovalProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspRegExpressionDelegate.java | FspRegExpressionDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.PatternFromXML.java | PatternFromXML
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.UserReplaceBL.java | UserReplaceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.api.CSDFspStatisticsDeptManagerAPI.java | CSDFspStatisticsDeptManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutDetailPrintViewerImageProcessBlock.java | FutDetailPrintViewerImageProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.DrmObjectFactory.java | DrmObjectFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DocPolicyZoneMenuID.java | DocPolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.ReceivePolicyStrutsAction.java | ReceivePolicyStrutsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.UserBeans.java | UserBeans
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmStatistics.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspMaskRuleTpl.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.pp.PPLogServerApi.java | PPLogServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPPLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.config.RighterConfig.java | RighterConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspRevokeLogServiceProcessBlock.java | FspRevokeLogServiceProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sso.SSOInfo.java | SSOInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageListForm.java | UsageListForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailLogForm.java | FutDetailLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.ReportFutDetailLog.java | ReportFutDetailLog
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspSearchDataManagerRepository.java | CSDFspSearchDataManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.Mapping.java | Mapping
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmOrganManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.DefaultDeptForm.java | DefaultDeptForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.FspWatFileManagerRepository.java | FspWatFileManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.ReceivePolicyStrutsForm.java | ReceivePolicyStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ProductLicenseInfoProcessBlock.java | ProductLicenseInfoProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspUsageImpl.java | CSDFspUsageImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.takeinout.delegate.FspTakeInOutDelegate.java | FspTakeInOutDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmSysManageImpl.java | DrmSysManageImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmHistoryDataLogDelegate.java | DrmHistoryDataLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsYear.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspReceivePolicyLogManagerRepository.java | FspReceivePolicyLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.DeptListAction.java | DeptListAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDMaskRuleTplImpl.java | CSDMaskRuleTplImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspWatPolicyXmlServiceID.java | FspWatPolicyXmlServiceID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPDomainRuleProcessBlock.java | FspPPDomainRuleProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionUserProcessBlock.java | FutMotionUserProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspWatTargetDelegate.java | FspWatTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.util.APICertLoader.java | APICertLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.manager.impl.DrmProductLicenseUserCountManagerRepository.java | DrmProductLicenseUserCountManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.auth.Auth.java | Auth
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspPolicyTargetManagerRepository.java | CSDFspPolicyTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmVirtualGroupDelegate.java | DrmVirtualGroupDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.CommonSettingsBL.java | CommonSettingsBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.CSDSearchBasisProcessInfo.java | CSDSearchBasisProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DormancyLicenseInfoAction.java | DormancyLicenseInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspClientPolicyXmlServiceBL.java | FspClientPolicyXmlServiceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.struts.FspWatPrintTPLForm.java | FspWatPrintTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPPPolicyRuleManagerRepository.java | FspPPPolicyRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyServiceForm.java | CSDFspPolicyServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.block.IpAccessControlProcessBlock.java | IpAccessControlProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspUsageFileDelegate.java | FspUsageFileDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspRevokeLogManagerRepository.java | FspRevokeLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPolicyUID.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspSearchDataImpl.java | CSDFspSearchDataImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionDeptAction.java | FutMotionDeptAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.DrmoneMobileTilesRequestProcessor.java | DrmoneMobileTilesRequestProcessor
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmTableConfigDivideManagerRepository.java | DrmTableConfigDivideManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.OrganZoneMenuAction.java | OrganZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.DrmMemberShipManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsd3.header.FSD3HeaderParser.java | FSD3HeaderParser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmStatisticsDelegate.java | DrmStatisticsDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.mail.MailID.java | MailID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authmapp.block.AuthPPAppProcessInfo.java | AuthPPAppProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmHistoryLogManagerRepository.java | DrmHistoryLogManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.DrmUserTiny.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsDocManagerRepository.java | FspStatisticsDocManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmOrganManagerRepository.java | DrmOrganManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspOffLineFileLogAction.java | FspOffLineFileLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.OwnerInfo.java | OwnerInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionContentProcessInfo.java | FutMotionContentProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPLogProcessBlock.java | FspPPLogProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspExceptPrintTPLRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.takeinout.bl.TakeInOutBL.java | TakeInOutBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.bl.VirtualGroupTargetBL.java | VirtualGroupTargetBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspExceptPrintDelegate.java | FspExceptPrintDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.PPDeleteJobsServiceAction.java | PPDeleteJobsServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.WatEditorUpLoadBL.java | WatEditorUpLoadBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.watpolicy.module.FspRighterGetDrmUser.java | FspRighterGetDrmUser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.manager.ReportFspLicenseListManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.StatisticsMainAction.java | StatisticsMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.usage.factory.UsageConfigFactory.java | UsageConfigFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintFileHandleAction.java | CSDPrintFileHandleAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.db.DBConnectionFailException.java | DBConnectionFailException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.RepositoryFactory.java | RepositoryFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsDateImpl.java | FspStatisticsDateImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.StoreService.java | StoreService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.FspReceivePolicyLogID.java | FspReceivePolicyLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ExceptPrintMainAction.java | ExceptPrintMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDPrintRuleDelegate.java | CSDPrintRuleDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.client.api.common.HttpConnectManager.java | HttpConnectManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.DeptListBL.java | DeptListBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.RefreshDirectoryServiceProcessBlock.java | NoUserExistException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspPolicyTargetImpl.java | CSDFspPolicyTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPPrintTPLProcessBlock.java | FspPPPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsJsonServiceAction.java | StrutsJsonServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPLogMobileAction.java | FspPPLogMobileAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPPPolicyTargetManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsMonthBL.java | StatisticsMonthBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.bl.SimplePWD.java | SimplePWD
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDMaskRuleImpl.java | CSDMaskRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.block.IpAccessControlProcessInfo.java | IpAccessControlProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspExceptPrintTPLManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspRevokeLog.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspStatisticsDeptUserManagerRepository.java | CSDFspStatisticsDeptUserManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.DeptCountStruct.java | DeptCountStruct
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.delegate.ReportFspLicenseListDelegate.java | ReportFspLicenseListDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageExportStrutsForm.java | UsageExportStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DormancyLicenseInfoProcessBlock.java | DormancyLicenseInfoProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.module.RighterModule.java | RighterModule
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.ListMethod.java | ListMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.DefaultXmlServiceBL.java | DefaultXmlServiceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.TopMenuID.java | TopMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.OrganZoneMenuID.java | OrganZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsDept.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmSysManageManagerRepository.java | DrmSysManageManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.UsageExportProcessInfo.java | UsageExportProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmDeptImpl.java | DrmDeptImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.usage.bl.HistoryLogBL.java | HistoryLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.fspusage.ReportFSPProcessBlock.java | CustomComparator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.secapp.service.SecAppPID.java | SecAppPID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspUsageFileManagerRepository.java | CSDFspUsageFileManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsUserManagerRepository.java | FspStatisticsUserManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmCSDFsnStatisticsUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspClientPolicyTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.ChartXMLFactory.java | ChartXMLFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sso.SSOUtil.java | SSOUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmTableConfigDelegate.java | DrmTableConfigDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmSysLoginTryInfoDelegate.java | DrmSysLoginTryInfoDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.HttpLogSender.java | HttpLogSender
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPolicyCacheImpl.java | FspPolicyCacheImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspDomainExtensionRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspUsageManagerRepository.java | FspUsageManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.beans.impl.ReportCSDFspStatisticsDeptImpl.java | ReportCSDFspStatisticsDeptImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.UsageZoneMenuID.java | UsageZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspStatisticsYearManagerRepository.java | FspStatisticsYearManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPolicyProcessBlock.java | FspTcoPolicyProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.DeptBeans.java | DeptBeans
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DomainRuleZoneMenuBL.java | DomainRuleZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMobileDetailPrintViewerTextAction.java | FutMobileDetailPrintViewerTextAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.block.ApprovalTakeoutApiProcessInfo.java | Error
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.tcopolicy.module.FspRighterUserCheck.java | FspRighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.SendPasswordMailServiceForm.java | SendPasswordMailServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspStatisticsUserImpl.java | CSDFspStatisticsUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.beans.impl.DrmProductLicenseUserCountImpl.java | DrmProductLicenseUserCountImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmObjectManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspStatisticsDeptUserDelegate.java | CSDFspStatisticsDeptUserDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsDoc.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.SearchUserAction.java | SearchUserAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.api.CSDFspSearchDataManagerAPI.java | CSDFspSearchDataManagerAPI
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.Test2.java | Test2
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmStatisticsManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.service.APICert.java | APICert
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPolicyCache.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspDomainRuleManagerRepository.java | FspDomainRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.idno.bl.IDNOInitBL.java | IDNOInitBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ExceptPrintZoneMenuID.java | ExceptPrintZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.AutoSecPolicyZoneMenuID.java | AutoSecPolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspDsdExtensionPolicyServiceProcessInfo.java | FspDsdExtensionPolicyServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.PolicyZoneMenuAction.java | PolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.http.HttpForwardRequest.java | HttpForwardRequest
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.DrmoneRequestProcessor.java | DrmoneRequestProcessor
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspRevokeLogImpl.java | FspRevokeLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.bl.TakeInOutList.java | TakeInOutList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.ContextFilterOption.java | ContextFilterOption
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPrintTPLAction.java | FspTcoPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.DeleteService.java | DeleteService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspStatisticsDeptUserManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.util.StringUtil.java | StringUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPPPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMobileDetailPrintViewerImageAction.java | FutMobileDetailPrintViewerImageAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDSearchBasisImpl.java | CSDSearchBasisImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspPolicyUIDUtil.java | FspPolicyUIDUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policyapi.struts.FspWatTargetAction.java | FspWatTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.futmotion.FutMotionContentServerApi.java | FutMotionContentServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.server.util.MobileConfigLoader.java | MobileConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.RetrieveMethod.java | RetrieveMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspWatPolicyManagerRepository.java | FspWatPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.struts.PatternAction.java | PatternAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.doc.righter.csd.module.RighterGetCSDFspPolicy.java | RighterGetCSDFspPolicy
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.TableManagerAction.java | TableManagerAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspRetrievePrinterInfoServiceProcessInfo.java | FspRetrievePrinterInfoServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDPolicyRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPolicyStatusDelegate.java | FspPolicyStatusDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uuid.jug.TimestampSynchronizer.java | TimestampSynchronizer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDMaskRuleManagerRepository.java | CSDMaskRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.PrintWriterStrutsForm.java | PrintWriterStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.pppolicy.module.FspRighterUserCheck.java | FspRighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDLogMaskRuleProcessInfo.java | CSDLogMaskRuleProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmAclScopeManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDPolicyRuleManagerRepository.java | CSDPolicyRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.LogProcess.java | LogProcess
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.block.DomainExtensionRuleProcessInfo.java | DomainExtensionRuleProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.manager.impl.DrmPositionManagerRepository.java | DrmPositionManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspApp.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.CommonSettingsAction.java | CommonSettingsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.FspReceivePolicyLogBL.java | FspReceivePolicyLogBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policyapi.struts.FspWatPolicyAction.java | FspWatPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.block.FspTcoPrintTPLProcessBlock.java | FspTcoPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmAclDeptDelegate.java | DrmAclDeptDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPPPolicyRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.StatisticsConfigurationLoader.java | StatisticsConfigurationLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.FspReportTableDrawer.java | FspReportTableDrawer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsDocManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.manager.impl.ReportFspLicenseListManagerRepository.java | ReportFspLicenseListManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.usage.util.UsageLogRequestInfo.java | UsageLogRequestInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.RightList.java | RightList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDSearchBasisManagerRepository.java | CSDSearchBasisManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.StorageSettingsBL.java | StorageSettingsBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmHistoryDataDetailLogDelegate.java | DrmHistoryDataDetailLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.header.ContentHeader.java | ContentHeader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspStatisticsDeptUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmSqlManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.FspClientPolicyBL.java | DeleteClientPolicyRule
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.UserReplaceID.java | UserReplaceID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspTcoPolicyTargetManagerRepository.java | FspTcoPolicyTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sso.SSOStringParser.java | SSOStringParser
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmCSDFspStatisticsUser.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyServiceProcessInfo.java | CSDFspPolicyServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.sqlclient.SqlClient.java | SqlClient
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.struts.LicenseCheckServiceAction.java | LicenseCheckServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.thread.impl.FedApprovalScheduleTask.java | FedApprovalScheduleTask
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspWatPolicyForm.java | FspWatPolicyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPPLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspOffLineLogAction.java | CSDFspOffLineLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.ExceptPrintList.java | ExceptPrintList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmTableConfigManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.CsdZoneMenuAction.java | CsdZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionContentForm.java | FutMotionContentForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.version.Version.java | Version
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspSearchData.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.WatEditorUpLoadAction.java | WatEditorUpLoadAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspStatisticsDeptManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspStatisticsDeptImpl.java | CSDFspStatisticsDeptImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.PasswordValidator.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.TableManagerForm.java | TableManagerForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspStatisticsDept.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.takeinout.struts.FspTakeInOutServiceForm.java | FspTakeInOutServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.MyDrmZoneMenuBL.java | MyDrmZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsMonthManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspLogApprovalApplyPush.java | SendFspLogApprovalApplyPush
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.delegate.ApprovalLineTargetDelegate.java | ApprovalLineTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.TreeForm.java | TreeForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.locator.ObjectManagerLocator.java | ObjectManagerLocator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspAppManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDPolicyUIDManagerRepository.java | CSDPolicyUIDManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DormancyLicenseInfoForm.java | DormancyLicenseInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.bl.VirtualGroupBL.java | VirtualGroupBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmStatisticsImpl.java | DrmStatisticsImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.block.UserSearchListProcessBlock.java | UserSearchListProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspExceptionRuleManagerRepository.java | FspExceptionRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.DSDConfig.java | DSDConfig
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.beans.impl.DrmPositionImpl.java | DrmPositionImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspStatisticsMonth.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsUserBL.java | StatisticsUserBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.deputy.struts.ApprovalDeputyForm.java | ApprovalDeputyForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.license.LicenseInitFactory.java | LicenseInitFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.DataEntity.java | DataEntity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspRegExpression.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.bl.SearchUserBL.java | SearchUserBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPrintPolicyManagerRepository.java | FspPrintPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.WatEditorDownLoadBL.java | WatEditorDownLoadBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDPrintRuleTplManagerRepository.java | CSDPrintRuleTplManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.MobileAuthForm.java | MobileAuthForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.LicenseCheckProcessInfo.java | LicenseCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutDetailPrintViewerImageAction.java | FutDetailPrintViewerImageAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspRevokeLogServiceProcessInfo.java | SecureDocInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsYearAction.java | FspStatisticsYearAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyInfoForm.java | CSDFspPolicyInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmAclDept.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.struts.VirtualGroupForm.java | VirtualGroupForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.util.FspPolicyUIDUtil.java | FspPolicyUIDUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.UsageZoneMenuBL.java | UsageZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmPolicyStatus.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.IDNOInitAction.java | IDNOInitAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspWatPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionApplicationAction.java | FutMotionApplicationAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintUsageProcessBlock.java | CSDPrintUsageProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.bl.IApprovalMethod.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.service.struts.ApprovalListServiceForm.java | ApprovalListServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.PropertyMessageResourcesFactory.java | PropertyMessageResourcesFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.aclpolicy.bl.TargetBL.java | TargetBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.MessageResourcesFactory.java | MessageResourcesFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionContentProcessBlock.java | FutMotionContentProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsDeptImpl.java | FspStatisticsDeptImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionPrintDriverAction.java | FutMotionPrintDriverAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.CommonMainBL.java | CommonMainBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.CompareTarget.java | CompareTarget
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.manager.impl.ReportFspStatisticsDeptManagerRepository.java | ReportFspStatisticsDeptManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.LinearLogFileFilter.java | LinearLogFileFilter
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspReceivePolicyLogImpl.java | FspReceivePolicyLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsYearImpl.java | FspStatisticsYearImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.http.HttpForwardResponse.java | HttpForwardResponse
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspApprovalApplyMail.java | SendFspApprovalApplyMail
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspAppManagerRepository.java | FspAppManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.acl.service.AclPolicyManager.java | AclPolicyManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.exceptprint.bl.FspExceptPrintBL.java | FspExceptPrintBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspExceptPrintTPL.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspRevokeLogServiceForm.java | FspRevokeLogServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspSearchDataDelegate.java | CSDFspSearchDataDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.bl.CSDFspOffLineFileLogID.java | CSDFspOffLineFileLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.RepositoryConfigurationLoader.java | RepositoryConfigurationLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.vgroup.struts.VirtualGroupAction.java | VirtualGroupAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.AsynchronousLogProcessor.java | AsynchronousLogProcessor
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.UserLicenseInfoAction.java | UserLicenseInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.bl.UsageLogList.java | UsageLogList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDPrintRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintMaskHandleForm.java | CSDPrintMaskHandleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.IJavaTableDrawer.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.ListCountMethod.java | ListCountMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDFspUsageManagerRepository.java | CSDFspUsageManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.takeinout.struts.FspTakeInOutServiceAction.java | FspTakeInOutServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.beans.impl.ApprovalLineLevelImpl.java | ApprovalLineLevelImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.block.FspPPDomainRuleProcessInfo.java | FspPPDomainRuleProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.SysManageID.java | SysManageID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.DomainSettingsID.java | DomainSettingsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspTakeInOutImpl.java | FspTakeInOutImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmCSDFsnStatisticsUserImpl.java | DrmCSDFsnStatisticsUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmSysManage.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.UserSearchListForm.java | UserSearchListForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.ListService.java | ListService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.machine.MachineInfo.java | MachineInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPPolicyTargetAction.java | FspPPPolicyTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPRetrieveJobsServiceProcessInfo.java | PPRetrieveJobsServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.fspusage.ReportFSPPrintUsageForm.java | ReportFSPPrintUsageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentitySession.java | IdentityEntity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.doc.righter.csd.module.RighterFspDeptCheck.java | RighterFspDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMobileDetailPrintViewerTextProcessBlock.java | FutMobileDetailPrintViewerTextProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspOffLineLogAction.java | FspOffLineLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.bl.ClientUploadBL.java | ClientUploadBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.qr.struts.FspQRLogMobileAction.java | FspQRLogMobileAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.DeptListForm.java | DeptListForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.struts.CSDApprovalInquiryAction.java | CSDApprovalInquiryAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.JavaCryptoUtil.java | JavaCryptoUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmTableConfigImpl.java | DrmTableConfigImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.takeinout.beans.FspTakeInOut.java | FspTakeInOut
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmIdentityTempSessionImpl.java | DrmIdentityTempSessionImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspClientPolicyTargetAction.java | FspClientPolicyTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.session.DrmSession.java | DrmSession
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPPSessionManagerRepository.java | FspPPSessionManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.FspClientPolicyCheckProcessInfo.java | FspClientPolicyCheckProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPPPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.DomainExtensionRuleForm.java | DomainExtensionRuleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.DrmoneTilesRequestProcessor.java | DrmoneTilesRequestProcessor
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.DrmoneJob.java | DrmoneJob
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspStatisticsDocImpl.java | FspStatisticsDocImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspAppImpl.java | FspAppImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.util.FspPolicyCheckLoader.java | FspPolicyCheckLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.ProductPolicyZoneMenuAction.java | ProductPolicyZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspReceivePolicyLogDelegate.java | FspReceivePolicyLogDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.file.FileUtil.java | FileUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmTableConfigDivideDelegate.java | DrmTableConfigDivideDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.TableConfigFactory.java | TableConfigFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.delegate.DrmOrganDelegate.java | DrmOrganDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.PrintWriterStrutsAction.java | PrintWriterStrutsAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspExternApiForm.java | CSDFspExternApiForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.FspClientPolicyAction.java | FspClientPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseInfoConsoleForm.java | LicenseInfoConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPPLogImpl.java | FspPPLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.authmapp.struts.AuthPPAppAction.java | AuthPPAppAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.watpolicy.module.FspRighterDeptCheck.java | FspRighterDeptCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.delegate.FspPPPolicyTargetDelegate.java | FspPPPolicyTargetDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPolicyAction.java | FspTcoPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.http.HttpForwardUtil.java | HttpForwardUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.futmotion.FutMotionUserServerApi.java | FutMotionUserServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.csdusage.ReportCSDAction.java | ReportCSDAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.SearchOptionList.java | SearchOptionList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDPrintUsageForm.java | CSDPrintUsageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspPrintImpl.java | FspPrintImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDPrintRuleTpl.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.struts.ExceptPrintForm.java | ExceptPrintForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspOffLineLogForm.java | CSDFspOffLineLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.DomainRuleZoneMenuID.java | DomainRuleZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmIDNOManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.impl.CSDLogMaskRuleTplManagerRepository.java | CSDLogMaskRuleTplManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.ClientServiceable.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.StatisticsZoneMenuAction.java | StatisticsZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.MobileAuthProcessBlock.java | MobileAuthProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmSysManageDelegate.java | DrmSysManageDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspPolicyDelegate.java | CSDFspPolicyDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.PropertyMessageResources.java | PropertyMessageResources
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.block.LicenseApiProcessInfo.java | Error
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.LogStorageAction.java | StreamGobbler
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.DeptReplaceID.java | DeptReplaceID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.DomainRuleZoneMenuAction.java | DomainRuleZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.licenseusage.ReportLicenseListProcessBlock.java | ReportLicenseListProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPrintPolicyRuleManagerRepository.java | FspPrintPolicyRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.EntitySchema.java | EntitySchema
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.line.block.ApprovalLineTargetProcessBlock.java | ApprovalLineTargetProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.mail.MailAuthenticator.java | MailAuthenticator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmAclPermissionManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policyapi.struts.FspClientPolicyAction.java | FspClientPolicyAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.PositionListID.java | PositionListID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspAppRuleManagerRepository.java | FspAppRuleManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.delegate.DrmAclPermissionDelegate.java | DrmAclPermissionDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.client.api.util.StringBufferUtil.java | StringBufferUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.takeinout.struts.TakeInOutAction.java | TakeInOutAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LogConsoleForm.java | LogConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.FspZoneMenuAction.java | FspZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspDefaultXmlServiceAction.java | FspDefaultXmlServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.CommonZoneMenuAction.java | CommonZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.UserSearchListAction.java | UserSearchListAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.ProductLicenseManager.java | ProductLicenseManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspPPPolicyTarget.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.struts.PositionListAction.java | PositionListAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.util.CSDFspPolicyUIDUtil.java | CSDFspPolicyUIDUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.csdusage.ReportCSDProcessBlock.java | CustomComparator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FutDetailLog.java | FutDetailLog
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmHistoryLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.FspWatFileManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.AuthAction.java | AuthAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FspStatisticsForm.java | FspStatisticsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.schedule.impl.FspRevokeSendMailJob.java | FspRevokeSendMailJob
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentityTempSession.java | IdentityTempSession
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmAclDeptManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.struts.FspPrintAction.java | FspPrintAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.pattern.block.PatternProcessInfo.java | PatternProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.util.StrutsCommonUtil.java | StrutsCommonUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.SearchDeleteMethod.java | SearchDeleteMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmHistoryDataDetailLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.usage.struts.HistoryLogAction.java | HistoryLogAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionUserAction.java | FutMotionUserAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.AclPolicyMainAction.java | AclPolicyMainAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.config.ui.TableCell.java | TableCell
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPDomainRuleForm.java | FspPPDomainRuleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspCheckApprovalAction.java | CSDFspCheckApprovalAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.DrmAclPermission.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspTcoPolicyTargetImpl.java | FspTcoPolicyTargetImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.client.api.exceptprint.manager.FspExceptPrintManager.java | FspExceptPrintManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.LicenseInitConsoleForm.java | LicenseInitConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspOffLineLogMotionServiceAction.java | FspOffLineLogMotionServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspTcoPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.issueresult.IssueResultNo2String.java | IssueResultNo2String
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspDomainRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspPolicyInfoAction.java | CSDFspPolicyInfoAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspOffLineLogProcessBlock.java | CSDFspOffLineLogProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.validator.SequentialRepeatCharValidator.java | SequentialRepeatCharValidator
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.server.api.service.APICertManager.java | APICertManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.PrintWriterServiceable.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.print.block.FspWatPrintTPLProcessBlock.java | FspWatPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspRevokeLogServiceAction.java | FspRevokeLogServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.ListCountService.java | ListCountService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspWatFileManagerRepository.java | FspWatFileManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.statistics.db.ProductEntity.java | ProductEntity
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspMaskingPattern.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDLogMaskRuleTplManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.fed.FedAclSystemServerApi.java | FedAclSystemServerApi
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Content.java | Content
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPolicyTargetAction.java | FspTcoPolicyTargetAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionDeptForm.java | FutMotionDeptForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspRevokeLogManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.utils.FutMapUtils.java | FutMapUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.stats.UsageStats.java | UsageStats
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspUsageDelegate.java | CSDFspUsageDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.logging.LogFactory.java | LogFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.PatternDelegate.java | PatternDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspExceptPrintTPLManagerRepository.java | FspExceptPrintTPLManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.struts.FspPrintPolicyCheckServiceForm.java | FspPrintPolicyCheckServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsWebPagingForm.java | StrutsWebPagingForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.ServerInfoForm.java | ServerInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspExceptPrintTPLRuleImpl.java | FspExceptPrintTPLRuleImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPPSessionManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDFspMaskRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspTakeInOutInfoManagerRepository.java | FspTakeInOutInfoManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.struts.TokenVerifyCallbackAction.java | TokenVerifyCallbackAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsID.java | StatisticsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsTcoForm.java | FutMotionStatsTcoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.ExceptPrintZoneMenuBL.java | ExceptPrintZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.bl.CommonSettingsID.java | CommonSettingsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.MobileAuthProcessInfo.java | MobileAuthProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.KeyFieldList.java | KeyFieldList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.secapp.service.SecAppManager.java | SecAppManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.bl.WatFileBL.java | WatFileBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmTableConfigManagerRepository.java | DrmTableConfigManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.service.struts.TimeServerServiceForm.java | TimeServerServiceForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendApplyMail.java | SendApplyMail
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.block.SendPasswordMailProcessInfo.java | SendPasswordMailProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uuid.jug.UUID.java | UUID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsn.header.Issuer.java | Issuer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.impl.FspClientPolicyImpl.java | FspClientPolicyImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.license.delegate.DrmProductLicenseDelegate.java | DrmProductLicenseDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.util.RighterConfigLoader.java | RighterConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.util.ServiceMessageForm.java | ServiceMessageForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.UsageFileForm.java | UsageFileForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.framework.jetty.transaction.JettyObfuscatedDataSource.java | JettyObfuscatedDataSource
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.approval.block.SendFspLogApprovalCancelMail.java | SendFspLogApprovalCancelMail
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.common.AdminInfo.java | AdminInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPolicyUIDManagerRepository.java | FspPolicyUIDManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.bl.FspOffLineLogID.java | FspOffLineLogID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.jdbc.ListPageMethod.java | ListPageMethod
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspAppRuleManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.struts.TakeInOutZoneMenuAction.java | TakeInOutZoneMenuAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.framework.jetty.launcher.JettyEnvIdPwdModifier.java | JettyEnvIdPwdModifier
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.struts.ChangeUserInfoForm.java | ChangeUserInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspPolicyInfoProcessInfo.java | CSDFspPolicyInfoProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.block.CSDFspExternApiProcessBlock.java | CSDFspExternApiProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.policy.struts.DomainRuleForm.java | DomainRuleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspPrintPolicyManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.block.PPSendPasswordMailServiceProcessInfo.java | PPSendPasswordMailServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.UserLicenseInfoProcessBlock.java | UserLicenseInfoProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.tco.struts.FspTcoPrintTPLForm.java | FspTcoPrintTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDStatisticsProcessBlock.java | CSDStatisticsProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.struts.CSDSearchPolicySettingAction.java | CSDSearchPolicySettingAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printmanagement.block.CSDApprovalInquiryProcessBlock.java | CSDApprovalInquiryProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.FasooCryptoUtil.java | FasooCryptoUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.StatisticsZoneMenuBL.java | StatisticsZoneMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.server.exceptprint.bl.FspExceptPrintID.java | FspExceptPrintID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspClientPolicy.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.app.block.FspAppProcessBlock.java | AppInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.machine.MachineInfoUtil.java | MachineInfoUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspTcoPolicyManagerRepository.java | FspTcoPolicyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.printapi.struts.FspWatPrintTPLAction.java | FspWatPrintTPLAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.FspDomainRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.struts.StrutsActionPreProcessable.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.sys.struts.LoginTryInfoForm.java | LoginTryInfoForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.impl.FspPolicyStatusManagerRepository.java | FspPolicyStatusManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.impl.DrmPolicyStatusManagerRepository.java | DrmPolicyStatusManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.client.api.util.XMLUtil.java | EmptyNodeList
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.beans.EntityParameter.java | EntityParameter
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.beans.impl.DrmHistoryDataDetailLogImpl.java | DrmHistoryDataDetailLogImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.organ.bl.DeptReplaceBL.java | DeptReplaceBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.factory.IRepositoryMethod.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.CSDSearchPattern.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.LogoutCallbackProcessBlock.java | LogoutCallbackProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.statistics.bl.DrmStatisticsBL.java | DrmStatisticsBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutDetailLogProcessBlock.java | FutDetailLogProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.PolicyZoneMenuID.java | PolicyZoneMenuID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.UsageLogDecodeConsoleForm.java | UsageLogDecodeConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.TopMenuBL.java | TopMenuBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.righter.module.RighterManager.java | RighterManager
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspTakeInOut.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.common.deputy.ApprovalDeputyUtil.java | ApprovalDeputyUtil
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.pp.struts.FspPPPrintTPLForm.java | FspPPPrintTPLForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionPrintDriverProcessInfo.java | FutMotionPrintDriverProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.impl.ApprovalLineTargetManagerRepository.java | ApprovalLineTargetManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.chain.ProcessChainBlock.java | ProcessChainBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.webmenu.bl.CSDStatisticsID.java | CSDStatisticsID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionPrintDriverForm.java | FutMotionPrintDriverForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.manager.CSDFspSearchDataManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.app.struts.FspAppAction.java | FspAppAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.exceptprint.bl.FspExceptPrintTPLProcessBlock.java | FspExceptPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.approval.manager.impl.ApprovalDeputyManagerRepository.java | ApprovalDeputyManagerRepository
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.service.block.PPDispatcherServiceProcessInfo.java | PPDispatcherServiceProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.licenseusage.LicenseReportStrutsForm.java | LicenseReportStrutsForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDPrintRuleTplDelegate.java | CSDPrintRuleTplDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDPrintTPLProcessBlock.java | CSDPrintTPLProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AdminInfoConsoleForm.java | AdminInfoConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.usage.struts.HistoryLogForm.java | HistoryLogForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.product.service.OtherConfigFactory.java | OtherConfigFactory
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.mydrm.bl.DefaultDeptID.java | DefaultDeptID
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.delegate.CSDFspStatisticsDeptDelegate.java | CSDFspStatisticsDeptDelegate
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.util.uid.FasooUidUtils.java | FasooUidUtils
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.exception.db.SQLExecutionFailException.java | SQLExecutionFailException
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.tree.struts.UserTreeJSPAction.java | UserTreeJSPAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.beans.impl.CSDFspStatisticsDeptUserImpl.java | CSDFspStatisticsDeptUserImpl
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.tableconfig.TableDivideThread.java | TableDivideThread
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.message.MessageResources.java | MessageResources
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspTcoPolicyRule.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.printsearch.block.CSDMaskRuleProcessInfo.java | CSDMaskRuleProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.util.FutDatasourceConfigLoader.java | FutDatasourceConfigLoader
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.schema.DataField.java | DataField
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.repository.as.SearchDeleteService.java | SearchDeleteService
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.directory.service.struts.PPChangePasswordServiceAction.java | PPChangePasswordServiceAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.manager.DrmPolicyStatusManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.process.PrintWriterProcessInfo.java | PrintWriterProcessInfo
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.PolicyProtocolConsoleForm.java | PolicyProtocolConsoleForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.righter.watpolicy.module.FspRighterUserCheck.java | FspRighterUserCheck
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.manager.FspStatisticsYearManager.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.auth.block.IdentityTempSessionProcessBlock.java | IdentityTempSessionProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.console.struts.AutoInstallDBSettingAction.java | AutoInstallDBSettingAction
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.statistics.bl.StatisticsDocBL.java | StatisticsDocBL
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.csd.service.struts.CSDFspCheckApprovalForm.java | CSDFspCheckApprovalForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.beans.FspUsage.java | 
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.report.common.AbstractTableDrawer.java | AbstractTableDrawer
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.struts.FutMotionApplicationForm.java | FutMotionApplicationForm
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.drmone.fsp.usage.block.FutMotionApplicationProcessBlock.java | FutMotionApplicationProcessBlock
+/home/yang/Sources/Fasoo/bench/ePrint_java/ePrint.com.fasoo.api.server.drmone.futmotion.FutMotionStatServerApi.java | FutMotionStatServerApi
