@@ -36,13 +36,19 @@ bool mapFullPath(vector< pair<string, string> > &pairVec, string &path, string &
     for(int i=0; i<pairVec.size(); i++){
         if(pairVec.at(i).first.find(path) != string::npos){
         // pairVec에서 해당 path를 발견한 경우, 실제 path와 매핑해준다.
+            cout << pairVec.at(i).first << endl;
+
+            // string suffix = pairVec.at(i).first.substr(pairVec.at(i).first.find(path) + path.size(), 5);
+            // TODO: path substr에 길이 가드 넣기
+            // cout << pairVec.at(i).first.substr(pairVec.at(i).first.find(path) + path.size(), 5) << endl;
+
             if(pairVec.at(i).second.find(cname) != string::npos){
                 realPath = pairVec.at(i).first;
-                return true;
+                //return true;
             }
         }
     }
-
+    return true;
     return false;
     // 아무것도 찾지 못한 경우 false 반환.
 

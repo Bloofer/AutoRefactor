@@ -791,6 +791,49 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
  * ====================================================
  */
 
+// TODO: finish caller patching. (in progress)
+void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vector<Caller> &callerVec){
+    // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
+    // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
+
+    for(int i=0; i<cgVec.size(); i++){
+        if(cgVec.at(i).callee_cname == cname && cgVec.at(i).callee_fname == fname) {
+            Caller tmpCaller;
+            tmpCaller.fileName = cgVec.at(i).caller_path;
+            tmpCaller.callerObjectName = cgVec.at(i).caller_cname;
+            tmpCaller.callerObjectFtnName = cgVec.at(i).caller_fname;
+            callerVec.push_back(tmpCaller);
+        }
+    }
+
+    // sort callerVec to count caller ftn invocation
+    // TODO: sort(callerVec.begin(), callerVec.end(), compare_cg);
+
+    /* vector<string> cname_lst;
+    cname_lst.push_back("FasooMessageParser");
+    
+    vector<CallGraph> cg_lst;
+
+    //getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
+    string cname = "FasooMessageParser";
+    string fname = "parse2";
+    getFtnCallerData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname, fname);
+    
+    sort(cg_lst.begin(), cg_lst.end(), compare_cg);
+    
+    // make unique (i think this should be deprecated)
+    //vector<CallGraph>::iterator it;
+    //it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
+    //cg_lst.resize(distance(cg_lst.begin(), it));
+
+    cout << cg_lst.size() << endl;
+    for(int i=0; i<cg_lst.size(); i++){
+        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).callee_fname << " " << cg_lst.at(i).caller_path << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
+    } */
+
+}
+
+
 DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
 
     DiffInfo dinfo;
@@ -1574,6 +1617,17 @@ void testPrintCallGraphVec(vector<CallGraph> &cgVec){
 
 }
 
+void testPrintCallerVec(vector<Caller> &cVec){
+
+    cout << " ===== Print Caller Info Vector ===== \n";
+    cout << " Total Callers #" << cVec.size() << endl;
+    for(int i=0; i<cVec.size(); i++){
+        cout << "[ " << cVec.at(i).fileName << " | " << cVec.at(i).callerObjectName 
+             << "." << cVec.at(i).callerObjectFtnName << " ]\n";
+    }
+
+}
+
 /*
  * ====================================================
  * ================= MAIN FUNCTION ====================
@@ -1648,31 +1702,40 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    string path = "com.fasoo.util.FasooMessageParser";
-    string cname = "FasooMessageParser";
-    string fname = "parse2";
+    string cname = "UserServiceImpl";
+    string fname = "makeNewIntroductionKorInitNote";
 
     // CallGraph 파싱과 Caller 패치 구현 테스트
     // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
     // 1. CallGraph를 추출하여 전역 CallGraph 벡터를 생성
-    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", callGraphVec);
+    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/callgraphGeneralPhase.dot", callGraphVec);
     //testPrintCallGraphVec(callGraphVec);
 
     // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
     // 2. 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
-    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", fpath2CnamePairVec);
+    // TODO: 디렉토리 명 제대로 확인할 수 있게 가드 만들기.
+    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/dp_server_java", fpath2CnamePairVec);
     //testPrintPairVec(fpath2CnamePairVec);
 
     // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
+    // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
+    vector<Caller> callerVec;
+    // 해당 Callee에 대한 Caller 정보 모은 벡터. 추후 클론 인스턴스 별로 하나씩 생성하도록 리팩토링 할 것.
+    getCallerInfo(cname, fname, callGraphVec, callerVec);
+    testPrintCallerVec(callerVec);
+
+    /* for(int i=0; i<fpath2CnamePairVec.size(); i++){
+        fpath2CnamePairVec.at(i).first.find(c)
+    } */
 
     // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
     string realPath;
-    if(mapFullPath(fpath2CnamePairVec, path, cname, realPath)) {
+    if(mapFullPath(fpath2CnamePairVec, callerVec.front().fileName, callerVec.front().callerObjectName, realPath)) {
         cout << "Path found! : " << realPath << endl;
     }
 
     // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
-
+    // 
 
     return 0;
 

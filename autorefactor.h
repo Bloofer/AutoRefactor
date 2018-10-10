@@ -148,6 +148,7 @@ vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &
 void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, pair<int, int> &scope, vector< pair<string, string> > &varSet, vector< pair<string, string> > &seVarSet);
 
 // functions for type 2 (merge method)
+void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vector<Caller> &callerVec);
 vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion);
 void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
@@ -166,3 +167,4 @@ void testPrintClassType(ClassType &c);
 void testPrintFdVec(vector<FtnData> &fdVec);
 void testPrintNdPairVec(vector< pair<NodeData, int> > &ndPairVec);
 void testPrintDiffInfo(DiffInfo &dInfo);
+void testPrintCallerVec(vector<Caller> &cVec);
