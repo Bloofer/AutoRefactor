@@ -851,10 +851,10 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
                 fnd = true;
             }
         } else if(fnd && dinfo.diffType == 2 && i<ndVec.size()-1) {
-            if(ndVec.at(i).nodeId == 123 && ndVec.at(i).nodeId == 62) {
+            if(ndVec.at(i).nodeId == 123 && ndVec.at(i+1).nodeId == 62) {
                 dinfo.isRef = true; // var type is reference
                 break;
-            } else if(ndVec.at(i).nodeId == 123 && ndVec.at(i).nodeId == 117) {
+            } else if(ndVec.at(i).nodeId == 123 && ndVec.at(i+1).nodeId == 117) {
                 dinfo.isRef = false; // var type is primitive
                 break;
             }
@@ -1302,8 +1302,64 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     // 구현 알고리즘
     // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
+    vector<FtnData> fdVec;    
+    getAllFtnData(fileName, fdVec);
+    testPrintFdVec(fdVec);
+
+    vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
+    for(int i=0; i<fdVec.size(); i++){
+        FtnType ft;
+        vector<NodeData> ndVec;
+        getFtnSubtree(c1.fileName, fdVec.at(i).ftnName, ndVec);
+        parseFtnType(c1.fileName, fdVec.at(i).ftnName, ft, ndVec);
+
+        ftVec.push_back(ft);
+        /* cout << "========= Clone Ftn #1 =========" << endl;
+        testPrintFtnType(ft);
+        cout << endl; */
+    }
+
     // 2. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
     //  - TODO: 추후 제네릭을 이용한 Lvalue 경우에 대한 패치도 확장 예정.
+    vector<DiffInfo> diffInfo;
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, normalCompletion); // TODO: refactor this?
+    if(diffLine.empty()) {
+        cerr << "Diff line empty. T3 code patch aborted." << endl;
+        nc = false;
+        return;
+    }
+
+    if(diffLine.size() > 1) {
+        // TODO: 일단 현재 구현은 1라인 Diff만, 추후 구현 확장할 것.
+        cerr << "T3 can only patch one line diff yet." << endl;
+        nc = false;
+        return;
+    }
+
+    if(diffInfo.front().diffType != 2) {
+        cerr << "T3 can only var decl line diff" << endl;
+        nc = false;
+        return;
+    }
+
+    // 2-1. rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
+    // 함수의 전달 인자는 같아야함. 
+    // 호출 함수의 타입은 같아야함.
+
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c1.fileName, f2.ftnName, ndVec2);
+    int lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    int lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
+
+    vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine.front());
+    vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine.front());
+    printNodeVector(diffNdVec1);
+    printNodeVector(diffNdVec2);
+    // TODO: diff라인 노드 벡터까지 빼놓음.
+    // TODO: 여기서 함수 이름 빼내서 3번 진행하는 것까지
+
     // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
     // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
@@ -1771,7 +1827,7 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    string cname = "UserServiceImpl";
+    /* string cname = "UserServiceImpl";
     string fname = "makeNewIntroductionKorInitNote";
 
     // CallGraph 파싱과 Caller 패치 구현 테스트
@@ -1793,18 +1849,44 @@ int main(int argc, char** argv){
     getCallerInfo(cname, fname, callGraphVec, callerVec);
     testPrintCallerVec(callerVec);
 
-    /* for(int i=0; i<fpath2CnamePairVec.size(); i++){
-        fpath2CnamePairVec.at(i).first.find(c)
-    } */
-
     // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
     string realPath;
     if(mapFullPath(fpath2CnamePairVec, callerVec.front().fileName, callerVec.front().callerObjectName, realPath)) {
         cout << "Path found! : " << realPath << endl;
-    }
+    } */
 
     // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
-    // 
+    // ...
+
+    // ==================================
+    // ========== TEST FOR T3 ===========
+    // ==================================
+
+    // T3 구현 테스트 용
+    // TODO: 구현 완료 후 전체 실행 코드와 병합시키기
+
+    if (argc < 2) {
+        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
+        return 1;
+    }
+
+    string opt = string(argv[1]);
+
+    if (opt == "-a") runOption = ALL;
+    else if (opt == "-r") runOption = RST;
+    else if (opt == "-c") runOption = COD;
+    else {
+        cerr << "Error : run option not proper." << endl;
+        return 1;
+    }
+
+    readFile(argv[2]); // 1. reads input data
+
+    clone_type ct = getCloneType();
+    
+    refactor(T3);
+
+
 
     return 0;
 

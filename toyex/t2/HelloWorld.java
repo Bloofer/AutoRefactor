@@ -5,8 +5,8 @@ public class HelloWorld {
 
   public Vector<Integer> hi1(int x) { return null; }
   public Vector<Float> hi2(int x) { return null; }
-  public float hi3(int x, int y) { return x * 2 - y; }
-  public float hi4(int x, int y) { return x * 4 + y; }
+  public float hi3(int x) { return x * 2; }
+  public float hi4(int x) { return x * 4; }
 
   ///// 바뀌기 전
   public int f() {
@@ -39,28 +39,28 @@ public class HelloWorld {
   ///// 바뀌기 전
   public float ff() {
     System.out.println("hihihihihihi");
-    float x = hi3(10, 20);
+    float x = hi3(10);
     return x;
   }
   public float gg() {
     System.out.println("hihihihihihi");
-    float x = hi4(10, 20);
+    float x = hi4(10);
     return x;
   }
   ////// 바뀐 후
-  public float ffgg(java.util.function.BiFunction<Integer, Integer, Float> lambda) {
+  /* public float ffgg(java.util.function.Function<Integer, Float> lambda) {
     System.out.println("hihihihihihi");
-    float x = lambda.apply(10, 20);
+    float x = lambda.apply(10);
     return x;
   }
   public float ff2() {
-    float x = ffgg((a, b) -> hi3(a, b));
+    float x = ffgg((a) -> hi3(a));
     return x;
   }
   public float gg2() {
-    float x = ffgg((a, b) -> hi4(a, b));
+    float x = ffgg((a) -> hi4(a));
     return x;
-  }
+  } */
 
   //// ------------------------ 생성자가 있는 케이스
   ///// 바뀌기 전
