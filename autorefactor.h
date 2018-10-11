@@ -67,6 +67,7 @@ typedef struct{
 typedef enum {
     T1,
     T2,
+    T3,
     ERR
 } clone_type;
 
@@ -152,9 +153,10 @@ void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vecto
 vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion);
 void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
-// clone patch main functions (for T1 & T2)
+// clone patch main functions (for T1/T2/T3)
 void patchT1();
 void patchT2();
+void patchT3(); // TODO: need maintain
 
 // test functions
 void testPrintCloneData(); // test printer for check cloneDatas

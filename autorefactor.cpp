@@ -1286,6 +1286,36 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
 /*
  * ====================================================
+ * ======= FUNCTIONS FOR TYPE 3(PASS FTN ARG) =========
+ * ====================================================
+ */
+
+// TODO: rename function
+void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
+
+    // T3 함수 인자 전달식 패치 알고리즘 정리(초안)
+    // 제약조건
+    // * 여기서 hi1/hi2 : int -> int 로 같은 타입이어야 한다.
+    // * 중복 fg를 뽑아낼 때 T1 알고리즘과 같이 영향받는 VarSet을 전달해야 한다.
+    //      - 사실상 T1인데 다른 부분이 있는 케이스(함수가 다른 경우)를 커버하는 것.
+    // * 함수 인자로 전달하는 함수는 Local(같은 파일 내 정의된 것) 함수이어야 한다.
+
+    // 구현 알고리즘
+    // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
+    // 2. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
+    //  - TODO: 추후 제네릭을 이용한 Lvalue 경우에 대한 패치도 확장 예정.
+    // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.
+    // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
+    // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
+    //  - TODO: 인자가 달라도 상관없으나, 일단은 인자까지 같은 것으로 파악하여 구현하고 추후 확장.
+    // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
+    // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi1과 hi2를 준다.
+
+
+}
+
+/*
+ * ====================================================
  * ============= MAIN REFACTOR FUNCTIONS ==============
  * ====================================================
  */
@@ -1299,6 +1329,7 @@ void patchT1(){
     beforePatchLoc = getFileLine(c1.fileName);
 
     FtnType f1, f2;
+
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
     getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
@@ -1418,6 +1449,41 @@ void patchT2(){
 
 }
 
+void patchT3(){
+
+    CloneData c1, c2;
+    c1 = cloneDatas.front();
+    c2 = cloneDatas.back();
+
+    beforePatchLoc = getFileLine(c1.fileName);
+
+    // TODO: 추후 타입 판정에 T3 추가하고 이 부분 T2_patch() 변경하기
+    // 일단은 getCloneType() 결과와 상관없이 T3 타입으로 넣고 테스트
+    FtnType f1, f2;
+
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, c1.ftnName, ndVec1);
+    getFtnSubtree(c2.fileName, c2.ftnName, ndVec2);
+    if(cloneFtnTypes.size() == 2){
+        f1 = cloneFtnTypes.at(0);
+        f2 = cloneFtnTypes.at(1);
+    } else {
+        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        return;
+    }
+
+    t3CodePatch(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
+
+    if(nc){
+        reducedLoc = beforePatchLoc - afterPatchLoc;
+        reportResult();
+    } else {
+        cout << "Patch completed abnormally. Couldn't patch this clone pair." << endl;
+    }
+
+}
+
 void refactor(clone_type ct){
 
     switch(ct) {
@@ -1426,6 +1492,9 @@ void refactor(clone_type ct){
             break; 
         case T2:
             patchT2();
+            break;
+        case T3:
+            patchT3();
             break;
         case ERR:
             cout << "Error : this clone data cannot be patched. procedure aborting..." << endl;
