@@ -47,6 +47,8 @@ typedef struct{
   string label; // empty if non-terminal
   int lineNo;   // empty if non-terminal
   int depth;    // depth of tree. same if siblings
+  bool isFtnCall; // used for T3 code patch alg.
+                 // true if the node is 
 }NodeData;
 
 typedef struct{
@@ -83,6 +85,7 @@ vector< pair<string, string> > findLocVarInScope(vector<NodeData> &ndVec, pair<i
 void printNodeVector(vector<NodeData> &ndVec);
 vector< pair<NodeData, int> > findNodeByLine(vector<NodeData> &ndVec, int lineNum);
 vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum);
+vector<NodeData> getRhsTnodeVec(vector<NodeData> &ndVec);
 vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck);
 
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum);

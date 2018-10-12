@@ -49,7 +49,9 @@ void printNodeVector(vector<NodeData> &ndVec){
 
     if(ndVec.at(i).isTerminal) {
       cout << "T [ nodeID : " << ' ' << " \tlabel : " << ndVec.at(i).label 
-           << "\tlineNum : " << ndVec.at(i).lineNo << "\tdepth : " << ndVec.at(i).depth << " ]\n";
+           << "\tlineNum : " << ndVec.at(i).lineNo << "\tdepth : " << ndVec.at(i).depth << " ]";
+      if(ndVec.at(i).isFtnCall) cout << " - Ftn Node";
+      cout << endl;
     } else {
       cout << "NT[ nodeID : " << ndVec.at(i).nodeId << " \tlabel : " << ' '
            << "\tlineNum : " << ' ' << "\tdepth : " << ndVec.at(i).depth << " ]\n";
@@ -512,6 +514,42 @@ vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum){
 
   outVec = getSubNdVec(ndVec, frt + 1, bck);
   return outVec;
+
+}
+
+vector<NodeData> getRhsTnodeVec(vector<NodeData> &ndVec) {
+
+  bool found = false;
+  int assignIdx = 0;
+  vector<NodeData> rhsTnodeVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).isTerminal && ndVec.at(i).label == "=") {
+      assignIdx = i;
+      break;
+    } 
+  }
+
+  for(int i=assignIdx+1; i<ndVec.size(); i++){
+    if(ndVec.at(i).isTerminal) {
+      // Terminal 인 노드 모으기
+      if(found) {
+        ndVec.at(i).isFtnCall = true;
+        rhsTnodeVec.push_back(ndVec.at(i));
+        found = false;
+      } else{
+        ndVec.at(i).isFtnCall = false;
+        rhsTnodeVec.push_back(ndVec.at(i));
+      }
+    } else {
+      if(ndVec.at(i).nodeId == 122) {
+        // method invocation 인 노드 찾을 수 있게. (diff 노드 중 함수 부분 찾기)
+        found = true;
+      }
+    }
+  }
+
+  return rhsTnodeVec;
 
 }
 

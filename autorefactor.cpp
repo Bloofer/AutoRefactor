@@ -1355,15 +1355,89 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine.front());
     vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine.front());
-    printNodeVector(diffNdVec1);
-    printNodeVector(diffNdVec2);
-    // TODO: diff라인 노드 벡터까지 빼놓음.
-    // TODO: 여기서 함수 이름 빼내서 3번 진행하는 것까지
+    //printNodeVector(diffNdVec1);
+    //printNodeVector(diffNdVec2);
+
+    // 2-2. diff line에서 rhs nodeVec 토큰 빼기
+    // Method invocation에 해당하는 노드 표기하기 (isFtnCall)
+    // 알고리즘 제약 조건 : rhs 토큰 수 같아야, 함수 이름만 다르고 인자 등 다 같은 케이스만 발동.
+    vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
+    vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
+    printNodeVector(rhsNdVec1);
+    printNodeVector(rhsNdVec2);
+
+    if(rhsNdVec1.size() != rhsNdVec2.size()){
+        // TODO: 커버 케이스 확장하기
+        cerr << "T3 can only patch rhs code with same tok count" << endl;
+        nc = false;
+        return;
+    }
+
+    int diffTok; 
+    int diffTokCnt = 0;
+    for(int i=0; i<rhsNdVec1.size(); i++){
+        if(rhsNdVec1.at(i).label == rhsNdVec2.at(i).label) continue;
+        else {
+            diffTokCnt++;
+            if(rhsNdVec1.at(i).isFtnCall == rhsNdVec2.at(i).isFtnCall) diffTok = i;
+        }
+    }
+
+    if(diffTokCnt > 1){
+        // TODO: 커버 케이스 확장하기
+        cerr << "T3 can only patch rhs code with one ftn call diff" << endl;
+        nc = false;
+        return;
+    }
+
+    cout << rhsNdVec1.at(diffTok).label << endl;
+    cout << rhsNdVec2.at(diffTok).label << endl;
 
     // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.
+    //fdVec
+    bool f1fnd = false;
+    bool f2fnd = false;
+    int f1idx = 0;
+    int f2idx = 0;
+    for(int i=0; i<ftVec.size(); i++){
+        if(ftVec.at(i).ftnName == rhsNdVec1.at(diffTok).label) {
+            f1fnd = true;
+            f1idx = i;
+        }
+        if(ftVec.at(i).ftnName == rhsNdVec2.at(diffTok).label) {
+            f2fnd = true;
+            f2idx = i;
+        }
+    }
+
+    if(!f1fnd || !f2fnd){
+        cerr << "T3 patching error : T3 can only patch local ftn call diffs." << endl;
+        nc = false;
+        return;
+    }
+
+    testPrintFtnType(ftVec.at(f1idx));
+    testPrintFtnType(ftVec.at(f2idx));
+
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
+    // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
+    bool diffFtnTypeEq = compFtype(ftVec.at(f1idx), ftVec.at(f2idx));
+    if(!diffFtnTypeEq){
+        cerr << "T3 patching error : diff ftns must have same type." << endl;
+        nc = false;
+        return;
+    }
+
     // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
     //  - TODO: 인자가 달라도 상관없으나, 일단은 인자까지 같은 것으로 파악하여 구현하고 추후 확장.
+    // 여기는 토큰 비교에서 이미 같은 것 확인하였으므로 인자 추출하는 것만 사용.
+
+    // 5.1. rhsNdVec1에서 앞 인덱스부터 시작해서 bopen('(') 인덱스 찾기
+
+    // 5.2. rhsNdVec1에서 앞 인덱스부터 시작해서 bclose(')') 인덱스 찾기
+
+    // 5.3. bopen과 bclose 안에 들어있는 인자 토큰 뽑아내고 비교하기
+
     // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
     // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi1과 hi2를 준다.
 
