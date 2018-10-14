@@ -82,6 +82,11 @@ RunOption runOption;
 vector<string> importClassVec; // vector holding imported class datas(type, name)
 vector< pair<string, string> > classMemVarVec; // vector holding class member var datas(type, name)
 
+// primtive type 2 object vector
+// used for T3 lambda type patching
+// Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void.
+map<string, string> prmtv2ObjMap;
+
 map<string, string> classHierarchy;
 // (child -> parent) map
 // class hierarchy of the whole project.

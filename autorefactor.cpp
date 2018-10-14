@@ -949,7 +949,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         vector<NodeData> testNdVec = findNodeByLineWithNt(ndVec1, c1.from+diffLine.at(i)-lineOffset1);
         DiffInfo dinfo = getDiffInfo(testNdVec);
         diffInfo.push_back(dinfo);
-        testPrintDiffInfo(dinfo);
+        //testPrintDiffInfo(dinfo);
 
         vector<int> emptyVec;
         // Diff line Lvalue check part
@@ -1290,6 +1290,26 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
  * ====================================================
  */
 
+void getPrmtv2ObjMap()
+{
+    // Boolean, Byte, Character, Double, Float, Integer, Long, Short, Void.
+    // prmtv2ObjMap
+    prmtv2ObjMap["boolean"] = "Boolean";
+    prmtv2ObjMap["byte"] = "Byte";
+    prmtv2ObjMap["char"] = "Character";
+    prmtv2ObjMap["double"] = "Double";
+    prmtv2ObjMap["float"] = "Float";
+    prmtv2ObjMap["int"] = "Integer";
+    prmtv2ObjMap["long"] = "Long";
+    prmtv2ObjMap["short"] = "Short";
+    prmtv2ObjMap["void"] = "Void";
+}
+
+bool isPrmtv(string tname){
+    return (tname == "boolean" || tname == "byte" || tname == "char" || tname == "double" ||
+            tname == "float" || tname == "int" || tname == "long" || tname == "short" || tname == "void");
+}
+
 // TODO: rename function
 void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
 
@@ -1304,7 +1324,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
     vector<FtnData> fdVec;    
     getAllFtnData(fileName, fdVec);
-    testPrintFdVec(fdVec);
+    //testPrintFdVec(fdVec);
 
     vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
     for(int i=0; i<fdVec.size(); i++){
@@ -1363,8 +1383,8 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 알고리즘 제약 조건 : rhs 토큰 수 같아야, 함수 이름만 다르고 인자 등 다 같은 케이스만 발동.
     vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
     vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
-    printNodeVector(rhsNdVec1);
-    printNodeVector(rhsNdVec2);
+    //printNodeVector(rhsNdVec1);
+    //printNodeVector(rhsNdVec2);
 
     if(rhsNdVec1.size() != rhsNdVec2.size()){
         // TODO: 커버 케이스 확장하기
@@ -1390,8 +1410,8 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         return;
     }
 
-    cout << rhsNdVec1.at(diffTok).label << endl;
-    cout << rhsNdVec2.at(diffTok).label << endl;
+    //cout << rhsNdVec1.at(diffTok).label << endl;
+    //cout << rhsNdVec2.at(diffTok).label << endl;
 
     // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.
     //fdVec
@@ -1416,8 +1436,8 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         return;
     }
 
-    testPrintFtnType(ftVec.at(f1idx));
-    testPrintFtnType(ftVec.at(f2idx));
+    //testPrintFtnType(ftVec.at(f1idx));
+    //testPrintFtnType(ftVec.at(f2idx));
 
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
     // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
@@ -1429,20 +1449,180 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     }
 
     // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
-    //  - TODO: 인자가 달라도 상관없으나, 일단은 인자까지 같은 것으로 파악하여 구현하고 추후 확장.
+    // 위에서 함수 diff외 인자 및 다른 요소는 같은 것으로 판단하고 진행.
     // 여기는 토큰 비교에서 이미 같은 것 확인하였으므로 인자 추출하는 것만 사용.
 
     // 5.1. rhsNdVec1에서 앞 인덱스부터 시작해서 bopen('(') 인덱스 찾기
+    int bopenIdx = 0;
+    bool bopenFnd = false;
+    for(int i=0; i<rhsNdVec1.size(); i++){
+        if(rhsNdVec1.at(i).label == "(") {
+            bopenIdx = i;
+            bopenFnd = true;
+            break;
+        }
+    }
 
     // 5.2. rhsNdVec1에서 앞 인덱스부터 시작해서 bclose(')') 인덱스 찾기
+    int bcloseIdx = 0;
+    bool bcloseFnd = false;
+    for(int i=rhsNdVec1.size()-1; i>=0; i--){
+        if(rhsNdVec1.at(i).label == ")") { 
+            bcloseIdx = i;
+            bcloseFnd = true;
+            break;    
+        }
+    }
+
+    if(!bopenFnd || !bcloseFnd || (bopenIdx >= bcloseIdx)){
+        cerr << "T3 patching error : cannot find args in diff ftn" << endl;
+        nc = false;
+        return;
+    }
 
     // 5.3. bopen과 bclose 안에 들어있는 인자 토큰 뽑아내고 비교하기
+    string argTok = "";
+    for(int i=bopenIdx+1; i<bcloseIdx; i++){
+        argTok += rhsNdVec1.at(i).label;
+    }
 
     // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
-    // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi1과 hi2를 준다.
+    int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
+    string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
+    getPrmtv2ObjMap(); // lambda로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
 
+    // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
+
+    // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
+    string newFtnName = c1.ftnName + c2.ftnName;
+    string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
+    string argFtnRObjtype = diffInfo.front().typeName;
+    if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+    
+    string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
+    // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+    string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
+    if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+    string declStr = tabStr + "public " + argFtnRtype + " " + newFtnName
+                    + "(java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype 
+                    + "> lambda) {";
+    tempClone.push_back(declStr);
+
+    // 6.2. Var decl에서 함수 호출 diff부분 전까지 중복을 추출하고, 마지막에 계산된 값을 리턴하도록.
+    for(int i=1; i<diffLine.front(); i++){
+        tempClone.push_back(c1.cloneSnippet.at(i));
+    }
+
+    tabIdx = c1.cloneSnippet.at(diffLine.front()-1).find_first_not_of(" \t\r\n"); // this is for code formatting
+    string tabStr2 = c1.cloneSnippet.at(diffLine.front()-1).substr(0, tabIdx);
+    string asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
+                    + " = lambda.apply(" + argTok + ");";
+    tempClone.push_back(asnStr);
+    tempClone.push_back(tabStr2 + "return " + diffInfo.front().varName);
+    tempClone.push_back(tabStr + "}");
+
+    if(runOption != COD){
+        cout << endl << "========================================" << endl;
+        cout << "Extracting clone..." << endl;
+        cout << "Clone part extracted to ftn arg." << endl << endl;
+        testPrintCode(tempClone);
+    }
+
+    // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi3과 hi4를 준다.
+    // 첫 번째 함수부분 패치 
+    if(f1.bopenLine != 0){
+        // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
+        cerr << "Error : f1 code pre-format error. bracket opener line not found." << endl;
+        nc = false;
+        return;
+    }
+        
+    orgClone1.push_back(c1.cloneSnippet.front());
+    for(int i=1; i<c1.cloneSnippet.size(); i++){
+        if(i<diffLine.front()) continue;
+        else if(i == diffLine.front()) {
+            tabIdx = c1.cloneSnippet.at(i).find_first_not_of(" \t\r\n"); // this is for code formatting
+            tabStr = c1.cloneSnippet.at(i).substr(0, tabIdx);
+            // TODO: 람다 함수 패치는 일단 f: a->a 타입의 인자 하나, 리턴타입 하나인 경우만 먼저 구현. 추후 확장 예정
+            string lmdCall = tabStr + diffInfo.front().typeName + " " + diffInfo.front().varName
+                             + " = " + newFtnName + "((a) -> " + ftVec.at(f1idx).ftnName + "(a));";
+            orgClone1.push_back(lmdCall);
+        } else{
+            orgClone1.push_back(c1.cloneSnippet.at(i));
+        }
+    }
+    
+    if(runOption != COD){
+        cout << endl << "========================================" << endl;
+        cout << "Patching clone..." << endl;
+        cout << "Clone part 1 patched with ftn call." << endl << endl;
+        testPrintCode(orgClone1);
+    }
+
+    // 두 번째 함수부분 패치
+    if(f2.bopenLine != 0){
+        // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
+        cerr << "Error : f2 code pre-format error. bracket opener line not found." << endl;
+        nc = false;
+        return;
+    }
+        
+    orgClone2.push_back(c2.cloneSnippet.front());
+    for(int i=1; i<c2.cloneSnippet.size(); i++){
+        if(i<diffLine.front()) continue;
+        else if(i == diffLine.front()) {
+            tabIdx = c2.cloneSnippet.at(i).find_first_not_of(" \t\r\n"); // this is for code formatting
+            tabStr = c2.cloneSnippet.at(i).substr(0, tabIdx);
+            // TODO: 람다 함수 패치는 일단 f: a->a 타입의 인자 하나, 리턴타입 하나인 경우만 먼저 구현. 추후 확장 예정
+            string lmdCall = tabStr + diffInfo.front().typeName + " " + diffInfo.front().varName
+                             + " = " + newFtnName + "((a) -> " + ftVec.at(f2idx).ftnName + "(a));";
+            orgClone2.push_back(lmdCall);
+        } else{
+            orgClone2.push_back(c2.cloneSnippet.at(i));
+        }
+    }
+
+    if(runOption != COD){
+        cout << endl << "========================================" << endl;
+        cout << "Patching clone..." << endl;
+        cout << "Clone part 2 patched with ftn call." << endl << endl;
+        testPrintCode(orgClone2);
+    }
+
+    // patch code to the entire file
+    ifstream pfile(c1.fileName.c_str());
+    string line;
+
+    int lineCnt = 1; // line counter
+    while(getline(pfile, line)) {
+        if(lineCnt == c1.from) { 
+            patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
+            patchCode.push_back("");
+            patchCode.insert(patchCode.end(), orgClone1.begin(), orgClone1.end());
+        } else if(lineCnt == c2.from){
+            patchCode.insert(patchCode.end(), orgClone2.begin(), orgClone2.end());
+        }
+        if(lineCnt == c2.to + 1) {
+            if(strOnlySpaces(line)) { lineCnt++; continue; }
+        }
+        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
+        
+        lineCnt++;
+    }
+
+    afterPatchLoc = patchCode.size();
+
+    if(runOption != RST){
+        cout << "Patching clones ...\n";
+        cout << "(This will be replaced with actual file write operations)\n";
+        testPrintCode(patchCode);
+    }
 
 }
+
+
+
+
 
 /*
  * ====================================================

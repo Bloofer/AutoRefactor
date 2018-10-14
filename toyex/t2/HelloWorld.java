@@ -48,19 +48,19 @@ public class HelloWorld {
     return x;
   }
   ////// 바뀐 후
-  /* public float ffgg(java.util.function.Function<Integer, Float> lambda) {
+  public float ffgg(java.util.function.Function<Integer, Float> lambda) {
     System.out.println("hihihihihihi");
     float x = lambda.apply(10);
     return x;
   }
   public float ff2() {
-    float x = ffgg((a) -> hi3(a));
+    float x = ffgg(a -> hi3(a));
     return x;
   }
   public float gg2() {
-    float x = ffgg((a) -> hi4(a));
+    float x = ffgg(a -> hi4(a));
     return x;
-  } */
+  }
 
   //// ------------------------ 생성자가 있는 케이스
   ///// 바뀌기 전
