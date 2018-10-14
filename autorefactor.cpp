@@ -205,6 +205,76 @@ void patchCaller(Caller c, string newFname, int flag){
 
 } 
 
+void patchCaller2(string callerFilePath, string callerFtnName, string orgFtnName, string newFtnName , int flag){
+    // CallGraph에서 찾은 Caller의 Path와 함수 이름을 이용하여, 함수 내 Callee의 원래 이름을 새로운 이름으로 바꿔준다.
+    // TODO: 일단은 Callee 함수의 이름만으로 찾는 것 구현. 추후에 Callee Obj 이름 찾아서 이름이 호출하는 함수 위치 패치로 바꿔야할지도?
+    // TODO: 일단은 Caller 호출부가 하나인 케이스에 대해 구현. 추후 여러 호출에 대한 구현도 고려 확장할 것.
+
+    // 1. Caller 파일 열고, Caller 함수 트리 파싱해서 노드 벡터로 가져옴.
+    ifstream pfile(callerFilePath.c_str());
+    string line;
+    vector<string> tempCode;
+
+    vector<NodeData> ndVec;
+    getFtnSubtree(callerFilePath, callerFtnName, ndVec);
+
+    // 2. 트리내, Callee 함수 호출부 122(method_invocation)의 말단 노드 레이블이 orgFtnName과 같은 부분 찾고 라인 번호 가져오기
+
+    // 3. 해당 라인의 토큰들 파싱하여 벡터로 모음, 벡터의 () - bracket 쌍 내 인자들 모으기(없으면 없는 것 확인)
+
+    // 4. 해당 함수의 호출부 이름 바꿔주고 인자에 flag 값 추가해주기.
+
+    // 5. 패치된 라인 파일에 쓰기
+
+
+    // Get the call site code line too. to use for caller patching
+    /* ifstream pfile(callerFilePath.c_str());
+    string line;
+    vector<string> tempCode;
+    int callerLine = c.lineNum;
+    int lineCnt = 0; // line counter
+    while(getline(pfile, line)) {
+        tempCode.push_back(line);
+        lineCnt++;
+    }
+
+    string patchLine = tempCode[c.lineNum-1];
+    bool found = false;
+    int ftnFront, ftnRear;
+    ftnFront = ftnRear = 0;
+
+    while(!found){
+        ftnFront = patchLine.find_first_of(c.originalFtnName, ftnFront);
+        if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(' && patchLine.at(ftnFront - 1) == '.') {
+            found = true;
+            ftnRear = patchLine.find_first_of(')', ftnFront);
+        } else if (patchLine.at(ftnFront + c.originalFtnName.size()) == ' '){
+            ftnFront += patchLine.substr(ftnFront).find_first_not_of(" \t\r\n");
+            if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(') {
+                found = true;
+                ftnRear = patchLine.find_first_of(')', ftnFront);
+            }
+        } else {
+            ftnFront++;
+        }
+    }
+    
+    string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
+    string strRear = int2str(flag) + ")" + patchLine.substr(ftnRear + 1);
+
+    patchLine = strFront;
+    for(int i=0; i<c.argNum; i++){
+        patchLine += c.callArgs[i] + ", ";
+    }
+    patchLine += strRear;
+    tempCode[c.lineNum-1] = patchLine;    
+
+    cout << "Patching callers ...\n";
+    cout << "(This will be replaced with actual file write operations)\n";
+    testPrintCode(tempCode); */ // TODO: need to replace this with file write operations
+
+} 
+
 int getLineOffset(vector<NodeData> &ndVec, string &ftnName, int from){
 
     int lineOffset;
@@ -802,6 +872,7 @@ void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vecto
             tmpCaller.fileName = cgVec.at(i).caller_path;
             tmpCaller.callerObjectName = cgVec.at(i).caller_cname;
             tmpCaller.callerObjectFtnName = cgVec.at(i).caller_fname;
+            tmpCaller.argNum = cgVec.at(i).caller_argcnt;
             callerVec.push_back(tmpCaller);
         }
     }
@@ -1989,8 +2060,8 @@ void testPrintCallGraphVec(vector<CallGraph> &cgVec){
     cout << " ===== Print CallGraph Vector ===== \n";
     cout << " Total CallGraph Data : " << cgVec.size() << endl;
     for(int i=0; i<cgVec.size(); i++){
-        cout << "[ " << cgVec.at(i).callee_cname << "." << cgVec.at(i).callee_fname 
-             << " <- " << cgVec.at(i).caller_cname << "." << cgVec.at(i).caller_fname 
+        cout << "[ " << cgVec.at(i).callee_cname << "." << cgVec.at(i).callee_fname << " " << cgVec.at(i).callee_argcnt
+             << " <- " << cgVec.at(i).caller_cname << "." << cgVec.at(i).caller_fname << " " << cgVec.at(i).caller_argcnt
              << " (" << cgVec.at(i).caller_path << ") ]" << endl;
     }
 
@@ -2081,19 +2152,19 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    /* string cname = "UserServiceImpl";
-    string fname = "makeNewIntroductionKorInitNote";
+    string cname = "FasooMessageParser";
+    string fname = "parse";
 
     // CallGraph 파싱과 Caller 패치 구현 테스트
     // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
     // 1. CallGraph를 추출하여 전역 CallGraph 벡터를 생성
-    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/dpserver/callgraphGeneralPhase.dot", callGraphVec);
+    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", callGraphVec);
     //testPrintCallGraphVec(callGraphVec);
 
     // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
     // 2. 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
     // TODO: 디렉토리 명 제대로 확인할 수 있게 가드 만들기.
-    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/dp_server_java", fpath2CnamePairVec);
+    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", fpath2CnamePairVec);
     //testPrintPairVec(fpath2CnamePairVec);
 
     // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
@@ -2105,12 +2176,16 @@ int main(int argc, char** argv){
 
     // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
     string realPath;
+    int argCnt;
     if(mapFullPath(fpath2CnamePairVec, callerVec.front().fileName, callerVec.front().callerObjectName, realPath)) {
         cout << "Path found! : " << realPath << endl;
-    } */
+    }
+    cout << callerVec.front().argNum << endl;
 
     // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
-    // ...
+    vector<NodeData> ndVec;
+    getPtreeVec(realPath, ndVec);
+    //printNodeVector(ndVec);
 
     // ==================================
     // ========== TEST FOR T3 ===========
@@ -2119,7 +2194,7 @@ int main(int argc, char** argv){
     // T3 구현 테스트 용
     // TODO: 구현 완료 후 전체 실행 코드와 병합시키기
 
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -2138,7 +2213,7 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     
-    refactor(T3);
+    refactor(T3); */
 
 
 

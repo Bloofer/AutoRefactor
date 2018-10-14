@@ -34,7 +34,7 @@ bool mapFullPath(vector< pair<string, string> > &pairVec, string &path, string &
 // pairVec에서 실제 절대경로를 찾아 Caller 패치에 사용한다.
 
     for(int i=0; i<pairVec.size(); i++){
-        if(pairVec.at(i).first.find(path) != string::npos){
+        if(pairVec.at(i).first.find(path + ".java") != string::npos){
         // pairVec에서 해당 path를 발견한 경우, 실제 path와 매핑해준다.
             cout << pairVec.at(i).first << endl;
 
@@ -44,11 +44,10 @@ bool mapFullPath(vector< pair<string, string> > &pairVec, string &path, string &
 
             if(pairVec.at(i).second.find(cname) != string::npos){
                 realPath = pairVec.at(i).first;
-                //return true;
+                return true;
             }
         }
     }
-    return true;
     return false;
     // 아무것도 찾지 못한 경우 false 반환.
 

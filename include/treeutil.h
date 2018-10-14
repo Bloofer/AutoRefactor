@@ -36,9 +36,11 @@ typedef struct _CallGraph {
   string caller_path; // caller's full path   ex) fasoo.eprint.f1....
   string caller_cname;// caller's class name
   string caller_fname;// caller's function name
+  int caller_argcnt; // caller's arg number
 //  string callee_path; // callee's full path
   string callee_cname;// callee's class name
   string callee_fname;// callee's function name
+  int callee_argcnt; // callee's arg number
 } CallGraph;
 
 typedef struct{
@@ -105,7 +107,7 @@ void mysplit(string &line, string &caller, string &callee);
 bool has_java(string &str);
 bool c_exists(vector<string> &c_list, string &s);
 string getCname(string &str);
-string getFname(string &str);
+string getFname(string &str, int &argCnt);
 
 void getAllCallGraphData(string dotfile, vector<CallGraph> &cgVec);
 void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string> &c_list);

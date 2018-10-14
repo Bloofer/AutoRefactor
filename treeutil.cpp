@@ -1193,9 +1193,15 @@ string getCname(string &str) {
   else return str.substr(d_snd_occur + 1, (d_fst_occur - d_snd_occur - 1));
 }
 
-string getFname(string &str) {
+string getFname(string &str, int &argCnt) {
   std::size_t p_occur = str.find("(");
   std::size_t d_occur = str.rfind(".", p_occur);
+
+  if (str.at(p_occur + 1) == ')') argCnt = 0;
+  else {
+    string args = str.substr(p_occur);
+    argCnt = std::count(args.begin(), args.end(), ',') + 1;
+  }
 
   if (p_occur == 0 || d_occur == 0) return "";
   else return str.substr(d_occur + 1, (p_occur - d_occur - 1));
@@ -1216,10 +1222,10 @@ void getCallGraphData(string dotfile, vector<CallGraph> &cg_list, vector<string>
       {
         //cg.caller_path = caller;
         cg.caller_cname = getCname(caller);
-        cg.caller_fname = getFname(caller);
+        cg.caller_fname = getFname(caller, cg.caller_argcnt);
         //cg.callee_path = callee;
         cg.callee_cname = getCname(callee);
-        cg.callee_fname = getFname(callee);
+        cg.callee_fname = getFname(callee, cg.callee_argcnt);
 
         if (c_exists(c_list, cg.callee_cname)) cg_list.push_back(cg);
         
@@ -1245,10 +1251,10 @@ void getAllCallGraphData(string dotfile, vector<CallGraph> &cgVec){
       {
         cg.caller_path = getPath(caller);
         cg.caller_cname = getCname(caller);
-        cg.caller_fname = getFname(caller);
+        cg.caller_fname = getFname(caller, cg.caller_argcnt);
         //cg.callee_path = callee;
         cg.callee_cname = getCname(callee);
-        cg.callee_fname = getFname(callee);
+        cg.callee_fname = getFname(callee, cg.callee_argcnt);
 
         cgVec.push_back(cg);
         cg.caller_path = cg.caller_cname = cg.caller_fname = cg.callee_cname = cg.callee_fname = "";
@@ -1273,10 +1279,10 @@ void getFtnCallerData(string dotfile, vector<CallGraph> &cgList, string &cName, 
       {
         cg.caller_path = getPath(caller);
         cg.caller_cname = getCname(caller);
-        cg.caller_fname = getFname(caller);
+        cg.caller_fname = getFname(caller, cg.caller_argcnt);
         //cg.callee_path = callee;
         cg.callee_cname = getCname(callee);
-        cg.callee_fname = getFname(callee);
+        cg.callee_fname = getFname(callee, cg.callee_argcnt);
 
         if (cls_exists(cName, cg.callee_cname) && cls_exists(fName, cg.callee_fname)) cgList.push_back(cg);
         
