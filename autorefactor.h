@@ -20,6 +20,7 @@ bool nc = true; // checker for code patch completes normally. nc stands for norm
 // TODO: to impl read meaningful callers to patch
 // struct type for caller datas
 typedef struct{
+    string realPath;
     string fileName;
     string callerObjectName;
     string callerObjectFtnName;

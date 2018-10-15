@@ -180,6 +180,7 @@ class Tree {
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getConstSubtree(std::stringstream &ss, std::string &cname);
     virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
     virtual void findModFromSubtree(std::stringstream &ss);
     virtual void findRtypeFromSubtree(std::stringstream &ss);
@@ -359,6 +360,7 @@ public:
     //virtual void fetchFtnDef(vector< vector<string> > &ftnDefVec, vector<string> &tempVec, bool &chk);
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getConstSubtree(std::stringstream &ss, std::string &cname);
     virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
     virtual void findModFromSubtree(std::stringstream &ss);
     virtual void findRtypeFromSubtree(std::stringstream &ss);
@@ -406,6 +408,7 @@ public:
 
     virtual void print2ss(std::stringstream &ss);
     virtual void getFtnSubtree(std::stringstream &ss, std::string &fname);
+    virtual void getConstSubtree(std::stringstream &ss, std::string &cname);
     virtual void getFtnPdata(std::stringstream &ss, std::string &fname);
     virtual void findModFromSubtree(std::stringstream &ss);
     virtual void findRtypeFromSubtree(std::stringstream &ss);

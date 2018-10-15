@@ -92,6 +92,7 @@ vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck);
 
 int lineParenthesisChk(vector<NodeData> &ndVec, int lineNum);
 void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
+void getConstSubtree(string &fileName, string &cName, vector<NodeData> &ndVec);
 void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<NodeData> &ndVec);
 vector<string> getTnodeLabelInNdVec(vector<NodeData> &ndVec);
 void getAllFtnData(string &fileName, vector<FtnData> &fdVec);

@@ -685,6 +685,23 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
   
 }
 
+void getConstSubtree(string &fileName, string &cName, vector<NodeData> &ndVec){
+  
+  id_init();
+
+  ParseTree* pt = parseFile(fileName.c_str());
+  if ( pt==NULL ) {
+    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    return;
+  }
+  
+  stringstream ss;
+  pt->getRoot()->getConstSubtree(ss, cName);
+  
+  ss2NodeVec(ndVec, ss);
+  
+}
+
 vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck){
 
   vector<NodeData> subNdVec;

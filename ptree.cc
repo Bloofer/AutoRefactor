@@ -426,6 +426,12 @@ void Tree::getFtnSubtree(std::stringstream &ss, string &fname) {
     }
 }
 
+void Tree::getConstSubtree(std::stringstream &ss, string &cname) {
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getConstSubtree(ss, cname);
+    }
+}
+
 void Tree::getFtnPdata(std::stringstream &ss, string &fname) {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getFtnPdata(ss, fname);
@@ -617,6 +623,13 @@ void Terminal::getFtnSubtree(std::stringstream &ss, string &fname)
       && parent->parent->parent->parent->type == 113) parent->parent->parent->parent->print2ss(ss);
 }
 
+void Terminal::getConstSubtree(std::stringstream &ss, string &cname)
+{
+    if(Terminal::getValue() == cname 
+      && parent->parent->parent->parent->parent != NULL
+      && parent->parent->parent->parent->parent->type == 189) parent->parent->parent->parent->parent->print2ss(ss);
+}
+
 void Terminal::getFtnPdata(std::stringstream &ss, string &fname)
 {
     if(Terminal::getValue() == fname
@@ -688,6 +701,13 @@ void NonTerminal::getFtnSubtree(std::stringstream &ss, string &fname)
 {
     for (int i= 0; i < children.size(); i++) {
         children[i]->getFtnSubtree(ss, fname);
+    }
+}
+
+void NonTerminal::getConstSubtree(std::stringstream &ss, string &cname)
+{
+    for (int i= 0; i < children.size(); i++) {
+        children[i]->getConstSubtree(ss, cname);
     }
 }
 
