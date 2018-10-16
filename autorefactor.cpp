@@ -284,7 +284,47 @@ void patchCaller2(Caller c, string fname, string newFname, int flag){
         cerr << "Error finding method invocation line in cndVec." << endl;
         return;
     }
-    printNodeVector(tNdVec);
+
+    // 1. 함수 bracket ()쌍 내부 인자들 모으기
+    int bopen = 0;
+    string args = "";
+    for(int i=0; i<tNdVec.size(); i++){
+        if(tNdVec.at(i).label == "("){
+            bopen++;
+        } else if(tNdVec.at(i).label == ")"){
+            bopen--;
+            if(bopen == 0) break;
+        } else if(bopen > 0){
+            args += tNdVec.at(i).label;
+        }
+    }   
+    //cout << args << endl;
+
+    // 2. 함수 호출 string 내 .ftn(args) 부분을 .newFtn(args, flag)로 대치
+    int ftnCallLine = tNdVec.front().lineNo + lineOffset;
+    // 실제 파일 내 함수 호출 라인(Caller가 호출하는 Callee 함수 부분)
+    string patchLine = tempCode.at(ftnCallLine-1);
+
+    size_t fpos = patchLine.find("."+fname);
+    if(fpos == string::npos) {
+        cerr << "Error finding method invocation token in the patch code line." << endl;
+        return;
+    }
+    // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
+    size_t bpos = patchLine.find(")", fpos);
+    if(bpos == string::npos) {
+        cerr << "Error finding method bracket closure token in the patch code line." << endl;
+        return;
+    }
+
+    string newPatchLine = "";
+    newPatchLine += patchLine.substr(0, fpos-1);
+    newPatchLine += "." + newFname + "(" + args + "," + int2str(flag) + ")";
+    newPatchLine += patchLine.substr(bpos+1);
+
+    tempCode.at(ftnCallLine-1) = newPatchLine;
+    // 새로운 함수 이름으로 패치된 코드 삽입.
+    testPrintCode(tempCode);
 
     // =========================================================
     // ========== TODO: 이 블록 내부 분기문으로 나누기 ===============
