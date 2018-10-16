@@ -110,6 +110,7 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec);
 void getConstSubtree(string &fileName, string &cName, vector<NodeData> &ndVec);
 vector<NodeData> getSubNdVec(vector<NodeData> &ndVec, int frt, int bck);
 vector< pair< vector<NodeData>, int > > getConstNdVecFromNdVec(vector<NodeData> &ndVec, string &cname);
+int getFtnPtLineFromNdVec(vector<NodeData> &ndVec, string &fname);
 vector<NodeData> getFtnCallTNdVecFromNdVec(vector<NodeData> &ndVec, string fname);
 void getPtreeVec(string &fileName, vector<NodeData> &ndVec);
 void printss(string &fileName);

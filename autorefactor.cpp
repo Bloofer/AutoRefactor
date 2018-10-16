@@ -210,7 +210,11 @@ void patchCaller2(Caller c, string fname, string newFname, int flag){
     // TODO: 일단은 Callee 함수의 이름만으로 찾는 것 구현. 추후에 Callee Obj 이름 찾아서 이름이 호출하는 함수 위치 패치로 바꿔야할지도?
     // TODO: 일단은 Caller 호출부가 하나인 케이스에 대해 구현. 추후 여러 호출에 대한 구현도 고려 확장할 것.
 
-    // 1. Caller 파일 열고, Caller 함수 트리 파싱해서 노드 벡터로 가져옴.
+    bool isCallerConst;
+    if(c.callerObjectFtnName == "<init>") isCallerConst = true;
+    else isCallerConst = false;
+
+    // Caller 파일 열고, Caller 트리 파싱해서 노드 벡터로 가져옴.
     ifstream pfile(c.realPath.c_str());
     string line;
     vector<string> tempCode;
@@ -229,7 +233,6 @@ void patchCaller2(Caller c, string fname, string newFname, int flag){
 
     // Caller 노드 벡터 오프셋 가져오기.
     // 실제 파일 패치 적용 위함.
-
     vector<NodeData> ndVec;
     getPtreeVec(c.realPath, ndVec);
 
@@ -252,138 +255,146 @@ void patchCaller2(Caller c, string fname, string newFname, int flag){
                     // offset = 실제 파일 라인 - 파스 트리 파일 라인
     lineOffset = cdeclLine - ptreeCline;
 
+    if(isCallerConst){
+
     // =========================================================
     // ======== Caller 위치가 생성자인 경우 (<init>) ===============
     // =========================================================
 
-    // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
-    // pair.first : Const 노드 벡터, pair.second : Constructor 인자 갯수
-    vector< pair< vector<NodeData>, int > > constNdVec = getConstNdVecFromNdVec(ndVec, c.callerObjectName); 
-    
-    // TODO: 노드 벡터내 method invocation 찾고, 해당 라인(오프셋 뺀) 구하기
+        // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
+        // pair.first : Const 노드 벡터, pair.second : Constructor 인자 갯수
+        vector< pair< vector<NodeData>, int > > constNdVec = getConstNdVecFromNdVec(ndVec, c.callerObjectName); 
+        
+        // TODO: 노드 벡터내 method invocation 찾고, 해당 라인(오프셋 뺀) 구하기
 
-    vector<NodeData> cndVec;
-    bool cFnd = false;
-    for(int i=0; i<constNdVec.size(); i++){
-        if(constNdVec.at(i).second == c.argNum) {
-            cndVec = constNdVec.at(i).first;
-            cFnd = true;
-        }
-    }
-
-    if(!cFnd) {
-        cerr << "Error finding constructor in the constNdVec." << endl;
-        return;
-    }
-
-    //printNodeVector(cndVec);
-
-    // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
-    vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(cndVec, fname);
-    if(tNdVec.empty()) {
-        cerr << "Error finding method invocation line in cndVec." << endl;
-        return;
-    }
-
-    // 1. 함수 bracket ()쌍 내부 인자들 모으기
-    int bopen = 0;
-    string args = "";
-    for(int i=0; i<tNdVec.size(); i++){
-        if(tNdVec.at(i).label == "("){
-            bopen++;
-        } else if(tNdVec.at(i).label == ")"){
-            bopen--;
-            if(bopen == 0) break;
-        } else if(bopen > 0){
-            args += tNdVec.at(i).label;
-        }
-    }   
-    //cout << args << endl;
-
-    // 2. 함수 호출 string 내 .ftn(args) 부분을 .newFtn(args, flag)로 대치
-    int ftnCallLine = tNdVec.front().lineNo + lineOffset;
-    // 실제 파일 내 함수 호출 라인(Caller가 호출하는 Callee 함수 부분)
-    string patchLine = tempCode.at(ftnCallLine-1);
-
-    size_t fpos = patchLine.find("."+fname);
-    if(fpos == string::npos) {
-        cerr << "Error finding method invocation token in the patch code line." << endl;
-        return;
-    }
-    // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
-    size_t bpos = patchLine.find(")", fpos);
-    if(bpos == string::npos) {
-        cerr << "Error finding method bracket closure token in the patch code line." << endl;
-        return;
-    }
-
-    string newPatchLine = "";
-    newPatchLine += patchLine.substr(0, fpos-1);
-    newPatchLine += "." + newFname + "(" + args + "," + int2str(flag) + ")";
-    newPatchLine += patchLine.substr(bpos+1);
-
-    tempCode.at(ftnCallLine-1) = newPatchLine;
-    // 새로운 함수 이름으로 패치된 코드 삽입.
-    testPrintCode(tempCode);
-
-    // =========================================================
-    // ========== TODO: 이 블록 내부 분기문으로 나누기 ===============
-    // =========================================================
-
-    // 2. 트리내, Callee 함수 호출부 122(method_invocation)의 말단 노드 레이블이 orgFtnName과 같은 부분 찾고 라인 번호 가져오기
-
-    // 3. 해당 라인의 토큰들 파싱하여 벡터로 모음, 벡터의 () - bracket 쌍 내 인자들 모으기(없으면 없는 것 확인)
-
-    // 4. 해당 함수의 호출부 이름 바꿔주고 인자에 flag 값 추가해주기.
-
-    // 5. 패치된 라인 파일에 쓰기
-
-
-    // Get the call site code line too. to use for caller patching
-    /* ifstream pfile(callerFilePath.c_str());
-    string line;
-    vector<string> tempCode;
-    int callerLine = c.lineNum;
-    int lineCnt = 0; // line counter
-    while(getline(pfile, line)) {
-        tempCode.push_back(line);
-        lineCnt++;
-    }
-
-    string patchLine = tempCode[c.lineNum-1];
-    bool found = false;
-    int ftnFront, ftnRear;
-    ftnFront = ftnRear = 0;
-
-    while(!found){
-        ftnFront = patchLine.find_first_of(c.originalFtnName, ftnFront);
-        if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(' && patchLine.at(ftnFront - 1) == '.') {
-            found = true;
-            ftnRear = patchLine.find_first_of(')', ftnFront);
-        } else if (patchLine.at(ftnFront + c.originalFtnName.size()) == ' '){
-            ftnFront += patchLine.substr(ftnFront).find_first_not_of(" \t\r\n");
-            if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(') {
-                found = true;
-                ftnRear = patchLine.find_first_of(')', ftnFront);
+        vector<NodeData> cndVec;
+        bool cFnd = false;
+        for(int i=0; i<constNdVec.size(); i++){
+            if(constNdVec.at(i).second == c.argNum) {
+                cndVec = constNdVec.at(i).first;
+                cFnd = true;
             }
-        } else {
-            ftnFront++;
         }
-    }
-    
-    string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
-    string strRear = int2str(flag) + ")" + patchLine.substr(ftnRear + 1);
 
-    patchLine = strFront;
-    for(int i=0; i<c.argNum; i++){
-        patchLine += c.callArgs[i] + ", ";
-    }
-    patchLine += strRear;
-    tempCode[c.lineNum-1] = patchLine;    
+        if(!cFnd) {
+            cerr << "Error finding constructor in the constNdVec." << endl;
+            return;
+        }
 
-    cout << "Patching callers ...\n";
-    cout << "(This will be replaced with actual file write operations)\n";
-    testPrintCode(tempCode); */ // TODO: need to replace this with file write operations
+        // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
+        vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(cndVec, fname);
+        if(tNdVec.empty()) {
+            cerr << "Error finding method invocation line in cndVec." << endl;
+            return;
+        }
+
+        // 1. 함수 bracket ()쌍 내부 인자들 모으기
+        int bopen = 0;
+        string args = "";
+        for(int i=0; i<tNdVec.size(); i++){
+            if(tNdVec.at(i).label == "("){
+                bopen++;
+            } else if(tNdVec.at(i).label == ")"){
+                bopen--;
+                if(bopen == 0) break;
+            } else if(bopen > 0){
+                args += tNdVec.at(i).label;
+            }
+        }   
+        //cout << args << endl;
+
+        // 2. 함수 호출 string 내 .ftn(args) 부분을 .newFtn(args, flag)로 대치
+        int ftnCallLine = tNdVec.front().lineNo + lineOffset;
+        // 실제 파일 내 함수 호출 라인(Caller가 호출하는 Callee 함수 부분)
+        string patchLine = tempCode.at(ftnCallLine-1);
+
+        size_t fpos = patchLine.find("."+fname);
+        if(fpos == string::npos) {
+            cerr << "Error finding method invocation token in the patch code line." << endl;
+            return;
+        }
+        // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
+        size_t bpos = patchLine.find(")", fpos);
+        if(bpos == string::npos) {
+            cerr << "Error finding method bracket closure token in the patch code line." << endl;
+            return;
+        }
+
+        string newPatchLine = "";
+        newPatchLine += patchLine.substr(0, fpos);
+        newPatchLine += "." + newFname + "(" + args + "," + int2str(flag) + ")";
+        newPatchLine += patchLine.substr(bpos+1);
+
+        tempCode.at(ftnCallLine-1) = newPatchLine;
+        // 새로운 함수 이름으로 패치된 코드 삽입.
+        testPrintCode(tempCode);
+
+    } else {
+
+    // =========================================================
+    // ============ Caller 위치가 일반 함수인 경우 ==================
+    // =========================================================
+
+        string ff = "setString";
+        int l1 = getFtnPtLineFromNdVec(ndVec, ff);
+        vector<NodeData> fndVec;
+        getFtnSubtree(c.realPath, ff, fndVec);
+        int l2 = getFtnPtLineFromNdVec(fndVec, ff);
+        int flineOffset = l1 - l2;
+        // 새로 파싱한 ftn ndVec과 기존 ndVec의 라인 오프셋. 이걸 ndVec의 오프셋에 더해서 ftn ndVec의 오프셋을 구함.
+
+        // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
+        vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(fndVec, fname);
+        if(tNdVec.empty()) {
+            cerr << "Error finding method invocation line in cndVec." << endl;
+            return;
+        }
+
+        // 1. 함수 bracket ()쌍 내부 인자들 모으기
+        int bopen = 0;
+        string args = "";
+        for(int i=0; i<tNdVec.size(); i++){
+            if(tNdVec.at(i).label == "("){
+                bopen++;
+            } else if(tNdVec.at(i).label == ")"){
+                bopen--;
+                if(bopen == 0) break;
+            } else if(bopen > 0){
+                args += tNdVec.at(i).label;
+            }
+        }   
+        //cout << args << endl;
+
+        // 2. 함수 호출 string 내 .ftn(args) 부분을 .newFtn(args, flag)로 대치
+        int ftnCallLine = tNdVec.front().lineNo + lineOffset + flineOffset; // TODO: fix line offset.
+        // 실제 파일 내 함수 호출 라인(Caller가 호출하는 Callee 함수 부분)
+        string patchLine = tempCode.at(ftnCallLine-1);
+
+        size_t fpos = patchLine.find("."+fname);
+        if(fpos == string::npos) {
+            cerr << "Error finding method invocation token in the patch code line." << endl;
+            return;
+        }
+        // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
+        size_t bpos = patchLine.find(")", fpos);
+        if(bpos == string::npos) {
+            cerr << "Error finding method bracket closure token in the patch code line." << endl;
+            return;
+        }
+
+        string newPatchLine = "";
+        newPatchLine += patchLine.substr(0, fpos);
+        newPatchLine += "." + newFname + "(" + args + "," + int2str(flag) + ")";
+        newPatchLine += patchLine.substr(bpos+1);
+
+        tempCode.at(ftnCallLine-1) = newPatchLine;
+        // 새로운 함수 이름으로 패치된 코드 삽입.
+        testPrintCode(tempCode);
+
+    }
+
+
+
 
 } 
 
@@ -2195,7 +2206,7 @@ void testPrintCallerVec(vector<Caller> &cVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -2224,7 +2235,7 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); // 2. refactor the code according to the clone datas
+    refactor(ct); */ // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -2260,7 +2271,7 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    /* string cname = "FasooMessageParser";
+    string cname = "FasooMessageParser";
     string fname = "parse";
 
     // CallGraph 파싱과 Caller 패치 구현 테스트
@@ -2298,7 +2309,7 @@ int main(int argc, char** argv){
     //getConstSubtree(realPath, callerVec.front().callerObjectName, ndVec);
     //printNodeVector(ndVec);
 
-    patchCaller2(callerVec.front(), fname, "parseparse2", 1); */
+    patchCaller2(callerVec.front(), fname, "parseparse2", 1);
 
     // ==================================
     // ========== TEST FOR T3 ===========

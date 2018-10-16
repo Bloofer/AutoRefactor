@@ -1037,6 +1037,7 @@ vector< pair< vector<NodeData>, int > > getConstNdVecFromNdVec(vector<NodeData> 
   bool bopen = false;
   int aCnt;
 
+  // 생성자 인자 갯수 세기
   for(int j=0; j<constNdVec.size(); j++){
     aCnt = 0;
     for(int i=0; i<constNdVec.at(j).first.size()-1; i++){
@@ -1055,6 +1056,34 @@ vector< pair< vector<NodeData>, int > > getConstNdVecFromNdVec(vector<NodeData> 
   }
 
   return constNdVec;
+
+}
+
+int getFtnPtLineFromNdVec(vector<NodeData> &ndVec, string &fname){
+// pair.first : 생성자 노드 벡터,  pair.second : 생성자 인자 갯수
+
+  int PtLine = 0;   
+  // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
+
+  vector<NodeData> tmpNdVec;
+  bool fnd = false;
+  int dNum = 0;
+  for(int i=0; i<ndVec.size()-2; i++){
+    if(fnd && ndVec.at(i).depth > dNum) {
+      if(ndVec.at(i).nodeId == 187 && ndVec.at(i+1).nodeId == 39 && ndVec.at(i+2).label == fname){
+        return ndVec.at(i+2).lineNo;
+      }
+      tmpNdVec.push_back(ndVec.at(i));
+    } else if(fnd && ndVec.at(i).nodeId == 171) {
+      fnd = false;
+    } else if(!fnd && ndVec.at(i).nodeId == 113) {
+      tmpNdVec.push_back(ndVec.at(i));
+      dNum = ndVec.at(i).depth;
+      fnd = true;
+    }
+  }
+
+  return PtLine;
 
 }
 
