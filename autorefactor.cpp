@@ -1835,8 +1835,6 @@ void patchT1(){
         cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
         return;
     }
-    //parseFtype(ndVec1, f1);
-    //parseFtype(ndVec2, f2);
 
     pair<int, int> p = getCommonPart(c1, c2, f1, f2, nc);
     if(!nc) {
@@ -1918,8 +1916,6 @@ void patchT2(){
         cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
         return;
     }
-    //parseFtype(ndVec1, f1);
-    //parseFtype(ndVec2, f2);
 
     mergeMethod(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
 
@@ -2199,7 +2195,7 @@ void testPrintCallerVec(vector<Caller> &cVec){
 int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -2228,7 +2224,7 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); */ // 2. refactor the code according to the clone datas
+    refactor(ct); // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -2264,7 +2260,7 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    string cname = "FasooMessageParser";
+    /* string cname = "FasooMessageParser";
     string fname = "parse";
 
     // CallGraph 파싱과 Caller 패치 구현 테스트
@@ -2302,7 +2298,7 @@ int main(int argc, char** argv){
     //getConstSubtree(realPath, callerVec.front().callerObjectName, ndVec);
     //printNodeVector(ndVec);
 
-    patchCaller2(callerVec.front(), fname, "parseparse2", 1);
+    patchCaller2(callerVec.front(), fname, "parseparse2", 1); */
 
     // ==================================
     // ========== TEST FOR T3 ===========
