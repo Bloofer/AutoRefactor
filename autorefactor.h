@@ -142,6 +142,7 @@ bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, stri
 
 // communal functions for all types
 void patchCaller(Caller c, string newFname, int flag);
+void patchCaller2(Caller c, string fname, string newFname, int flag);
 int getLineOffset(vector<NodeData> &ndVec, string &ftnName, int from);
 void parseClassMemVars(string fileName);
 bool compFtype(FtnType &f1, FtnType &f2);

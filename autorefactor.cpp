@@ -205,7 +205,7 @@ void patchCaller(Caller c, string newFname, int flag){
 
 } 
 
-void patchCaller2(Caller c, int flag){
+void patchCaller2(Caller c, string fname, string newFname, int flag){
     // CallGraph에서 찾은 Caller의 Path와 함수 이름을 이용하여, 함수 내 Callee의 원래 이름을 새로운 이름으로 바꿔준다.
     // TODO: 일단은 Callee 함수의 이름만으로 찾는 것 구현. 추후에 Callee Obj 이름 찾아서 이름이 호출하는 함수 위치 패치로 바꿔야할지도?
     // TODO: 일단은 Caller 호출부가 하나인 케이스에 대해 구현. 추후 여러 호출에 대한 구현도 고려 확장할 것.
@@ -230,18 +230,17 @@ void patchCaller2(Caller c, int flag){
     // Caller 노드 벡터 오프셋 가져오기.
     // 실제 파일 패치 적용 위함.
 
-    vector<NodeData> ndVec1; // ndVec1이 전체 파일 노드벡터. 이것으로 전부 바꿀 것. 파일 패치시 라인 오프셋 맞추기 위함.
-    getPtreeVec(c.realPath, ndVec1);
-    printNodeVector(ndVec1);
+    vector<NodeData> ndVec;
+    getPtreeVec(c.realPath, ndVec);
 
     // 클래스 선언부 라인 가져오기
     bool nodeFnd = false;
     int ptreeCline = 0;
-    for(int i=0; i<ndVec1.size(); i++){
-        if(nodeFnd && ndVec1.at(i).isTerminal) {
-            ptreeCline = ndVec1.at(i).lineNo;
+    for(int i=0; i<ndVec.size(); i++){
+        if(nodeFnd && ndVec.at(i).isTerminal) {
+            ptreeCline = ndVec.at(i).lineNo;
             break;
-        } else if(ndVec1.at(i).nodeId == 182) nodeFnd = true;
+        } else if(ndVec.at(i).nodeId == 182) nodeFnd = true;
     }
 
     if(!nodeFnd || ptreeCline == 0) {
@@ -252,61 +251,40 @@ void patchCaller2(Caller c, int flag){
     int lineOffset; // 파스트리 파일 라인과 실제 파일 라인 넘버가 상이할 경우 대비한 오프셋.
                     // offset = 실제 파일 라인 - 파스 트리 파일 라인
     lineOffset = cdeclLine - ptreeCline;
-    // TODO: 아래 ConstNdVec 전부 ndVec1에서 끌어내어 정보 가져올 수 잇도록 하기(라인 넘버 유지)
 
     // =========================================================
     // ======== Caller 위치가 생성자인 경우 (<init>) ===============
     // =========================================================
 
-    vector<NodeData> ndVec;
-    getConstSubtree(c.realPath, c.callerObjectName, ndVec);
+    // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
+    // pair.first : Const 노드 벡터, pair.second : Constructor 인자 갯수
+    vector< pair< vector<NodeData>, int > > constNdVec = getConstNdVecFromNdVec(ndVec, c.callerObjectName); 
+    
+    // TODO: 노드 벡터내 method invocation 찾고, 해당 라인(오프셋 뺀) 구하기
 
-    // 1.1 파일 파싱해서 트리 벡터로 가져옴. 가져온 트리 벡터내 생성자 여러개인 경우 split하고, 인자 갯수 맞는 생성자 벡터 찾음.
-    int constCnt = 0;
-    for(int i=0; i<ndVec.size(); i++){
-        if(ndVec.at(i).nodeId == 189) constCnt++;
+    vector<NodeData> cndVec;
+    bool cFnd = false;
+    for(int i=0; i<constNdVec.size(); i++){
+        if(constNdVec.at(i).second == c.argNum) {
+            cndVec = constNdVec.at(i).first;
+            cFnd = true;
+        }
     }
-    if(constCnt == 0) {
-        cerr << "Error parsing caller file. Constructor not found." << endl;
+
+    if(!cFnd) {
+        cerr << "Error finding constructor in the constNdVec." << endl;
         return;
     }
 
-    vector< pair< vector<NodeData>, int > > constNdVec; 
-    // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
-    // pair.first : Const 노드 벡터, pair.second : Constructor 인자 갯수
-    vector<NodeData> tmpNdVec;
-    for(int i=0; i<ndVec.size(); i++){
-        if(i!=0 && ndVec.at(i).nodeId == 189) {
-            constNdVec.push_back(pair<vector<NodeData>, int>(tmpNdVec, 0));
-            tmpNdVec.clear();
-            tmpNdVec.push_back(ndVec.at(i));
-        } else {
-            tmpNdVec.push_back(ndVec.at(i));
-        }
+    //printNodeVector(cndVec);
+
+    // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
+    vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(cndVec, fname);
+    if(tNdVec.empty()) {
+        cerr << "Error finding method invocation line in cndVec." << endl;
+        return;
     }
-    constNdVec.push_back(pair<vector<NodeData>, int>(tmpNdVec, 0));
-
-    bool bopen = false;
-    int aCnt;
-
-    for(int j=0; j<constNdVec.size(); j++){
-        aCnt = 0;
-        for(int i=0; i<constNdVec.at(j).first.size()-1; i++){
-            if(bopen){
-                if(constNdVec.at(j).first.at(i).isTerminal && constNdVec.at(j).first.at(i+1).label == ")") {
-                    bopen = false;
-                    break;
-                } else {
-                    if(constNdVec.at(j).first.at(i).nodeId == 178) aCnt++;
-                }
-            } else if(constNdVec.at(j).first.at(i).isTerminal) {
-                if(constNdVec.at(j).first.at(i).label == c.callerObjectName && constNdVec.at(j).first.at(i+1).label == "(") bopen = true;
-            }
-        }
-        constNdVec.at(j).second = aCnt;
-    }
-
-    cout << constNdVec.at(0).second << constNdVec.at(1).second << endl;
+    printNodeVector(tNdVec);
 
     // =========================================================
     // ========== TODO: 이 블록 내부 분기문으로 나누기 ===============
@@ -2284,7 +2262,7 @@ int main(int argc, char** argv){
     //getConstSubtree(realPath, callerVec.front().callerObjectName, ndVec);
     //printNodeVector(ndVec);
 
-    patchCaller2(callerVec.front(), 1);
+    patchCaller2(callerVec.front(), fname, "parseparse2", 1);
 
     // ==================================
     // ========== TEST FOR T3 ===========

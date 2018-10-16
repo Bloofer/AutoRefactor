@@ -792,6 +792,85 @@ vector< pair<string, string> > getArgListFromArgNdVec(vector<NodeData> &ndVec, i
 
 }
 
+vector< pair< vector<NodeData>, int > > getConstNdVecFromNdVec(vector<NodeData> &ndVec, string &cname){
+// pair.first : 생성자 노드 벡터,  pair.second : 생성자 인자 갯수
+
+  vector< pair< vector<NodeData>, int > > constNdVec;   
+  // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
+
+  vector<NodeData> tmpNdVec;
+  bool cFnd = false;
+  int dNum = 0;
+  for(int i=0; i<ndVec.size(); i++){
+    if(cFnd && ndVec.at(i).depth > dNum) {
+      tmpNdVec.push_back(ndVec.at(i));
+    } else if(cFnd && ndVec.at(i).depth <= dNum) {
+      constNdVec.push_back(pair<vector<NodeData>, int>(tmpNdVec, 0));
+      tmpNdVec.clear();
+      cFnd = false;
+    } else if(!cFnd && ndVec.at(i).nodeId == 189) {
+      tmpNdVec.push_back(ndVec.at(i));
+      dNum = ndVec.at(i).depth;
+      cFnd = true;
+    }
+  }
+
+  bool bopen = false;
+  int aCnt;
+
+  for(int j=0; j<constNdVec.size(); j++){
+    aCnt = 0;
+    for(int i=0; i<constNdVec.at(j).first.size()-1; i++){
+      if(bopen){
+        if(constNdVec.at(j).first.at(i).isTerminal && constNdVec.at(j).first.at(i+1).label == ")") {
+          bopen = false;
+          break;
+        } else {
+          if(constNdVec.at(j).first.at(i).nodeId == 178) aCnt++;
+        }
+      } else if(constNdVec.at(j).first.at(i).isTerminal) {
+        if(constNdVec.at(j).first.at(i).label == cname && constNdVec.at(j).first.at(i+1).label == "(") bopen = true;
+      }
+    }
+    constNdVec.at(j).second = aCnt;
+  }
+
+  return constNdVec;
+
+}
+
+vector<NodeData> getFtnCallTNdVecFromNdVec(vector<NodeData> &ndVec, string fname){
+
+  vector<NodeData> fcallTndVec;
+  vector<NodeData> tmpNdVec;
+  bool fnd = false;
+  int lnum = 0;
+  for(int i=0; i<ndVec.size()-2; i++){
+    if(!fnd && ndVec.at(i).nodeId == 122){
+      fnd = true;
+    } else if(fnd && ndVec.at(i).isTerminal && tmpNdVec.empty()){
+      // method_invocation 노드 발견 후 처음 말단 노드를 발견
+      lnum = ndVec.at(i).lineNo;
+      tmpNdVec.push_back(ndVec.at(i));
+    } else if(fnd && ndVec.at(i).isTerminal && !tmpNdVec.empty() && ndVec.at(i).lineNo == lnum){
+      tmpNdVec.push_back(ndVec.at(i));
+      if(ndVec.at(i).label == "." && ndVec.at(i+2).label != fname){
+        tmpNdVec.clear();
+        lnum = 0;
+        fnd = false;
+      }
+    } else if(fnd && ndVec.at(i).isTerminal && !tmpNdVec.empty() && ndVec.at(i).lineNo != lnum){
+      fcallTndVec = tmpNdVec;
+      tmpNdVec.clear();
+      lnum = 0;
+      fnd = false;
+    }
+  }
+
+  return fcallTndVec;
+
+}
+
 void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<NodeData> &ndVec){
   
   id_init();
