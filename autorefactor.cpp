@@ -14,6 +14,13 @@ void readFile(char* alarmFile){
 
     CloneData tmpCdata;
 
+    /*
+     * 알람 포맷 
+     * n                    // 중복 쌍의 갯수. 현재 구현은 2개쌍에 대한 패치
+     * clone1_path from to  // 중복1의 파일 위치 / 중복 시작 라인 / 중복 끝 라인
+     * clone2_path from to  // 중복2의 파일 위치 / 중복 시작 라인 / 중복 끝 라인
+     */
+
     for(int i=0; i<n; i++){
         cfile >> tmpCdata.fileName >> tmpCdata.from >> tmpCdata.to;
         tmpCdata.cloneSize = tmpCdata.to - tmpCdata.from + 1;
@@ -31,32 +38,6 @@ void readFile(char* alarmFile){
         tmpCdata.fileName = "";
         tmpCdata.from = tmpCdata.to = tmpCdata.cloneSize = 0;
         tmpCdata.cloneSnippet.clear();
-    }
-
-    // TODO: analyze call graph and insert caller data here!
-    // 1. analyze call graph (fetch caller data for clone ftn 1 & 2)
-    // 2. parse caller ftn tree and insert caller data (need to get caller's obj name, call args etc...)
-
-    int callerNum;
-    Caller tmpCaller;
-
-    for(int i=0; i<n; i++){
-        cfile >> callerNum;
-        for(int j=0; j<callerNum; j++){
-            cfile >> tmpCaller.fileName;
-            cfile >> tmpCaller.callerObjectName >> tmpCaller.callerObjectFtnName >> tmpCaller.originalFtnName;
-            cfile >> tmpCaller.argNum;
-            for(int k=0; k<tmpCaller.argNum; k++){
-                string tmpStr;
-                cfile >> tmpStr;
-                tmpCaller.callArgs.push_back(tmpStr);
-            }
-            cfile >> tmpCaller.lineNum;
-            cloneDatas[i].callers.push_back(tmpCaller);
-            tmpCaller.fileName = tmpCaller.callerObjectName = tmpCaller.callerObjectFtnName = "";
-            tmpCaller.argNum = tmpCaller.lineNum = 0;
-            tmpCaller.callArgs.clear();
-        }
     }
 
 }
@@ -153,59 +134,7 @@ bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, stri
  * ====================================================
  */
 
-void patchCaller(Caller c, string newFname, int flag){
-    // function for fetching caller datas
-    // using data from the alarm file which are parsed from DOT file
-
-    // Get the call site code line too. to use for caller patching
-    ifstream pfile(c.fileName.c_str());
-    string line;
-    vector<string> tempCode;
-    int callerLine = c.lineNum;
-    int lineCnt = 0; // line counter
-    while(getline(pfile, line)) {
-        tempCode.push_back(line);
-        lineCnt++;
-    }
-
-    string patchLine = tempCode[c.lineNum-1];
-    bool found = false;
-    int ftnFront, ftnRear;
-    ftnFront = ftnRear = 0;
-
-    while(!found){
-        ftnFront = patchLine.find_first_of(c.originalFtnName, ftnFront);
-        if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(' && patchLine.at(ftnFront - 1) == '.') {
-            found = true;
-            ftnRear = patchLine.find_first_of(')', ftnFront);
-        } else if (patchLine.at(ftnFront + c.originalFtnName.size()) == ' '){
-            ftnFront += patchLine.substr(ftnFront).find_first_not_of(" \t\r\n");
-            if (patchLine.at(ftnFront + c.originalFtnName.size()) == '(') {
-                found = true;
-                ftnRear = patchLine.find_first_of(')', ftnFront);
-            }
-        } else {
-            ftnFront++;
-        }
-    }
-    
-    string strFront = patchLine.substr(0, ftnFront) + newFname + "(";
-    string strRear = int2str(flag) + ")" + patchLine.substr(ftnRear + 1);
-
-    patchLine = strFront;
-    for(int i=0; i<c.argNum; i++){
-        patchLine += c.callArgs[i] + ", ";
-    }
-    patchLine += strRear;
-    tempCode[c.lineNum-1] = patchLine;    
-
-    cout << "Patching callers ...\n";
-    cout << "(This will be replaced with actual file write operations)\n";
-    testPrintCode(tempCode); // TODO: need to replace this with file write operations
-
-} 
-
-void patchCaller2(Caller c, string fname, string newFname, int flag){
+void patchCaller(Caller c, string fname, string newFname, int flag){
     // CallGraph에서 찾은 Caller의 Path와 함수 이름을 이용하여, 함수 내 Callee의 원래 이름을 새로운 이름으로 바꿔준다.
     // TODO: 일단은 Callee 함수의 이름만으로 찾는 것 구현. 추후에 Callee Obj 이름 찾아서 이름이 호출하는 함수 위치 패치로 바꿔야할지도?
     // TODO: 일단은 Caller 호출부가 하나인 케이스에 대해 구현. 추후 여러 호출에 대한 구현도 고려 확장할 것.
@@ -493,7 +422,6 @@ bool compFtype(FtnType &f1, FtnType &f2){
 }
 
 string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
-
     bool found = false;
     int idx;
     for(int i=0; i<fdVec.size(); i++){
@@ -1203,12 +1131,6 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     
     string newFtnName = f1.ftnName + f2.ftnName;
     // 1. substitute caller function name with new one.
-    for(int i=0; i<c1.callers.size(); i++){
-        patchCaller(c1.callers[i], newFtnName, 0);
-    }
-    for(int i=0; i<c2.callers.size(); i++){
-        patchCaller(c2.callers[i], newFtnName, 1);
-    }
 
     vector<DiffInfo> diffInfo;
 
@@ -2203,14 +2125,50 @@ void testPrintCallerVec(vector<Caller> &cVec){
  * ====================================================
  */
 
+void init(string callGraphPath, string dirPath){
+
+    // init 함수는 클론 알람별 중복 패치외, 디렉토리의 파일과 CallGraph를 읽어 
+    // T2에서 함수 이름이 변경된 함수 호출자들의 이름을 바꿔주기 위한 선작업
+
+    // CallGraph를 추출하여 전역 CallGraph 벡터를 생성
+    getAllCallGraphData(callGraphPath, callGraphVec);
+    
+    // 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
+    // TODO: 디렉토리 명 제대로 확인할 수 있게 가드 만들기. -> read_file로
+    fetchFname2CnameVec(dirPath, fpath2CnamePairVec);
+
+}
+
 int main(int argc, char** argv){
 
-    // USAGE :  ./autorefactor OPTION CLONEDATA
-    /* if (argc < 2) {
-        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
-        return 1;
-    }
+    string dotfile;
+    string dirname;
 
+    // USAGE :  ./autorefactor OPTION CLONEDATA [ DOTFILE DIRPATH ]
+    if (argc < 3) {
+        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        return 1;
+    } else if (argc == 4) {
+        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        cerr << "Only 3 arguments are passed. Need to pass directory path to trigger caller patch mode." << endl;
+        return 1;
+    } else if (argc == 5) {
+        dotfile = string(argv[3]);
+        dirname = string(argv[4]);
+        if(dotfile.find(".dot") == string::npos) {
+            cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+            cerr << "DOTFILE must be '.dot' format file." << endl;
+            return 1;
+        }
+        callerPatchOn = true;
+    } else if (argc > 5) {
+        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        cerr << "Too many args passed." << endl;
+        return 1;
+    } else {
+        callerPatchOn = false;
+    }
+     
     string opt = string(argv[1]);
 
     if (opt == "-a") runOption = ALL;
@@ -2235,7 +2193,9 @@ int main(int argc, char** argv){
         cout << "===== Could not solve clone patch type. Abort refactor. =====" << endl << endl;
         return 0;
     }
-    refactor(ct); */ // 2. refactor the code according to the clone datas
+    
+    if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
+    refactor(ct); // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -2271,20 +2231,10 @@ int main(int argc, char** argv){
     printNodeVector(ndVec); */
 
     // TODO: 테스트에 해당 callee 이름 사용
-    string cname = "FasooMessageParser";
+    /* string cname = "FasooMessageParser";
     string fname = "parse";
 
-    // CallGraph 파싱과 Caller 패치 구현 테스트
-    // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
-    // 1. CallGraph를 추출하여 전역 CallGraph 벡터를 생성
-    getAllCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", callGraphVec);
-    //testPrintCallGraphVec(callGraphVec);
-
-    // TODO: 기능 구현 후 1,2번 클론 인스턴스별 패치 윗 부분으로 옮기기
-    // 2. 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
-    // TODO: 디렉토리 명 제대로 확인할 수 있게 가드 만들기.
-    fetchFname2CnameVec("/home/yang/Sources/Fasoo/bench/ePrint_java", fpath2CnamePairVec);
-    //testPrintPairVec(fpath2CnamePairVec);
+    init("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", "/home/yang/Sources/Fasoo/bench/ePrint_java");
 
     // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
     // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
@@ -2309,7 +2259,7 @@ int main(int argc, char** argv){
     //getConstSubtree(realPath, callerVec.front().callerObjectName, ndVec);
     //printNodeVector(ndVec);
 
-    patchCaller2(callerVec.front(), fname, "parseparse2", 1);
+    patchCaller(callerVec.front(), fname, "parseparse2", 1); */
 
     // ==================================
     // ========== TEST FOR T3 ===========

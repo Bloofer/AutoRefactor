@@ -78,6 +78,7 @@ typedef enum {
     COD // show only output
 } RunOption;
 RunOption runOption;
+bool callerPatchOn; // Caller 패치를 끄고 키는 옵션
 
 // function variable datas
 vector<string> importClassVec; // vector holding imported class datas(type, name)
