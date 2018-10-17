@@ -1396,6 +1396,53 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         testPrintCode(patchCode); // TODO: need to replace this with file write operations
     }
 
+
+    // Caller patch 부분
+    // TODO: 옵션에 따라 실행되도록 분기 삽입
+
+    string cname;
+    fetchClassName(c1.fileName, cname);
+    string fname1 = f1.ftnName;
+    string fname2 = f2.ftnName;
+
+    // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
+    // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
+    vector<Caller> callerVec1, callerVec2;
+    getCallerInfo(cname, fname1, callGraphVec, callerVec1);
+    getCallerInfo(cname, fname2, callGraphVec, callerVec2);
+
+    //for all callers.
+    if(callerVec1.empty()) cout << "ftn1. No callers to patch." << endl;
+
+    for(int i=0; i<callerVec1.size(); i++){
+        cout << "ftn1." << callerVec1.size() << " Callers to patch." <<  endl;
+        // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
+        int argCnt;
+        if(mapFullPath(fpath2CnamePairVec, callerVec1.at(i).fileName, callerVec1.at(i).callerObjectName, callerVec1.at(i).realPath)) {
+            cout << "Path found! : " << callerVec1.at(i).realPath << endl;
+        }
+        cout << callerVec1.at(i).argNum << endl;
+
+        // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
+        patchCaller(callerVec1.at(i), fname1, newFtnName, 0);
+    }
+
+    //for all callers.
+    if(callerVec2.empty()) cout << "ftn2. No callers to patch." << endl;
+
+    for(int i=0; i<callerVec2.size(); i++){
+        cout << "ftn2." << callerVec2.size() << " Callers to patch." <<  endl;
+        // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
+        int argCnt;
+        if(mapFullPath(fpath2CnamePairVec, callerVec2.at(i).fileName, callerVec2.at(i).callerObjectName, callerVec2.at(i).realPath)) {
+            cout << "Path found! : " << callerVec2.at(i).realPath << endl;
+        }
+        cout << callerVec2.at(i).argNum << endl;
+
+        // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
+        patchCaller(callerVec2.at(i), fname2, newFtnName, 1);
+    }
+
 }
 
 
@@ -2233,8 +2280,6 @@ int main(int argc, char** argv){
     // TODO: 테스트에 해당 callee 이름 사용
     /* string cname = "FasooMessageParser";
     string fname = "parse";
-
-    init("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", "/home/yang/Sources/Fasoo/bench/ePrint_java");
 
     // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
     // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
