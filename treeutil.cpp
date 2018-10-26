@@ -542,6 +542,38 @@ vector<NodeData> getRhsTnodeVec(vector<NodeData> &ndVec) {
 
 }
 
+vector<NodeData> getLhsTnodeVec(vector<NodeData> &ndVec) {
+
+  bool found = false;
+  int assignIdx = 0;
+  vector<NodeData> lhsTnodeVec;
+
+  for(int i=0; i<ndVec.size(); i++){
+    if(ndVec.at(i).isTerminal && ndVec.at(i).label == "=") {
+      assignIdx = i;
+      break;
+    } 
+  }
+
+  for(int i=0; i<assignIdx; i++){
+    if(ndVec.at(i).isTerminal) {
+      // Terminal 인 노드 모으기
+      lhsTnodeVec.push_back(ndVec.at(i));
+      lhsTnodeVec.back().isGenericTypeArg = false;
+    }
+  }
+
+  for(int i=1; i<lhsTnodeVec.size()-1; i++){
+    if(lhsTnodeVec.at(i-1).label == "<" && lhsTnodeVec.at(i+1).label == ">"){
+      // 제네릭 타입 인자 토큰에 마킹
+      lhsTnodeVec.at(i).isGenericTypeArg = true;
+    }
+  }
+  
+  return lhsTnodeVec;
+
+}
+
 vector<string> getTnodeLabelInNdVec(vector<NodeData> &ndVec){
 
   if(ndVec.empty()) cerr << "Error : ndVec is empty. tnode cannot be found. @ getTnodeLabelInNdVec()" << endl;

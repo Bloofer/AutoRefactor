@@ -1010,7 +1010,10 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
 
 }
 
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion){
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, int patchType, bool &normalCompletion){
+    // patchType; 2-T2 merge method:branching, 3-T3 merge method:arg pass
+    // T3에서 L-value diff인 경우에도 일단 받아들일 수 있게 막지 않는다.
+
     // function for getting diff part of two clone datas
     vector<int> diffLine;
 
@@ -1078,7 +1081,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         // Diff line Var Decl & Retur Stmt check part
         for(int j=0; j<tmpVec1.size(); j++){
             if(intVecContains(tokSame1, j)) continue;
-            if(isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
+            if(patchType==2 && isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
                 cerr << "Error : Var decl diff(Lvalue diff) found on vec1 diff line. Merging aborted." << endl;
                 normalCompletion = false;
                 hasLvalue |= isLvalueNode(ndVec1, tmpVec1.at(j).second);
@@ -1086,7 +1089,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         }
         for(int j=0; j<tmpVec2.size(); j++){
             if(intVecContains(tokSame2, j)) continue;
-            if(isLvalueNode(ndVec2, tmpVec2.at(j).second)) {
+            if(patchType==2 && isLvalueNode(ndVec2, tmpVec2.at(j).second)) {
                  cerr << "Error : Var decl diff(Lvalue diff) found on vec2 diff line. Merging aborted." << endl;
                  normalCompletion = false;
                  hasLvalue |= isLvalueNode(ndVec2, tmpVec2.at(j).second);
@@ -1134,7 +1137,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     vector<DiffInfo> diffInfo;
 
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, normalCompletion); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 2, normalCompletion); // TODO: refactor this?
     if(diffLine.empty()) {
         cerr << "Diff line empty. Merging method aborted." << endl;
         nc = false;
@@ -1483,6 +1486,21 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     //      - 사실상 T1인데 다른 부분이 있는 케이스(함수가 다른 경우)를 커버하는 것.
     // * 함수 인자로 전달하는 함수는 Local(같은 파일 내 정의된 것) 함수이어야 한다.
 
+    // 구현 알고리즘 추가 (18.10.25 - 제네릭 타입 diff에 대한 패치)
+    // 구현 알고리즘 (case#1 단순 rhs 함수 인자 전달, case#2 rhs 함수와 lhs의 제네릭 타입 인자 전달)
+    // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
+    // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (rhs diff)
+    // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
+    // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.(local 함수가 overload된 경우는 일단 고려하지 않는다.)
+    // 4-a. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
+    // 4-b. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 리턴타입이 제네릭 타입의 인자와 같은 지 확인한다.
+    // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
+    //     - TODO: 인자가 달라도 상관없으나, 일단은 인자까지 같은 것으로 파악하여 구현하고 추후 확장.
+    // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
+    // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi1과 hi2를 준다.
+
+    int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+
     // 구현 알고리즘
     // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
     vector<FtnData> fdVec;    
@@ -1502,10 +1520,11 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         cout << endl; */
     }
 
-    // 2. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
+    // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
+    // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
     //  - TODO: 추후 제네릭을 이용한 Lvalue 경우에 대한 패치도 확장 예정.
     vector<DiffInfo> diffInfo;
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, normalCompletion); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 3, normalCompletion); // TODO: refactor this?
     if(diffLine.empty()) {
         cerr << "Diff line empty. T3 code patch aborted." << endl;
         nc = false;
@@ -1525,7 +1544,8 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         return;
     }
 
-    // 2-1. rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
+    // 2-1-a. rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
+    // 2-1-a. lhs의 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
     // 함수의 전달 인자는 같아야함. 
     // 호출 함수의 타입은 같아야함.
 
@@ -1546,16 +1566,19 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 알고리즘 제약 조건 : rhs 토큰 수 같아야, 함수 이름만 다르고 인자 등 다 같은 케이스만 발동.
     vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
     vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
+    vector<NodeData> lhsNdVec1 = getLhsTnodeVec(diffNdVec1);
+    vector<NodeData> lhsNdVec2 = getLhsTnodeVec(diffNdVec2);
     //printNodeVector(rhsNdVec1);
     //printNodeVector(rhsNdVec2);
 
-    if(rhsNdVec1.size() != rhsNdVec2.size()){
+    if(rhsNdVec1.size() != rhsNdVec2.size() && lhsNdVec1.size() != lhsNdVec2.size()){
         // TODO: 커버 케이스 확장하기
-        cerr << "T3 can only patch rhs code with same tok count" << endl;
+        cerr << "T3 can only patch lhs or rhs code with same tok count" << endl;
         nc = false;
         return;
     }
 
+    // rhs의 토큰들 비교
     int diffTok; 
     int diffTokCnt = 0;
     for(int i=0; i<rhsNdVec1.size(); i++){
@@ -1566,18 +1589,33 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         }
     }
 
-    if(diffTokCnt > 1){
+    // lhs의 토큰들 비교
+    int diffTypeTok = -1; // T3에서 제네릭 타입의 인자가 다른경우에 해당하는 타입 토큰
+    int diffTypeTokCnt = 0;
+    for(int i=0; i<lhsNdVec1.size(); i++){
+        if(lhsNdVec1.at(i).label == lhsNdVec2.at(i).label) continue;
+        else {
+            diffTypeTokCnt++;
+            if(lhsNdVec1.at(i).isGenericTypeArg == lhsNdVec2.at(i).isGenericTypeArg) diffTypeTok = i;
+        }
+    }
+
+    if(diffTokCnt > 1 && diffTypeTokCnt > 1){
         // TODO: 커버 케이스 확장하기
         cerr << "T3 can only patch rhs code with one ftn call diff" << endl;
         nc = false;
         return;
     }
 
-    //cout << rhsNdVec1.at(diffTok).label << endl;
-    //cout << rhsNdVec2.at(diffTok).label << endl;
+    if(diffTypeTok == -1) patchtype = 0;
+    else patchtype = 1;
+    // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
 
-    // 3. 만약, 맞을 경우 이 것에 해당하는 diff 함수가 local 함수 call인지 찾는다.
-    //fdVec
+    //cout << lhsNdVec1.at(diffTypeTok).label << endl;
+    //cout << lhsNdVec2.at(diffTypeTok).label << endl;
+
+    // 3. 만약, 맞을 경우 rhs의 diff 토큰에 해당하는 diff 함수가 local 함수 call인지 찾는다.
+    // fdVec
     bool f1fnd = false;
     bool f2fnd = false;
     int f1idx = 0;
@@ -1599,17 +1637,16 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         return;
     }
 
-    //testPrintFtnType(ftVec.at(f1idx));
-    //testPrintFtnType(ftVec.at(f2idx));
-
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
     // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
     bool diffFtnTypeEq = compFtype(ftVec.at(f1idx), ftVec.at(f2idx));
-    if(!diffFtnTypeEq){
+    if(patchtype == 0 && !diffFtnTypeEq){
         cerr << "T3 patching error : diff ftns must have same type." << endl;
         nc = false;
         return;
     }
+
+    // TODO: 여기서부터 패치 재개하기. patchType:0인 경우에는 원래대로 함수 포인터만 전달. 1인 경우에는 제네릭 타입과 함수 둘다 전달.
 
     // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
     // 위에서 함수 diff외 인자 및 다른 요소는 같은 것으로 판단하고 진행.
@@ -2188,7 +2225,7 @@ void init(string callGraphPath, string dirPath){
 
 int main(int argc, char** argv){
 
-    string dotfile;
+    /* string dotfile;
     string dirname;
 
     // USAGE :  ./autorefactor OPTION CLONEDATA [ DOTFILE DIRPATH ]
@@ -2242,7 +2279,7 @@ int main(int argc, char** argv){
     }
     
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
-    refactor(ct); // 2. refactor the code according to the clone datas
+    refactor(ct); */ // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -2313,7 +2350,7 @@ int main(int argc, char** argv){
     // T3 구현 테스트 용
     // TODO: 구현 완료 후 전체 실행 코드와 병합시키기
 
-    /* if (argc < 2) {
+    if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -2332,7 +2369,7 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     
-    refactor(T3); */
+    refactor(T3);
 
 
 

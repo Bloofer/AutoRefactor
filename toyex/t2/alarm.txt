@@ -1,4 +1,3 @@
 2
 /home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java 40 44
 /home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java 45 49
-0

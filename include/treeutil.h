@@ -50,7 +50,9 @@ typedef struct{
   int lineNo;   // empty if non-terminal
   int depth;    // depth of tree. same if siblings
   bool isFtnCall; // used for T3 code patch alg.
-                 // true if the node is 
+                  // true if the node is 
+  bool isGenericTypeArg; // used for T3 code patch alg.
+                         // true if the node is generic type arg.
 }NodeData;
 
 typedef struct{
@@ -92,6 +94,7 @@ bool isLvalueNode(vector<NodeData> &ndVec, int idx);
 
 // Functions for T3 Algorithm
 vector<NodeData> getRhsTnodeVec(vector<NodeData> &ndVec);
+vector<NodeData> getLhsTnodeVec(vector<NodeData> &ndVec);
 vector<string> getTnodeLabelInNdVec(vector<NodeData> &ndVec);
 
 // Function type parsing utils

@@ -158,7 +158,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
 
 // functions for type 2 (merge method)
 void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vector<Caller> &callerVec);
-vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, bool &normalCompletion);
+vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, int patchType, bool &normalCompletion);
 void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
 // clone patch main functions (for T1/T2/T3)

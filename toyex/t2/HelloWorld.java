@@ -12,12 +12,12 @@ public class HelloWorld {
   public int f() {
     System.out.println("hihihi");
     Vector<Integer> A = hi1(10);
-    return A.size();
+    return 10;
   }
   public int g() {
     System.out.println("hihihi");
     Vector<Float> A = hi2(10);
-    return A.size();
+    return 10;
   }
 
   ////// 바뀐 후
@@ -28,11 +28,11 @@ public class HelloWorld {
   }
   public int f2() { // f가 이렇게 바뀌어야 함.
     Vector<Integer> A = fg(x -> hi1(x));
-    return A.size();
+    return 10;
   }
   public int g2() {
     Vector<Float> A = fg(x -> hi2(x));
-    return A.size();
+    return 10;
   }
 
   //// ----------------------- 좀 더 간단한 케이스
