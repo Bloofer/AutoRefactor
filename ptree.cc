@@ -34,6 +34,10 @@
 #include <assert.h>
 #include <vgen-config.h>
 #include <token-counter.h>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 using namespace std;
 
@@ -611,9 +615,29 @@ int Terminal::getLine()
     }
 } */
 
+// trim from start (in place)
+static inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+            std::not1(std::ptr_fun<int, int>(std::isspace))));
+}
+
+// trim from end (in place)
+static inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(),
+            std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+}
+
+// trim from both ends (in place)
+static inline void trim(std::string &s) {
+    ltrim(s);
+    rtrim(s);
+}
+
 void Terminal::print2ss(std::stringstream &ss)
 {
-    ss << "<" << Terminal::getValue() << "> #" << Terminal::getLine() << " ";
+    string tok = Terminal::getValue();
+    trim(tok);
+    ss << "<" << tok << "> #" << Terminal::getLine() << " ";
 }
 
 void Terminal::getFtnSubtree(std::stringstream &ss, string &fname)

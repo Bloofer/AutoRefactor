@@ -2225,7 +2225,7 @@ void init(string callGraphPath, string dirPath){
 
 int main(int argc, char** argv){
 
-    /* string dotfile;
+    string dotfile;
     string dirname;
 
     // USAGE :  ./autorefactor OPTION CLONEDATA [ DOTFILE DIRPATH ]
@@ -2279,7 +2279,7 @@ int main(int argc, char** argv){
     }
     
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
-    refactor(ct); */ // 2. refactor the code according to the clone datas
+    refactor(ct); // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/
@@ -2350,7 +2350,7 @@ int main(int argc, char** argv){
     // T3 구현 테스트 용
     // TODO: 구현 완료 후 전체 실행 코드와 병합시키기
 
-    if (argc < 2) {
+    /* if (argc < 2) {
         cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
         return 1;
     }
@@ -2369,7 +2369,7 @@ int main(int argc, char** argv){
 
     clone_type ct = getCloneType();
     
-    refactor(T3);
+    refactor(T3); */
 
 
 

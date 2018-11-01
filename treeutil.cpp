@@ -191,6 +191,8 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
   string tok;
   int treeDepth = 0;
 
+  cout << ss.str();
+
   while(ss >> tok){
 
     if (tok.at(0) == '[') {
@@ -214,6 +216,7 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
       // if token is label, create node object and push to vector
       string tok1 = tok;
 
+      //cout << tok << " ";
       assert(tok.size() >= 2);
       if (tok.substr(0,2) == "<\"") {
         if (tok.substr(tok.size()-2) != "\">") {
