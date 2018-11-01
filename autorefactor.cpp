@@ -1476,14 +1476,25 @@ bool isPrmtv(string tname){
             tname == "float" || tname == "int" || tname == "long" || tname == "short" || tname == "void");
 }
 
+bool errCheck(bool condition, bool &nc, string errMessage){
+    // 에러 컨디션 체크 위한 함수.
+    // condition이 true면 true 반환, 받아서 함수 종료.
+    if(condition) {
+        cerr << errMessage << endl;
+        nc = false;
+        return true; // return true if error.
+    } else {
+        return false;
+    }
+}
+
 // TODO: rename function
 void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
 
     // T3 함수 인자 전달식 패치 알고리즘 정리(초안)
     // 제약조건
     // * 여기서 hi1/hi2 : int -> int 로 같은 타입이어야 한다.
-    // * 중복 fg를 뽑아낼 때 T1 알고리즘과 같이 영향받는 VarSet을 전달해야 한다.
-    //      - 사실상 T1인데 다른 부분이 있는 케이스(함수가 다른 경우)를 커버하는 것.
+    // * T2와 마찬가지로 두 함수의 타입이 같을 때 발동, 인자로 함수 전달시 호출 객체의 이름을 Caller 패치시 줘야함.
     // * 함수 인자로 전달하는 함수는 Local(같은 파일 내 정의된 것) 함수이어야 한다.
 
     // 구현 알고리즘 추가 (18.10.25 - 제네릭 타입 diff에 대한 패치)
@@ -1499,13 +1510,16 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
     // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi1과 hi2를 준다.
 
-    int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+    // T2 merge method와 병합된 알고리즘 
+    string newFtnName = f1.ftnName + f2.ftnName; // 새 함수 이름
+    
+    // 코드 포맷 맞추기용 whitespace string
+    int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
+    string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
 
-    // 구현 알고리즘
     // 1. 파일을 파싱하여 파일 내 함수이름과 해당 함수의 타입을 전부 모은다.
     vector<FtnData> fdVec;    
     getAllFtnData(fileName, fdVec);
-    //testPrintFdVec(fdVec);
 
     vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
     for(int i=0; i<fdVec.size(); i++){
@@ -1515,10 +1529,227 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         parseFtnType(c1.fileName, fdVec.at(i).ftnName, ft, ndVec);
 
         ftVec.push_back(ft);
-        /* cout << "========= Clone Ftn #1 =========" << endl;
-        testPrintFtnType(ft);
-        cout << endl; */
     }
+
+    // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
+    // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
+    vector<DiffInfo> diffInfo;
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 3, normalCompletion); // TODO: refactor this?
+
+    if(errCheck(diffLine.empty(), nc, "Diff line empty. T3 code patch aborted.")) return;
+    if(errCheck(diffInfo.size() != diffLine.size(), nc, "Diff Info parsing error. Merging method aborted.")) return;
+    // TODO: 일단 현재 구현은 1라인 Diff만, 추후 구현 확장할 것.
+    if(errCheck(diffLine.size() > 1, nc, "T3 can only patch one line diff yet.")) return;
+    if(errCheck(diffInfo.front().diffType != 2, nc, "T3 can only var decl line diff")) return;
+
+    // 2-1-a. rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
+    // 2-1-a. lhs의 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
+    // 함수의 전달 인자는 같아야함. 
+    // 호출 함수의 타입은 같아야함.
+    vector<NodeData> ndVec1;
+    vector<NodeData> ndVec2;
+    getFtnSubtree(c1.fileName, f1.ftnName, ndVec1);
+    getFtnSubtree(c1.fileName, f2.ftnName, ndVec2);
+    int lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
+    int lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);
+
+    vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine.front());
+    vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine.front());
+
+    // 2-2. diff line에서 rhs nodeVec 토큰 빼기
+    // Method invocation에 해당하는 노드 표기하기 (isFtnCall)
+    // 알고리즘 제약 조건 : rhs 토큰 수 같아야, 함수 이름만 다르고 인자 등 다 같은 케이스만 발동.
+    vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
+    vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
+    vector<NodeData> lhsNdVec1 = getLhsTnodeVec(diffNdVec1);
+    vector<NodeData> lhsNdVec2 = getLhsTnodeVec(diffNdVec2);
+    //printNodeVector(rhsNdVec1);
+    //printNodeVector(rhsNdVec2);
+
+    // TODO: 커버 케이스 확장하기
+    if(errCheck(rhsNdVec1.size() != rhsNdVec2.size() && lhsNdVec1.size() != lhsNdVec2.size(), 
+        nc, "T3 can only patch lhs or rhs code with same tok count")) return;
+
+    // rhs의 토큰들 비교
+    int diffTok; 
+    int diffTokCnt = 0;
+    for(int i=0; i<rhsNdVec1.size(); i++){
+        if(rhsNdVec1.at(i).label == rhsNdVec2.at(i).label) continue;
+        else {
+            diffTokCnt++;
+            if(rhsNdVec1.at(i).isFtnCall == rhsNdVec2.at(i).isFtnCall) diffTok = i;
+        }
+    }
+    if(errCheck(diffTokCnt > 1, nc, "T3 can only patch rhs code with one ftn call diff")) return;
+
+    // lhs의 토큰들 비교
+    // TODO: 일단 함수 패치 구현 후, 타입 패치 추가하기
+    /* int diffTypeTok = -1; // T3에서 제네릭 타입의 인자가 다른경우에 해당하는 타입 토큰
+    int diffTypeTokCnt = 0;
+    for(int i=0; i<lhsNdVec1.size(); i++){
+        if(lhsNdVec1.at(i).label == lhsNdVec2.at(i).label) continue;
+        else {
+            diffTypeTokCnt++;
+            if(lhsNdVec1.at(i).isGenericTypeArg == lhsNdVec2.at(i).isGenericTypeArg) diffTypeTok = i;
+        }
+    } */
+
+    /* if(diffTokCnt > 1 && diffTypeTokCnt > 1){
+        // TODO: 커버 케이스 확장하기
+        cerr << "T3 can only patch rhs code with one ftn call diff" << endl;
+        nc = false;
+        return;
+    } */
+
+    /* if(diffTypeTok == -1) patchtype = 0;
+    else patchtype = 1; */
+    // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+
+    // 3. 만약, 맞을 경우 rhs의 diff 토큰에 해당하는 diff 함수가 local 함수 call인지 찾는다.
+    bool f1fnd = false;
+    bool f2fnd = false;
+    int f1idx = 0;
+    int f2idx = 0;
+    for(int i=0; i<ftVec.size(); i++){
+        if(ftVec.at(i).ftnName == rhsNdVec1.at(diffTok).label) {
+            f1fnd = true;
+            f1idx = i;
+        }
+        if(ftVec.at(i).ftnName == rhsNdVec2.at(diffTok).label) {
+            f2fnd = true;
+            f2idx = i;
+        }
+    }
+    if(errCheck((!f1fnd || !f2fnd), nc, "T3 patching error : T3 can only patch local ftn call diffs.")) return;
+
+    // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
+    // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
+    bool diffFtnTypeEq = compFtype(ftVec.at(f1idx), ftVec.at(f2idx));
+    /* if(patchtype == 0 && !diffFtnTypeEq){
+        cerr << "T3 patching error : diff ftns must have same type." << endl;
+        nc = false;
+        return;
+    } */
+
+    // TODO: 여기서부터 패치 재개하기. patchType:0인 경우에는 원래대로 함수 포인터만 전달. 1인 경우에는 제네릭 타입과 함수 둘다 전달.
+
+    // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
+    // 위에서 함수 diff외 인자 및 다른 요소는 같은 것으로 판단하고 진행.
+    // 여기는 토큰 비교에서 이미 같은 것 확인하였으므로 인자 추출하는 것만 사용.
+
+    // 5.1. rhsNdVec1에서 앞 인덱스부터 시작해서 bopen('(') 인덱스 찾기
+    int bopenIdx = 0;
+    bool bopenFnd = false;
+    for(int i=0; i<rhsNdVec1.size(); i++){
+        if(rhsNdVec1.at(i).label == "(") {
+            bopenIdx = i;
+            bopenFnd = true;
+            break;
+        }
+    }
+    // 5.2. rhsNdVec1에서 앞 인덱스부터 시작해서 bclose(')') 인덱스 찾기
+    int bcloseIdx = 0;
+    bool bcloseFnd = false;
+    for(int i=rhsNdVec1.size()-1; i>=0; i--){
+        if(rhsNdVec1.at(i).label == ")") { 
+            bcloseIdx = i;
+            bcloseFnd = true;
+            break;    
+        }
+    }
+    if(errCheck((!bopenFnd || !bcloseFnd || (bopenIdx >= bcloseIdx)), 
+        nc, "T3 patching error : cannot find args in diff ftn")) return;
+
+    // 5.3. bopen과 bclose 안에 들어있는 인자 토큰 뽑아내고 비교하기
+    string argTok = "";
+    for(int i=bopenIdx+1; i<bcloseIdx; i++){
+        argTok += rhsNdVec1.at(i).label;
+    }
+
+    // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
+    getPrmtv2ObjMap(); // lambda로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
+
+    // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
+
+    // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
+    string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
+    string argFtnRObjtype = diffInfo.front().typeName;
+    if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+    
+    string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
+    // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+    string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
+    if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+    string passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+    // 새로운 인자로 전달하게 될 타입 이름.
+
+    int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
+    string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
+    string asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
+                    + " = lambda.apply(" + argTok + ");";
+    // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
+    // tempClone.push_back(asnStr);
+
+    // TODO: 여기에 diff 부분 분석해서 함수 빼오는 것 넣기?
+    // TODO: 함수 Caller 패치 정보용 함수 이름 변수 저장부 구현하기
+
+    // 함수 정의부 새로 선언
+    string ftnDecl = tabStr;
+    for(int i=0; i<f1.modifiers.size(); i++){
+        ftnDecl += (f1.modifiers[i] + " ");
+    }
+    ftnDecl += (f1.returnType + " " + newFtnName + "(");
+    for(int i=0; i<f1.ftnArgs.size(); i++){
+        ftnDecl += f1.ftnArgs[i].first;
+        ftnDecl += " ";
+        ftnDecl += f1.ftnArgs[i].second;
+        ftnDecl += ", ";
+    }
+    ftnDecl += passArg + ")"; // TODO: 이 부분 람다 함수 정의로 패치하기.
+    
+    // 함수 정의부 뒤 Exception throw 부분
+    if(f1.exceptions.empty() && f1.bopenLine == 0) ftnDecl += " {";
+    // else if(f1.exceptions.empty() && f1.bopenLine != 0) // skip b.c. bracket opener appear next line.
+    else if(f1.exceptions.size() == 1 && f1.bopenLine == 0) ftnDecl += " throws " + f1.exceptions.front() + " {";
+    else if(f1.exceptions.size() == 1 && f1.bopenLine != 0) ftnDecl += " throws " + f1.exceptions.front();
+    else if(f1.exceptions.size() > 1  && f1.bopenLine == 0) {
+        ftnDecl += " throws ";
+        for(int i=0; i<f1.exceptions.size()-1; i++){
+            ftnDecl += f1.exceptions.at(i) + ", ";
+        }
+        ftnDecl += f1.exceptions.back() + " {";
+    } else if(f1.exceptions.size() > 1  && f1.bopenLine != 0) {
+        ftnDecl += " throws ";
+        for(int i=0; i<f1.exceptions.size()-1; i++){
+            ftnDecl += f1.exceptions.at(i) + ", ";
+        }
+        ftnDecl += f1.exceptions.back();
+    }
+
+    // TODO: maybe need to refactor b.c. parenthesis not in first line?
+    tempClone.push_back(ftnDecl);
+
+    for(int i=1; i<c1.cloneSize; i++){
+        if (!intVecContains(diffLine, i)) {
+            // Diff 부분이 아닌 중복 부분
+            tempClone.push_back(c1.cloneSnippet[i]);
+        } else {
+
+            // TODO: T2에서는 분기 삽입부. T3에서 Lambda 함수 호출로 구분
+            // TODO: 다른 값이 : 1) Ftn Call 2) Var Type 이 세개 잘 구분해서 구현하기
+            // 일단 초기 버전으로는 1) Ftn Call이 다른 경우, 함수 인자 전달 방식으로 구현하기. 18.11.01
+            tempClone.push_back(asnStr);
+
+        }
+    }
+
+    testPrintCode(tempClone);
+
+
+
+    /* int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+
+    // 구현 알고리즘
 
     // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
     // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
@@ -1610,9 +1841,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     if(diffTypeTok == -1) patchtype = 0;
     else patchtype = 1;
     // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
-
-    //cout << lhsNdVec1.at(diffTypeTok).label << endl;
-    //cout << lhsNdVec2.at(diffTypeTok).label << endl;
 
     // 3. 만약, 맞을 경우 rhs의 diff 토큰에 해당하는 diff 함수가 local 함수 call인지 찾는다.
     // fdVec
@@ -1816,7 +2044,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         cout << "Patching clones ...\n";
         cout << "(This will be replaced with actual file write operations)\n";
         testPrintCode(patchCode);
-    }
+    } */
 
 }
 
@@ -2279,7 +2507,7 @@ int main(int argc, char** argv){
     }
     
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
-    refactor(ct); // 2. refactor the code according to the clone datas
+    refactor(T3); // 2. refactor the code according to the clone datas
 
     // test for callgraph patching
     // test with eprint/3/

@@ -53,6 +53,11 @@ public class HelloWorld {
     float x = lambda.apply(10);
     return x;
   }
+  public float ffgg2(java.util.function.Function<Integer, Float> lambda) {
+    System.out.println("hihihihihihi");
+    float x = lambda.apply(10);
+    return x;
+  }
   public float ff2() {
     float x = ffgg(a -> hi3(a));
     return x;
@@ -98,8 +103,8 @@ public class HelloWorld {
         long[] l = null;
         l = new long[] {123, 456, 789};
 
-        System.out.println("f() returns "+hw.f());
-        System.out.println("g() returns "+hw.g());
+        System.out.println("f() returns "+hw.ffgg2(a -> hw.hi3(a)));
+        System.out.println("g() returns "+hw.ffgg2(a -> hw.hi4(a)));
 
 
     }
