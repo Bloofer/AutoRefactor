@@ -1,0 +1,3 @@
+2
+/home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java 101 107
+/home/yang/Sources/AutoRefactor/toyex/t2/HelloWorld.java 108 114

@@ -95,6 +95,33 @@ public class HelloWorld {
     return A.size();
   }
 
+  // T3 Multi-line patch case
+  // 함수의 타입이 같고 다른 부분은 함수 호출 이름. hi3과 hi4 인경우.
+
+  public float foo() {
+    System.out.println("hihihihihihi");
+    float x = hi3(10);
+    float y = hi3(20);
+    float z = hi3(30);
+    return x + y + z;
+  }
+  public float goo() {
+    System.out.println("hihihihihihi");
+    float x = hi4(10);
+    float y = hi4(20);
+    float z = hi4(30);
+    return x + y + z;
+  }
+
+  ////// 바뀐 후
+  public float foogoo(java.util.function.Function<Integer, Float> lambda) { 
+    System.out.println("hihihihihihi");
+    float x = lambda.apply(10);
+    float y = lambda.apply(20);
+    float z = lambda.apply(30);
+    return x + y + z;
+  }
+
 
     public static void main(String[] args) {
 
@@ -103,9 +130,13 @@ public class HelloWorld {
         long[] l = null;
         l = new long[] {123, 456, 789};
 
-        System.out.println("f() returns "+hw.ffgg2(a -> hw.hi3(a)));
-        System.out.println("g() returns "+hw.ffgg2(a -> hw.hi4(a)));
+        //System.out.println("f() returns "+hw.ffgg2(a -> hw.hi3(a)));
+        //System.out.println("g() returns "+hw.ffgg2(a -> hw.hi4(a)));
 
+        //System.out.println("foo() returns "+hw.foo());
+        //System.out.println("goo() returns "+hw.goo());
+        System.out.println("foo() returns "+hw.foogoo(a -> hw.hi3(a)));
+        System.out.println("goo() returns "+hw.foogoo(a -> hw.hi4(a)));
 
     }
 
