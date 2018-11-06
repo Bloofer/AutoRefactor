@@ -38,13 +38,13 @@ public class HelloWorld {
   //// ----------------------- 좀 더 간단한 케이스
   ///// 바뀌기 전
   public float ff() {
-    System.out.println("hihihihihihi");
-    float x = hi3(10);
+    float x;
+    x = hi3(10); //System.out.println("hihihihihihi");
     return x;
   }
   public float gg() {
-    System.out.println("hihihihihihi");
-    float x = hi4(10);
+    float x;
+    x = hi4(10); //System.out.println("hihihihihihi");
     return x;
   }
   ////// 바뀐 후
@@ -122,7 +122,16 @@ public class HelloWorld {
     return x + y + z;
   }
 
-
+  public float ff3() {
+    System.out.println("hihihihihihi");
+    float x = hi3(10);
+    return x;
+  }
+  public float gg3() {
+    System.out.println("hihihihihihi");
+    float x = hi4(10);
+    return x;
+  }
     public static void main(String[] args) {
 
         HelloWorld hw = new HelloWorld();

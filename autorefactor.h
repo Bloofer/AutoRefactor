@@ -58,11 +58,12 @@ typedef struct{
 }ClassType;
 
 typedef struct{
-    int diffType; // others : 0, return stmt : 1, var decl : 2
+    int diffType; // others : 0, return stmt : 1, var decl : 2, assignment expr : 3
     int lineNum; // line num in the file
     bool isRef; // (if diff stmt is var decl,) check the decl type is reference
     string typeName; // (if diff stmt is var decl,) fetch the decl type name
     string varName; // (if diff stmt is var decl,) fetch the decl var name
+    string patchLine; // diff line to patch
 }DiffInfo;
 
 typedef enum {

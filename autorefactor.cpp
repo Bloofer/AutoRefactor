@@ -972,6 +972,10 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
                 dinfo.diffType = 2; // var decl
                 fnd = true;
             }
+            else if(ndVec.at(i).nodeId == 69){
+                dinfo.diffType = 3; // assignment expr
+                fnd = true;
+            }
         } else if(fnd && dinfo.diffType == 2 && i<ndVec.size()-1) {
             if(ndVec.at(i).nodeId == 123 && ndVec.at(i+1).nodeId == 62) {
                 dinfo.isRef = true; // var type is reference
@@ -1004,6 +1008,20 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
             dinfo.typeName = varType;
             dinfo.varName = varName;
         }
+    } else if(dinfo.diffType == 3){
+        // stmt가 assign expr인 경우, lhs의 변수 이름 가져오기
+        vector<string> tnodeVec = getTnodeLabelInNdVec(ndVec);
+        int assignIdx = 0;
+        bool asnFnd = false;
+        for(int i=0; i<tnodeVec.size(); i++){
+            if(!asnFnd && tnodeVec.at(i) == "=") { 
+                asnFnd = true;
+                break;
+            } else assignIdx++;
+        }
+
+        if(!asnFnd || assignIdx != 1) cerr << "Error on DiffInfo parsing. Cannot parse assign expr lhs." << endl;
+        dinfo.varName = tnodeVec.front();
     }
 
     return dinfo;
@@ -1648,7 +1666,9 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     if(errCheck(diffInfo.size() != diffLine.size(), nc, "Diff Info parsing error. Merging method aborted.")) return;
     // TODO: 일단 현재 구현은 1라인 Diff만, 추후 구현 확장할 것.
     //if(errCheck(diffLine.size() > 1, nc, "T3 can only patch one line diff yet.")) return;
-    if(errCheck(diffInfo.front().diffType != 2, nc, "T3 can only var decl line diff")) return;
+    bool allDiffAssign = true;
+    for(int i=0; i<diffInfo.size(); i++) allDiffAssign &= ((diffInfo.at(i).diffType == 2) || (diffInfo.at(i).diffType == 3));
+    if(errCheck(!allDiffAssign, nc, "T3 can only var decl && assign expr line diff")) return;
 
     // 2-1-a. rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
     // 2-1-a. lhs의 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs nodeVec 가져와서 비교하고 함수 호출부만 다른 경우인지 확인. 
@@ -1774,38 +1794,107 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             comp &= getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, ftVec, 
                                     diffLine.at(i), nc, argTokVec, f1idxVec, f2idxVec, f1nameVec, f2nameVec);
         }
+        f1idx = f1idxVec.front();
+        f2idx = f2idxVec.front();
         isMultiLinePatch = true;
-        for(int i=0; i<argTokVec.size(); i++) cout << argTokVec.at(i) << ' ';
-        for(int i=0; i<f1nameVec.size(); i++) cout << f1nameVec.at(i) << ' ';
-        for(int i=0; i<f2nameVec.size(); i++) cout << f2nameVec.at(i) << ' ';
         // TODO: 여기서 마저 함수 라인 보고 패치 재개하기
+        // TODO: f1vec, f2vec은 같은 함수 이름이어야. 가드 넣을것
+        // TODO: Local 함수 인 것들만 받아들이도록. 가드 넣을것
     }
 
-    if(isMultiLinePatch) return;
+    // diff 라인의 함수 타입 ftvec에서 가져오기
+    FtnType f1type, f2type;
+    for(int i=0; i<ftVec.size(); i++){
+        if(f1nameVec.front() == ftVec.at(i).ftnName){
+            f1type = ftVec.at(i);
+        } else if(f2nameVec.front() == ftVec.at(i).ftnName){
+            f2type = ftVec.at(i);
+        }
+    }
+    // f1type과 f2type은 같아야 한다.
 
-    // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
     getPrmtv2ObjMap(); // lambda로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
+    string passArg;
+    string asnStr;
+    vector<string> asnStrVec; // 패치 라인이 여러개일 때 사용
 
-    // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
+    if(!isMultiLinePatch) {
+        // 한줄 패치를 할 경우
 
-    // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
-    string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
-    string argFtnRObjtype = diffInfo.front().typeName;
-    if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
-    
-    string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
-    // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
-    string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
-    if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-    string passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
-    // 새로운 인자로 전달하게 될 타입 이름.
+        // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
+        // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
+        if(diffInfo.front().diffType == 2){
+            // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
+            string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
+            string argFtnRObjtype = diffInfo.front().typeName;
+            if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+            
+            string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
+            // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+            string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
+            if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+            // 새로운 인자로 전달하게 될 타입 이름.
 
-    int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
-    string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
-    string asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                    + " = lambda.apply(" + argTok + ");";
-    // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
-    // tempClone.push_back(asnStr);
+            int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
+            string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
+            asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
+                            + " = lambda.apply(" + argTok + ");";
+            // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
+        } else if(diffInfo.front().diffType == 3){
+            // diff line이 Assign Expr 일 경우
+            string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
+            string argFtnRObjtype = f1type.returnType;
+            if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+            
+            string argFtnAtype = f1type.ftnArgs.front().first;
+            // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+            string argFtnAObjtype = f1type.ftnArgs.front().first;
+            if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+            // 새로운 인자로 전달하게 될 타입 이름.
+
+            int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
+            string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
+            asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(" + argTok + ");";
+            // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
+        } 
+    } else {
+        // 여러라인 패치를 할 경우
+
+        for(int i=0; i<diffInfo.size(); i++){
+            // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
+            // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
+            if(diffInfo.at(i).diffType == 2){
+                // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
+                int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
+                string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
+                asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
+                                + " = lambda.apply(" + argTokVec.at(i) + ");";
+                asnStrVec.push_back(asnStr);
+                // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
+            } else if(diffInfo.at(i).diffType == 3){
+                // diff line이 Assign Expr 일 경우
+                int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
+                string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
+                asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(" + argTokVec.at(i) + ");";
+                asnStrVec.push_back(asnStr);
+                // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
+            } 
+        }
+
+        string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
+        string argFtnRObjtype = f1type.returnType;
+        if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+        
+        string argFtnAtype = f1type.ftnArgs.front().first;
+        // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+        string argFtnAObjtype = f1type.ftnArgs.front().first;
+        if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+        // 새로운 인자로 전달하게 될 타입 이름.
+
+    }
 
     // TODO: 여기에 diff 부분 분석해서 함수 빼오는 것 넣기?
     // TODO: 함수 Caller 패치 정보용 함수 이름 변수 저장부 구현하기
@@ -1846,6 +1935,8 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // TODO: maybe need to refactor b.c. parenthesis not in first line?
     tempClone.push_back(ftnDecl);
 
+    int asnCnt = 0;
+
     for(int i=1; i<c1.cloneSize; i++){
         if (!intVecContains(diffLine, i)) {
             // Diff 부분이 아닌 중복 부분
@@ -1855,7 +1946,11 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             // TODO: T2에서는 분기 삽입부. T3에서 Lambda 함수 호출로 구분
             // TODO: 다른 값이 : 1) Ftn Call 2) Var Type 이 세개 잘 구분해서 구현하기
             // 일단 초기 버전으로는 1) Ftn Call이 다른 경우, 함수 인자 전달 방식으로 구현하기. 18.11.01
-            tempClone.push_back(asnStr);
+            if(!isMultiLinePatch) tempClone.push_back(asnStr);
+            else { 
+                tempClone.push_back(asnStrVec.at(asnCnt));
+                asnCnt++;
+            }
 
         }
     }
@@ -2519,6 +2614,7 @@ void testPrintDiffInfo(DiffInfo &dInfo){
         else cout << "Prmtv type | ";
         cout << dInfo.typeName << " | " << dInfo.varName << endl;
     }
+    else if(dInfo.diffType == 1) cout << "Assignment Expr" << endl;
 
 }
 
