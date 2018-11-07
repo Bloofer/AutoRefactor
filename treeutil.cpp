@@ -852,7 +852,9 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       tmpNdVec.clear();
       tmpSs.str("");
     } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && exctParsed) {
-      cerr << "Error : something left to parse after exct? @ ftn : " << ftnName << endl; 
+      //cerr << "Error : something left to parse after exct? @ ftn : " << ftnName << endl; 
+      //cout << line << endl;
+      //cout << ftype.ftnName << " " << ftype.ftnArgs.front().first << endl;
       return;
     }
     

@@ -7,6 +7,8 @@ public class HelloWorld {
   public Vector<Float> hi2(int x) { return null; }
   public float hi3(int x) { return x * 2; }
   public float hi4(int x) { return x * 4; }
+  public float hi5(int x, int y) { return x + y; }
+  public float hi6(int x, int y) { return x * y; }
 
   ///// 바뀌기 전
   public int f() {
@@ -132,6 +134,61 @@ public class HelloWorld {
     float x = hi4(10);
     return x;
   }
+
+  // T3 Multi-line patch case - 인자 2개인 함수 패치
+  // 함수의 타입이 같고 다른 부분은 함수 호출 이름. hi3과 hi4 인경우.
+
+  public float foo2() {
+    System.out.println("hihihihihihi");
+    float x = hi5(1, 2);
+    float y = hi5(3, 4);
+    float z = hi5(5, 6);
+    return x + y + z;
+  }
+  public float goo2() {
+    System.out.println("hihihihihihi");
+    float x = hi6(1, 2);
+    float y = hi6(3, 4);
+    float z = hi6(5, 6);
+    return x + y + z;
+  }
+
+  ////// 바뀐 후
+  public float foo2goo2(java.util.function.BiFunction<Integer, Integer, Float> lambda) { 
+    System.out.println("hihihihihihi");
+    float x = lambda.apply(1, 2);
+    float y = lambda.apply(3, 4);
+    float z = lambda.apply(5, 6);
+    return x + y + z;
+  }
+
+  public float hi7() { return 10; }
+  public float hi8() { return 20; }
+
+  public float foo3() {
+    System.out.println("hihihihihihi");
+    float x = hi7();
+    float y = hi7();
+    float z = hi7();
+    return x + y + z;
+  }
+  public float goo3() {
+    System.out.println("hihihihihihi");
+    float x = hi8();
+    float y = hi8();
+    float z = hi8();
+    return x + y + z;
+  }
+
+  ////// 바뀐 후
+  public float foo3goo3(java.util.function.Function<Void, Float> lambda) { 
+    System.out.println("hihihihihihi");
+    float x = lambda.apply(null);
+    float y = lambda.apply(null);
+    float z = lambda.apply(null);
+    return x + y + z;
+  }
+
     public static void main(String[] args) {
 
         HelloWorld hw = new HelloWorld();
@@ -142,10 +199,10 @@ public class HelloWorld {
         //System.out.println("f() returns "+hw.ffgg2(a -> hw.hi3(a)));
         //System.out.println("g() returns "+hw.ffgg2(a -> hw.hi4(a)));
 
-        //System.out.println("foo() returns "+hw.foo());
-        //System.out.println("goo() returns "+hw.goo());
-        System.out.println("foo() returns "+hw.foogoo(a -> hw.hi3(a)));
-        System.out.println("goo() returns "+hw.foogoo(a -> hw.hi4(a)));
+        System.out.println("foo3() returns "+hw.foo3());
+        System.out.println("goo3() returns "+hw.goo3());
+        System.out.println("foo3() returns "+hw.foo3goo3((a) -> hw.hi7()));
+        System.out.println("goo3() returns "+hw.foo3goo3((a) -> hw.hi8()));
 
     }
 

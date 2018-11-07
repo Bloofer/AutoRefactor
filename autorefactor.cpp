@@ -1647,7 +1647,9 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     vector<FtnData> fdVec;    
     getAllFtnData(fileName, fdVec);
 
-    vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
+    // TODO: 확인하고 내용 문제 없으면 리팩토링하기.
+    // 함수 타입만 확인하고 파싱은 나중에 일치하는 것 있을 때.
+    /* vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
     for(int i=0; i<fdVec.size(); i++){
         FtnType ft;
         vector<NodeData> ndVec;
@@ -1655,7 +1657,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         parseFtnType(c1.fileName, fdVec.at(i).ftnName, ft, ndVec);
 
         ftVec.push_back(ft);
-    }
+    } */
 
     // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
     // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
@@ -1818,6 +1820,37 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     string asnStr;
     vector<string> asnStrVec; // 패치 라인이 여러개일 때 사용
 
+    string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
+    string argFtnRObjtype = f1type.returnType;
+    if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
+
+    string argFtnAtype, argFtnAObjtype; // lambda로 넘길 ftn의 첫번째 인자 타입
+    string argFtnAtype2, argFtnAObjtype2; // lambda로 넘길 ftn의 두번째 인자 타입
+
+    if(f1type.ftnArgs.size() == 0){
+        // 함수 인자가 0개인 경우 java.util.function.Function 사용
+        passArg = "java.util.function.Function<Void, " + argFtnRObjtype + "> lambda";
+    } else if(f1type.ftnArgs.size() == 1){
+        // 함수 인자가 1개인 경우 java.util.function.Function 사용
+        argFtnAtype = f1type.ftnArgs.front().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAObjtype = f1type.ftnArgs.front().first;
+        if(isPrmtv(argFtnAtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+    } else if(f1type.ftnArgs.size() == 2){
+        // 함수 인자가 2개인 경우 java.util.function.BiFunction 사용
+        argFtnAtype = f1type.ftnArgs.front().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAObjtype = f1type.ftnArgs.front().first;
+        if(isPrmtv(argFtnAtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
+        argFtnAtype2 = f1type.ftnArgs.back().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAObjtype2 = f1type.ftnArgs.back().first;
+        if(isPrmtv(argFtnAtype2)) argFtnAObjtype2 = prmtv2ObjMap[argFtnAtype];
+        passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + argFtnRObjtype + "> lambda";
+    } else {
+        cerr << "T3 cannot patch diff line ftn with more than 2 args" << endl;
+        nc = false;
+        return;
+    }
+
     if(!isMultiLinePatch) {
         // 한줄 패치를 할 경우
 
@@ -1825,38 +1858,26 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
         if(diffInfo.front().diffType == 2){
             // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
-            string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
-            string argFtnRObjtype = diffInfo.front().typeName;
-            if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
-            
-            string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
-            // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
-            string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
-            if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
-            // 새로운 인자로 전달하게 될 타입 이름.
-
             int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
             string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
-            asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                            + " = lambda.apply(" + argTok + ");";
+            if (f1type.ftnArgs.size() == 0) {
+                asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
+                                + " = lambda.apply(null);";
+            } else {
+                asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
+                                + " = lambda.apply(" + argTok + ");";
+            }
+            
             // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
         } else if(diffInfo.front().diffType == 3){
             // diff line이 Assign Expr 일 경우
-            string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
-            string argFtnRObjtype = f1type.returnType;
-            if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
-            
-            string argFtnAtype = f1type.ftnArgs.front().first;
-            // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
-            string argFtnAObjtype = f1type.ftnArgs.front().first;
-            if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
-            // 새로운 인자로 전달하게 될 타입 이름.
-
             int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
             string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
-            asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(" + argTok + ");";
+            if (f1type.ftnArgs.size() == 0) {
+                asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(null);";
+            } else {
+                asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(" + argTok + ");";
+            }
             // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
         } 
     } else {
@@ -1869,31 +1890,28 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                 // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
-                asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
-                                + " = lambda.apply(" + argTokVec.at(i) + ");";
+                if (f1type.ftnArgs.size() == 0) {
+                    asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
+                                    + " = lambda.apply(null);";
+                } else {
+                    asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
+                                    + " = lambda.apply(" + argTokVec.at(i) + ");";
+                }
                 asnStrVec.push_back(asnStr);
                 // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
             } else if(diffInfo.at(i).diffType == 3){
                 // diff line이 Assign Expr 일 경우
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
-                asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(" + argTokVec.at(i) + ");";
+                if (f1type.ftnArgs.size() == 0) {
+                    asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(null);";
+                } else {
+                    asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(" + argTokVec.at(i) + ");";
+                }
                 asnStrVec.push_back(asnStr);
                 // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
             } 
         }
-
-        string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
-        string argFtnRObjtype = f1type.returnType;
-        if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
-        
-        string argFtnAtype = f1type.ftnArgs.front().first;
-        // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
-        string argFtnAObjtype = f1type.ftnArgs.front().first;
-        if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
-        // 새로운 인자로 전달하게 될 타입 이름.
-
     }
 
     // TODO: 여기에 diff 부분 분석해서 함수 빼오는 것 넣기?
@@ -1957,8 +1975,19 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     testPrintCode(tempClone);
 
-    string ftnArg1 = "((a) -> " + ftVec.at(f1idx).ftnName + "(a))";
-    string ftnArg2 = "((a) -> " + ftVec.at(f2idx).ftnName + "(a))";
+    string ftnArg1;
+    string ftnArg2;
+
+    if(f1type.ftnArgs.size() == 0){
+        ftnArg1 = "((a) -> " + ftVec.at(f1idx).ftnName + "())";
+        ftnArg2 = "((a) -> " + ftVec.at(f2idx).ftnName + "())";
+    } else if(f1type.ftnArgs.size() == 1){
+        ftnArg1 = "((a) -> " + ftVec.at(f1idx).ftnName + "(a))";
+        ftnArg2 = "((a) -> " + ftVec.at(f2idx).ftnName + "(a))";
+    } else if(f1type.ftnArgs.size() == 2){
+        ftnArg1 = "((a, b) -> " + ftVec.at(f1idx).ftnName + "(a, b))";    
+        ftnArg2 = "((a, b) -> " + ftVec.at(f2idx).ftnName + "(a, b))";
+    }
 
     cout << endl;
     cout << " ===== Caller Ftn Args ===== " << endl;
@@ -2727,6 +2756,9 @@ int main(int argc, char** argv){
     
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
     refactor(T3); // 2. refactor the code according to the clone datas
+
+    //string fname = "/home/yang/Sources/os/jpcsp_java/DSPContext.java";
+    //printss(fname);
 
     // test for callgraph patching
     // test with eprint/3/
