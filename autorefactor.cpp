@@ -1020,8 +1020,10 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
             } else assignIdx++;
         }
 
-        if(!asnFnd || assignIdx != 1) cerr << "Error on DiffInfo parsing. Cannot parse assign expr lhs." << endl;
-        dinfo.varName = tnodeVec.front();
+        if(!asnFnd) cerr << "Error on DiffInfo parsing. Cannot parse assign expr lhs." << endl;
+        string varName = "";
+        for(int i=0; i<assignIdx; i++) varName += tnodeVec.at(i);
+        dinfo.varName = varName;
     }
 
     return dinfo;
@@ -1509,8 +1511,7 @@ bool errCheck(bool condition, bool &nc, string errMessage){
 // TODO: rename function
 // 이 함수는 함수 인자 전달하기 위한 토큰 확인용 함수
 bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vector<NodeData> &ndVec2, int lineOffset1, int lineOffset2,
-                    vector<FtnType> &ftVec, int diffLine, bool &normalCompletion, vector<string> &argTokVec, 
-                    vector<int> &f1idxVec, vector<int> &f2idxVec, vector<string> &f1nameVec, vector<string> &f2nameVec){
+                    vector<FtnData> &fdVec, int diffLine, bool &normalCompletion, vector<string> &argTokVec, vector<string> &f1nameVec, vector<string> &f2nameVec){
 
     vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine);
     vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine);
@@ -1548,28 +1549,35 @@ bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, ve
     int f2idx = 0;
     bool f1fnd = false;
     bool f2fnd = false;
-    for(int i=0; i<ftVec.size(); i++){
-        if(ftVec.at(i).ftnName == rhsNdVec1.at(diffTok).label) {
+
+    for(int i=0; i<fdVec.size(); i++){
+        if(fdVec.at(i).ftnName == rhsNdVec1.at(diffTok).label) {
             f1fnd = true;
             f1idx = i;
-            f1idxVec.push_back(f1idx);
             f1nameVec.push_back(rhsNdVec1.at(diffTok).label);
         }
-        if(ftVec.at(i).ftnName == rhsNdVec2.at(diffTok).label) {
+        if(fdVec.at(i).ftnName == rhsNdVec2.at(diffTok).label) {
             f2fnd = true;
             f2idx = i;
-            f2idxVec.push_back(f2idx);
             f2nameVec.push_back(rhsNdVec2.at(diffTok).label);
         }
     }
+
     if(!f1fnd || !f2fnd) {
         cout << "T3 patching error : T3 can only patch local ftn call diffs." << endl;
         return false;
     }
 
+    FtnType f1type, f2type;
+    vector<NodeData> fndVec1, fndVec2;
+    getFtnSubtree(c1.fileName, f1nameVec.front(), fndVec1);
+    parseFtnType(c1.fileName, f1nameVec.front(), f1type, fndVec1);
+    getFtnSubtree(c1.fileName, f2nameVec.front(), fndVec2);
+    parseFtnType(c1.fileName, f2nameVec.front(), f2type, fndVec2);
+
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
     // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
-    bool diffFtnTypeEq = compFtype(ftVec.at(f1idx), ftVec.at(f2idx));
+    bool diffFtnTypeEq = compFtype(f1type, f2type);
     if(!diffFtnTypeEq) {
         cout << "T3 patching error : diff ftns must have same type." << endl;
         return false;
@@ -1683,168 +1691,70 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     int lineOffset1 = getLineOffset(ndVec1, f1.ftnName, c1.from);
     int lineOffset2 = getLineOffset(ndVec2, f2.ftnName, c2.from);    
 
-    // TODO: 여기서부터 함수 블록 시작?
-
-    /*vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine.front());
-    vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine.front());
-
-    // 2-2. diff line에서 rhs nodeVec 토큰 빼기
-    // Method invocation에 해당하는 노드 표기하기 (isFtnCall)
-    // 알고리즘 제약 조건 : rhs 토큰 수 같아야, 함수 이름만 다르고 인자 등 다 같은 케이스만 발동.
-    vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
-    vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
-    vector<NodeData> lhsNdVec1 = getLhsTnodeVec(diffNdVec1);
-    vector<NodeData> lhsNdVec2 = getLhsTnodeVec(diffNdVec2);
-    //printNodeVector(rhsNdVec1);
-    //printNodeVector(rhsNdVec2);
-
-    // TODO: 커버 케이스 확장하기
-    if(errCheck(rhsNdVec1.size() != rhsNdVec2.size() && lhsNdVec1.size() != lhsNdVec2.size(), 
-        nc, "T3 can only patch lhs or rhs code with same tok count")) return;
-
-    // rhs의 토큰들 비교
-    int diffTok; 
-    int diffTokCnt = 0;
-    for(int i=0; i<rhsNdVec1.size(); i++){
-        if(rhsNdVec1.at(i).label == rhsNdVec2.at(i).label) continue;
-        else {
-            diffTokCnt++;
-            if(rhsNdVec1.at(i).isFtnCall == rhsNdVec2.at(i).isFtnCall) diffTok = i;
-        }
-    }
-    if(errCheck(diffTokCnt > 1, nc, "T3 can only patch rhs code with one ftn call diff")) return;
-
-    // 3. 만약, 맞을 경우 rhs의 diff 토큰에 해당하는 diff 함수가 local 함수 call인지 찾는다.
-    bool f1fnd = false;
-    bool f2fnd = false;
-    int f1idx = 0;
-    int f2idx = 0;
-    for(int i=0; i<ftVec.size(); i++){
-        if(ftVec.at(i).ftnName == rhsNdVec1.at(diffTok).label) {
-            f1fnd = true;
-            f1idx = i;
-        }
-        if(ftVec.at(i).ftnName == rhsNdVec2.at(diffTok).label) {
-            f2fnd = true;
-            f2idx = i;
-        }
-    }
-    if(errCheck((!f1fnd || !f2fnd), nc, "T3 patching error : T3 can only patch local ftn call diffs.")) return;
-
-    // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
-    // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
-    bool diffFtnTypeEq = compFtype(ftVec.at(f1idx), ftVec.at(f2idx));
-    if(errCheck(!diffFtnTypeEq, nc, "T3 patching error : diff ftns must have same type.")) return;
-
-    // 5. 해당 함수에 각각 전달되는 인자가 같은 지 확인한다.
-    // 위에서 함수 diff외 인자 및 다른 요소는 같은 것으로 판단하고 진행.
-    // 여기는 토큰 비교에서 이미 같은 것 확인하였으므로 인자 추출하는 것만 사용.
-
-    // 5.1. rhsNdVec1에서 앞 인덱스부터 시작해서 bopen('(') 인덱스 찾기
-    int bopenIdx = 0;
-    bool bopenFnd = false;
-    for(int i=0; i<rhsNdVec1.size(); i++){
-        if(rhsNdVec1.at(i).label == "(") {
-            bopenIdx = i;
-            bopenFnd = true;
-            break;
-        }
-    }
-    // 5.2. rhsNdVec1에서 앞 인덱스부터 시작해서 bclose(')') 인덱스 찾기
-    int bcloseIdx = 0;
-    bool bcloseFnd = false;
-    for(int i=rhsNdVec1.size()-1; i>=0; i--){
-        if(rhsNdVec1.at(i).label == ")") { 
-            bcloseIdx = i;
-            bcloseFnd = true;
-            break;    
-        }
-    }
-    if(errCheck((!bopenFnd || !bcloseFnd || (bopenIdx >= bcloseIdx)), 
-        nc, "T3 patching error : cannot find args in diff ftn")) return;
-
-    // 5.3. bopen과 bclose 안에 들어있는 인자 토큰 뽑아내고 비교하기
-    string argTok = "";
-    for(int i=bopenIdx+1; i<bcloseIdx; i++){
-        argTok += rhsNdVec1.at(i).label;
-    } */
-
-    // TODO: 여기까지 함수 블록 끝?
-
-
-    // TODO: 멀티라인 패치 구분
     bool isMultiLinePatch = false;
     string argTok;
     int f1idx, f2idx;
 
     vector<string> argTokVec;
-    vector<int> f1idxVec, f2idxVec;
     vector<string> f1nameVec, f2nameVec;
 
     if(diffLine.size() == 1){
         // 라인 하나 패치하는 경우
-        bool comp = getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, ftVec, 
-                                    diffLine.front(), nc, argTokVec, f1idxVec, f2idxVec, f1nameVec, f2nameVec);
+        bool comp = getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, 
+                                    diffLine.front(), nc, argTokVec, f1nameVec, f2nameVec);
         if(!comp) return;
         argTok = argTokVec.front();
-        f1idx = f1idxVec.front();
-        f2idx = f2idxVec.front();
     } else{
         // 여러 라인 패치하는 경우
         bool comp = true;
         for(int i=0; i<diffLine.size(); i++){
-            comp &= getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, ftVec, 
-                                    diffLine.at(i), nc, argTokVec, f1idxVec, f2idxVec, f1nameVec, f2nameVec);
+            comp &= getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, 
+                                    diffLine.at(i), nc, argTokVec, f1nameVec, f2nameVec);
         }
-        f1idx = f1idxVec.front();
-        f2idx = f2idxVec.front();
         isMultiLinePatch = true;
         // TODO: 여기서 마저 함수 라인 보고 패치 재개하기
         // TODO: f1vec, f2vec은 같은 함수 이름이어야. 가드 넣을것
         // TODO: Local 함수 인 것들만 받아들이도록. 가드 넣을것
     }
 
-    // diff 라인의 함수 타입 ftvec에서 가져오기
     FtnType f1type, f2type;
-    for(int i=0; i<ftVec.size(); i++){
-        if(f1nameVec.front() == ftVec.at(i).ftnName){
-            f1type = ftVec.at(i);
-        } else if(f2nameVec.front() == ftVec.at(i).ftnName){
-            f2type = ftVec.at(i);
-        }
-    }
+    vector<NodeData> f1ndVec, f2ndVec;
+    getFtnSubtree(c1.fileName, f1nameVec.front(), f1ndVec);
+    parseFtnType(c1.fileName, f1nameVec.front(), f1type, f1ndVec);
+    getFtnSubtree(c1.fileName, f2nameVec.front(), f2ndVec);
+    parseFtnType(c1.fileName, f2nameVec.front(), f2type, f2ndVec);
     // f1type과 f2type은 같아야 한다.
 
-    getPrmtv2ObjMap(); // lambda로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
+    getPrmtv2ObjMap(); // fptr로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
     string passArg;
     string asnStr;
     vector<string> asnStrVec; // 패치 라인이 여러개일 때 사용
 
-    string argFtnRtype = f1type.returnType; // lambda로 넘길 ftn의 리턴 타입
+    string argFtnRtype = f1type.returnType; // fptr로 넘길 ftn의 리턴 타입
     string argFtnRObjtype = f1type.returnType;
     if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
 
-    string argFtnAtype, argFtnAObjtype; // lambda로 넘길 ftn의 첫번째 인자 타입
-    string argFtnAtype2, argFtnAObjtype2; // lambda로 넘길 ftn의 두번째 인자 타입
+    string argFtnAtype, argFtnAObjtype; // fptr로 넘길 ftn의 첫번째 인자 타입
+    string argFtnAtype2, argFtnAObjtype2; // fptr로 넘길 ftn의 두번째 인자 타입
 
     if(f1type.ftnArgs.size() == 0){
         // 함수 인자가 0개인 경우 java.util.function.Function 사용
-        passArg = "java.util.function.Function<Void, " + argFtnRObjtype + "> lambda";
+        passArg = "java.util.function.Function<Void, " + argFtnRObjtype + "> fptr";
     } else if(f1type.ftnArgs.size() == 1){
         // 함수 인자가 1개인 경우 java.util.function.Function 사용
-        argFtnAtype = f1type.ftnArgs.front().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAtype = f1type.ftnArgs.front().first; // fptr로 넘길 ftn의 첫번째 인자 타입
         argFtnAObjtype = f1type.ftnArgs.front().first;
         if(isPrmtv(argFtnAtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> lambda";
+        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> fptr";
     } else if(f1type.ftnArgs.size() == 2){
         // 함수 인자가 2개인 경우 java.util.function.BiFunction 사용
-        argFtnAtype = f1type.ftnArgs.front().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAtype = f1type.ftnArgs.front().first; // fptr로 넘길 ftn의 첫번째 인자 타입
         argFtnAObjtype = f1type.ftnArgs.front().first;
         if(isPrmtv(argFtnAtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-        argFtnAtype2 = f1type.ftnArgs.back().first; // lambda로 넘길 ftn의 첫번째 인자 타입
+        argFtnAtype2 = f1type.ftnArgs.back().first; // fptr로 넘길 ftn의 첫번째 인자 타입
         argFtnAObjtype2 = f1type.ftnArgs.back().first;
         if(isPrmtv(argFtnAtype2)) argFtnAObjtype2 = prmtv2ObjMap[argFtnAtype];
-        passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + argFtnRObjtype + "> lambda";
+        passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + argFtnRObjtype + "> fptr";
     } else {
         cerr << "T3 cannot patch diff line ftn with more than 2 args" << endl;
         nc = false;
@@ -1862,10 +1772,10 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
             if (f1type.ftnArgs.size() == 0) {
                 asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                                + " = lambda.apply(null);";
+                                + " = fptr.apply(null);";
             } else {
                 asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                                + " = lambda.apply(" + argTok + ");";
+                                + " = fptr.apply(" + argTok + ");";
             }
             
             // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
@@ -1874,14 +1784,15 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
             string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
             if (f1type.ftnArgs.size() == 0) {
-                asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(null);";
+                asnStr = tabStr2 + diffInfo.front().varName + " = fptr.apply(null);";
             } else {
-                asnStr = tabStr2 + diffInfo.front().varName + " = lambda.apply(" + argTok + ");";
+                asnStr = tabStr2 + diffInfo.front().varName + " = fptr.apply(" + argTok + ");";
             }
             // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
         } 
     } else {
         // 여러라인 패치를 할 경우
+        asnStr = "";
 
         for(int i=0; i<diffInfo.size(); i++){
             // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
@@ -1892,21 +1803,22 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
                 if (f1type.ftnArgs.size() == 0) {
                     asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
-                                    + " = lambda.apply(null);";
+                                    + " = fptr.apply(null);";
                 } else {
                     asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
-                                    + " = lambda.apply(" + argTokVec.at(i) + ");";
+                                    + " = fptr.apply(" + argTokVec.at(i) + ");";
                 }
                 asnStrVec.push_back(asnStr);
                 // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
             } else if(diffInfo.at(i).diffType == 3){
                 // diff line이 Assign Expr 일 경우
+                cout << c1.cloneSnippet.at(diffLine.at(i)) << endl;
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
                 if (f1type.ftnArgs.size() == 0) {
-                    asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(null);";
+                    asnStr = tabStr2 + diffInfo.at(i).varName + " = fptr.apply(null);";
                 } else {
-                    asnStr = tabStr2 + diffInfo.at(i).varName + " = lambda.apply(" + argTokVec.at(i) + ");";
+                    asnStr = tabStr2 + diffInfo.at(i).varName + " = fptr.apply(" + argTokVec.at(i) + ");";
                 }
                 asnStrVec.push_back(asnStr);
                 // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기        
@@ -1958,6 +1870,10 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     for(int i=1; i<c1.cloneSize; i++){
         if (!intVecContains(diffLine, i)) {
             // Diff 부분이 아닌 중복 부분
+            if(i == f1.bopenLine && f1.bopenLine == 1) {
+                tempClone.push_back(tabStr+"{");
+                continue; // Bracket opener line 건너 뛰기
+            }
             tempClone.push_back(c1.cloneSnippet[i]);
         } else {
 
@@ -1979,20 +1895,25 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     string ftnArg2;
 
     if(f1type.ftnArgs.size() == 0){
-        ftnArg1 = "((a) -> " + ftVec.at(f1idx).ftnName + "())";
-        ftnArg2 = "((a) -> " + ftVec.at(f2idx).ftnName + "())";
+        ftnArg1 = "((a) -> " + f1type.ftnName + "())";
+        ftnArg2 = "((a) -> " + f2type.ftnName + "())";
     } else if(f1type.ftnArgs.size() == 1){
-        ftnArg1 = "((a) -> " + ftVec.at(f1idx).ftnName + "(a))";
-        ftnArg2 = "((a) -> " + ftVec.at(f2idx).ftnName + "(a))";
+        ftnArg1 = "((a) -> " + f1type.ftnName + "(a))";
+        ftnArg2 = "((a) -> " + f2type.ftnName + "(a))";
     } else if(f1type.ftnArgs.size() == 2){
-        ftnArg1 = "((a, b) -> " + ftVec.at(f1idx).ftnName + "(a, b))";    
-        ftnArg2 = "((a, b) -> " + ftVec.at(f2idx).ftnName + "(a, b))";
+        ftnArg1 = "((a, b) -> " + f1type.ftnName + "(a, b))";    
+        ftnArg2 = "((a, b) -> " + f2type.ftnName + "(a, b))";
     }
 
     cout << endl;
     cout << " ===== Caller Ftn Args ===== " << endl;
     cout << " C#1 : " << ftnArg1 << endl;
     cout << " C#2 : " << ftnArg2 << endl;
+
+    
+
+
+
 
     /* int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
 
@@ -2164,23 +2085,23 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     // 6. f,g를 합친 fg함수를 생성하고 중복 부분을 뽑아내고 함수의 인자는 람다 타입으로 준다.
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
-    getPrmtv2ObjMap(); // lambda로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
+    getPrmtv2ObjMap(); // fptr로 넘길 함수의 인자 타입을 Prmtv에서 Obj로 바꿀 맵 사용.
 
     // 6.1. 추출하는 함수의 타입을 판정하여 람다로 전달. 함수 선언부 구현
 
     // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
     string newFtnName = c1.ftnName + c2.ftnName;
-    string argFtnRtype = diffInfo.front().typeName; // lambda로 넘길 ftn의 리턴 타입
+    string argFtnRtype = diffInfo.front().typeName; // fptr로 넘길 ftn의 리턴 타입
     string argFtnRObjtype = diffInfo.front().typeName;
     if(isPrmtv(argFtnRtype)) argFtnRObjtype = prmtv2ObjMap[argFtnRtype];
     
     string argFtnAtype = ftVec.at(f1idx).ftnArgs.front().first; 
-    // lambda로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
+    // fptr로 넘길 ftn의 인자 타입(일단은 1개) TODO: 추후 여러개 확장 가능(BiFunction)
     string argFtnAObjtype = ftVec.at(f1idx).ftnArgs.front().first;
     if(isPrmtv(argFtnRtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
     string declStr = tabStr + "public " + argFtnRtype + " " + newFtnName
                     + "(java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype 
-                    + "> lambda) {";
+                    + "> fptr) {";
     tempClone.push_back(declStr);
 
     // 6.2. Var decl에서 함수 호출 diff부분 전까지 중복을 추출하고, 마지막에 계산된 값을 리턴하도록.
@@ -2191,7 +2112,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     tabIdx = c1.cloneSnippet.at(diffLine.front()-1).find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr2 = c1.cloneSnippet.at(diffLine.front()-1).substr(0, tabIdx);
     string asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                    + " = lambda.apply(" + argTok + ");";
+                    + " = fptr.apply(" + argTok + ");";
     tempClone.push_back(asnStr);
     tempClone.push_back(tabStr2 + "return " + diffInfo.front().varName);
     tempClone.push_back(tabStr + "}");
