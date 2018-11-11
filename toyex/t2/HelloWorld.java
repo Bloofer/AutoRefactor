@@ -215,26 +215,26 @@ public class HelloWorld {
   }
 
   // ePrint 실제 예제 타입 toyex TODO:
-  public int epf() {
+  public String epf() {
     System.out.println("hihihi");
     Vector<Integer> A = hi1(10);
     System.out.println("function f!");
-    return 10;
+    return "fffff";
   }
 
-  public int epg() {
+  public String epg() {
     System.out.println("hihihi");
     Vector<Float> A = hi2(10);
-    System.out.println("function g!");
-    return 10;
-  }  
+    System.out.println("function f!");
+    return "ggggg";
+  }
 
   ////// 바뀐 후
-  public <T> int epfepg(java.util.function.Function<Integer, Vector<T>> fptr, String s) { // extract 된 것
+  public <T> String epfepg(java.util.function.Function<Integer, Vector<T>> fptr, String s) { // extract 된 것
     System.out.println("hihihi");
     Vector<T> A = fptr.apply(10);
-    System.out.println(s);
-    return 10;
+    System.out.println("function f!");
+    return s;
   }
 
     public static void main(String[] args) {
