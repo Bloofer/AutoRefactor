@@ -1148,7 +1148,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
     return diffLine;
 }
 
-void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
+void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
     
     string newFtnName = f1.ftnName + f2.ftnName;
     // 1. substitute caller function name with new one.
@@ -1508,8 +1508,8 @@ bool errCheck(bool condition, bool &nc, string errMessage){
 
 // TODO: rename function
 // 이 함수는 함수 인자 전달하기 위한 토큰 확인용 함수
-bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vector<NodeData> &ndVec2, int lineOffset1, int lineOffset2,
-                    vector<FtnData> &fdVec, int diffLine, bool &normalCompletion, vector<string> &argTokVec, vector<string> &f1nameVec, vector<string> &f2nameVec){
+bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vector<NodeData> &ndVec2, int lineOffset1, int lineOffset2, vector<FtnData> &fdVec, string &retGenWrap, string &retGenT1, string &retGenT2,
+                        int diffLine, DiffInfo &diffInfo, bool &normalCompletion, vector<string> &argTokVec, vector<string> &f1nameVec, vector<string> &f2nameVec, int &patchtype) {
 
     vector<NodeData> diffNdVec1 = findNodeByLineWithNt(ndVec1, c1.from - lineOffset1 + diffLine);
     vector<NodeData> diffNdVec2 = findNodeByLineWithNt(ndVec2, c2.from - lineOffset2 + diffLine);
@@ -1542,6 +1542,26 @@ bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, ve
         return false;
     }
 
+    // lhs의 토큰들 비교
+    int diffTypeTok = -1; // T3에서 제네릭 타입의 인자가 다른경우에 해당하는 타입 토큰
+    int diffTypeTokCnt = 0;
+    for(int i=0; i<lhsNdVec1.size(); i++){
+        if(lhsNdVec1.at(i).label == lhsNdVec2.at(i).label) continue;
+        else {
+            diffTypeTokCnt++;
+            if(lhsNdVec1.at(i).isGenericTypeArg == lhsNdVec2.at(i).isGenericTypeArg) diffTypeTok = i;
+        }
+    }
+
+    if(diffTokCnt > 1 && diffTypeTokCnt > 1){
+        cerr << "T3 type patch can only patch rhs code with one ftn call diff" << endl;
+        return false;
+    }
+
+    if(diffTypeTok == -1) patchtype = 0;
+    else patchtype = 1;
+    // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+
     // 3. 만약, 맞을 경우 rhs의 diff 토큰에 해당하는 diff 함수가 local 함수 call인지 찾는다.
     int f1idx = 0;
     int f2idx = 0;
@@ -1573,10 +1593,56 @@ bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, ve
     getFtnSubtree(c1.fileName, f2nameVec.front(), fndVec2);
     parseFtnType(c1.fileName, f2nameVec.front(), f2type, fndVec2);
 
+    if(patchtype == 1){
+        // 타입 패치시, Generic 타입의 인자가 rhs의 인자와 같은지 확인
+        string ltype1 = ""; // lhs의 변수 타입
+        string ltype2 = "";
+        string genType1 = ""; // 타입 패치의 인자로 넘길 제네릭 타입
+        string genType2 = "";
+        bool bopen1 = false;
+        bool bopen2 = false;
+
+        for(int i=0; i<lhsNdVec1.size()-1; i++) {
+            ltype1 += lhsNdVec1.at(i).label;
+            ltype2 += lhsNdVec2.at(i).label;
+
+            if(bopen1 && i<lhsNdVec1.size()-2) genType1 += lhsNdVec1.at(i).label;
+            if(!bopen1 && lhsNdVec1.at(i).label == "<") bopen1 = true;
+            if(bopen2 && i<lhsNdVec2.size()-2) genType2 += lhsNdVec2.at(i).label;
+            if(!bopen2 && lhsNdVec2.at(i).label == "<") bopen2 = true;
+        }
+
+        if(lhsNdVec1.front().label != lhsNdVec2.front().label) {
+            cout << "T3 patching error : lhs wrapper must be same type!" << endl;
+            return false;
+        }
+        diffInfo.genWrapper = lhsNdVec1.front().label; // 제네릭 타입의 래퍼
+
+        cout << f1type.returnType << endl;
+        cout << f2type.returnType << endl;
+
+        cout << ltype1 << " " << genType1 << endl;
+        cout << ltype2 << " " << genType2 <<  endl;
+
+        cout << diffInfo.genWrapper << endl;
+
+        if (f1type.returnType != ltype1 || f2type.returnType != ltype2) {
+            cout << "T3 patching error : T3 can only patch ftn which has same lhs type" << endl;
+            return false;
+        }
+
+        retGenWrap = diffInfo.genWrapper;
+        retGenT1 = genType1;
+        retGenT2 = genType2;
+
+        diffInfo.genType1 = genType1;
+        diffInfo.genType2 = genType2;
+
+    }
+
     // 4. 두 diff part에 해당하는 함수 (ex. hi1,hi2)가 타입이 같은 지 확인한다.
-    // TODO: 수정필요 : compFtype() 함수는 어노테이션과 예외까지 비교, T3 알고리즘은 in/out 타입만 보기 때문에 문제 있을 수도.
     bool diffFtnTypeEq = compFtype(f1type, f2type);
-    if(!diffFtnTypeEq) {
+    if(!diffFtnTypeEq && patchtype == 0) { // T3에서 type patch시 함수의 타입은 다를 수 있다.
         cout << "T3 patching error : diff ftns must have same type." << endl;
         return false;
     }
@@ -1620,8 +1686,7 @@ bool getDiffTok2Patch(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, ve
     return true;
 }
 
-// TODO: rename function
-void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
+void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
 
     // T3 함수 인자 전달식 패치 알고리즘 정리(초안)
     // 제약조건
@@ -1644,6 +1709,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     // T2 merge method와 병합된 알고리즘 
     string newFtnName = f1.ftnName + f2.ftnName; // 새 함수 이름
+    int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
     
     // 코드 포맷 맞추기용 whitespace string
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
@@ -1681,19 +1747,20 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     vector<string> argTokVec;
     vector<string> f1nameVec, f2nameVec;
+    string retGenWrap, retGenT1, retGenT2; // T3 타입 패치시, 인자로 넘기는 반환 타입 랩퍼와 제네릭 타입
 
     if(diffLine.size() == 1){
         // 라인 하나 패치하는 경우
-        bool comp = getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, 
-                                    diffLine.front(), nc, argTokVec, f1nameVec, f2nameVec);
+        bool comp = getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, retGenWrap, retGenT1, retGenT2,
+                                    diffLine.front(), diffInfo.front(), nc, argTokVec, f1nameVec, f2nameVec, patchtype);
         if(!comp) return;
         argTok = argTokVec.front();
     } else{
         // 여러 라인 패치하는 경우
         bool comp = true;
         for(int i=0; i<diffLine.size(); i++){
-            comp &= getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, 
-                                    diffLine.at(i), nc, argTokVec, f1nameVec, f2nameVec);
+            comp &= getDiffTok2Patch(c1, c2, ndVec1, ndVec2, lineOffset1, lineOffset2, fdVec, retGenWrap, retGenT1, retGenT2,
+                                    diffLine.at(i), diffInfo.at(i), nc, argTokVec, f1nameVec, f2nameVec, patchtype);
         }
         isMultiLinePatch = true;
         // TODO: 여기서 마저 함수 라인 보고 패치 재개하기
@@ -1723,13 +1790,21 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     if(f1type.ftnArgs.size() == 0){
         // 함수 인자가 0개인 경우 java.util.function.Function 사용
-        passArg = "java.util.function.Function<Void, " + argFtnRObjtype + "> fptr";
+        if(patchtype == 1) {
+            passArg = "java.util.function.Function<Void, " + retGenWrap + "<T>> fptr";
+        } else {
+            passArg = "java.util.function.Function<Void, " + argFtnRObjtype + "> fptr";
+        }    
     } else if(f1type.ftnArgs.size() == 1){
         // 함수 인자가 1개인 경우 java.util.function.Function 사용
         argFtnAtype = f1type.ftnArgs.front().first; // fptr로 넘길 ftn의 첫번째 인자 타입
         argFtnAObjtype = f1type.ftnArgs.front().first;
         if(isPrmtv(argFtnAtype)) argFtnAObjtype = prmtv2ObjMap[argFtnAtype];
-        passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> fptr";
+        if(patchtype == 1) {
+            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + retGenWrap + "<T>> fptr";
+        } else {
+            passArg = "java.util.function.Function<" + argFtnAObjtype + ", " + argFtnRObjtype + "> fptr";
+        }
     } else if(f1type.ftnArgs.size() == 2){
         // 함수 인자가 2개인 경우 java.util.function.BiFunction 사용
         argFtnAtype = f1type.ftnArgs.front().first; // fptr로 넘길 ftn의 첫번째 인자 타입
@@ -1738,7 +1813,12 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         argFtnAtype2 = f1type.ftnArgs.back().first; // fptr로 넘길 ftn의 첫번째 인자 타입
         argFtnAObjtype2 = f1type.ftnArgs.back().first;
         if(isPrmtv(argFtnAtype2)) argFtnAObjtype2 = prmtv2ObjMap[argFtnAtype];
-        passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + argFtnRObjtype + "> fptr";
+        if(patchtype == 1) {
+            passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + retGenWrap + "<T>> fptr";
+        } else {
+            passArg = "java.util.function.BiFunction<" + argFtnAObjtype + ", " + argFtnAObjtype2 + ", " + argFtnRObjtype + "> fptr";
+        }
+        
     } else {
         cerr << "T3 cannot patch diff line ftn with more than 2 args" << endl;
         nc = false;
@@ -1754,7 +1834,13 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
             int tabIdx2 = c1.cloneSnippet.at(diffLine.front()).find_first_not_of(" \t\r\n");
             string tabStr2 = c1.cloneSnippet.at(diffLine.front()).substr(0, tabIdx2);
-            if (f1type.ftnArgs.size() == 0) {
+            if (patchtype == 1 && f1type.ftnArgs.size() == 0) {
+                asnStr = tabStr2 + diffInfo.front().genWrapper + "<T> " + diffInfo.front().varName
+                                + " = fptr.apply(null);";
+            } else if (patchtype == 1 && f1type.ftnArgs.size() > 0) {
+                asnStr = tabStr2 + diffInfo.front().genWrapper + "<T> " + diffInfo.front().varName
+                                + " = fptr.apply(" + argTok + ");";
+            }else if (f1type.ftnArgs.size() == 0) {
                 asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
                                 + " = fptr.apply(null);";
             } else {
@@ -1785,7 +1871,13 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                 // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
-                if (f1type.ftnArgs.size() == 0) {
+                if (patchtype == 1 && f1type.ftnArgs.size() == 0) {
+                    asnStr = tabStr2 + diffInfo.at(i).genWrapper + "<T> "  + diffInfo.at(i).varName
+                                    + " = fptr.apply(null);";
+                } else if (patchtype == 1 && f1type.ftnArgs.size() > 0) {
+                    asnStr = tabStr2 + diffInfo.at(i).genWrapper + "<T> " + diffInfo.at(i).varName
+                                    + " = fptr.apply(" + argTokVec.at(i) + ");";
+                } else if (f1type.ftnArgs.size() == 0) {
                     asnStr = tabStr2 + diffInfo.at(i).typeName + " " + diffInfo.at(i).varName
                                     + " = fptr.apply(null);";
                 } else {
@@ -1814,6 +1906,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     for(int i=0; i<f1.modifiers.size(); i++){
         ftnDecl += (f1.modifiers[i] + " ");
     }
+    if(patchtype == 1) ftnDecl += "<T> ";
     ftnDecl += (f1.returnType + " " + newFtnName + "(");
     for(int i=0; i<f1.ftnArgs.size(); i++){
         ftnDecl += f1.ftnArgs[i].first;
@@ -2303,7 +2396,7 @@ void patchT2(){
         return;
     }
 
-    mergeMethod(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
+    mergeMethodBranching(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
 
     if(nc){
         reducedLoc = beforePatchLoc - afterPatchLoc;
@@ -2348,7 +2441,7 @@ void patchT3(){
         return;
     }
 
-    t3CodePatch(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
+    mergeMethodArgPass(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
 
     if(nc){
         reducedLoc = beforePatchLoc - afterPatchLoc;
@@ -2624,8 +2717,6 @@ int main(int argc, char** argv){
     }
      
     string opt = string(argv[1]);
-
-    cout << opt << endl;
 
     if (opt.find("-a") != string::npos) runOption = ALL;
     else if (opt.find("-r") != string::npos) runOption = RST;

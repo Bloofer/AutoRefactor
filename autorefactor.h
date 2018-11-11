@@ -62,6 +62,8 @@ typedef struct{
     int lineNum; // line num in the file
     bool isRef; // (if diff stmt is var decl,) check the decl type is reference
     string typeName; // (if diff stmt is var decl,) fetch the decl type name
+    string genWrapper; // (if diff stmt is var decl, lhs has generic type,) fetch the generic wrapper type
+    string genType1, genType2; // (if diff stmt is var decl, lhs has generic type,) fetch the generic type
     string varName; // (if diff stmt is var decl,) fetch the decl var name
     string patchLine; // diff line to patch
 }DiffInfo;
@@ -160,7 +162,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
 // functions for type 2 (merge method)
 void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vector<Caller> &callerVec);
 vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vector<DiffInfo> &diffInfo, int patchType, bool &normalCompletion);
-void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
+void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion);
 
 // clone patch main functions (for T1/T2/T3)
 void patchT1();
