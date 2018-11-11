@@ -1887,10 +1887,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     cout << " C#1 : " << ftnArg1 << endl;
     cout << " C#2 : " << ftnArg2 << endl;
 
-    
-
-
-
 
     /* int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
 
@@ -2629,9 +2625,11 @@ int main(int argc, char** argv){
      
     string opt = string(argv[1]);
 
-    if (opt == "-a") runOption = ALL;
-    else if (opt == "-r") runOption = RST;
-    else if (opt == "-c") runOption = COD;
+    cout << opt << endl;
+
+    if (opt.find("-a") != string::npos) runOption = ALL;
+    else if (opt.find("-r") != string::npos) runOption = RST;
+    else if (opt.find("-c") != string::npos) runOption = COD;
     else {
         cerr << "Error : run option not proper." << endl;
         return 1;
@@ -2653,7 +2651,8 @@ int main(int argc, char** argv){
     }
     
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
-    refactor(T3); // 2. refactor the code according to the clone datas
+    if(opt.find("3") != string::npos) refactor(T3); // 옵션을 -a|r|c|3 줄 경우 T3 Invoke
+    else refactor(ct); // 2. refactor the code according to the clone datas
 
     //string fname = "/home/yang/Sources/os/jpcsp_java/DSPContext.java";
     //printss(fname);
@@ -2719,36 +2718,6 @@ int main(int argc, char** argv){
     //printNodeVector(ndVec);
 
     patchCaller(callerVec.front(), fname, "parseparse2", 1); */
-
-    // ==================================
-    // ========== TEST FOR T3 ===========
-    // ==================================
-
-    // T3 구현 테스트 용
-    // TODO: 구현 완료 후 전체 실행 코드와 병합시키기
-
-    /* if (argc < 2) {
-        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE" << endl;
-        return 1;
-    }
-
-    string opt = string(argv[1]);
-
-    if (opt == "-a") runOption = ALL;
-    else if (opt == "-r") runOption = RST;
-    else if (opt == "-c") runOption = COD;
-    else {
-        cerr << "Error : run option not proper." << endl;
-        return 1;
-    }
-
-    readFile(argv[2]); // 1. reads input data
-
-    clone_type ct = getCloneType();
-    
-    refactor(T3); */
-
-
 
     return 0;
 
