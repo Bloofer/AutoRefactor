@@ -3,8 +3,12 @@ import java.util.Vector;
 public class HelloWorld {
 
 
-  public Vector<Integer> hi1(int x) { return null; }
-  public Vector<Float> hi2(int x) { return null; }
+  public Vector<Integer> hi1(int x) { 
+    System.out.println("Integer!");
+    return null; }
+  public Vector<Float> hi2(int x) { 
+    System.out.println("Float!");
+    return null; }
   public float hi3(int x) { return x * 2; }
   public float hi4(int x) { return x * 4; }
   public float hi5(int x, int y) { return x + y; }
@@ -189,6 +193,50 @@ public class HelloWorld {
     return x + y + z;
   }
 
+  // T3 타입 패치
+
+  ///// 바뀌기 전 TODO:
+  public int fo() {
+    System.out.println("hihihi");
+    Vector<Integer> A = hi1(10);
+    return 10;
+  }
+  public int go() {
+    System.out.println("hihihi");
+    Vector<Float> A = hi2(10);
+    return 10;
+  }
+
+  ////// 바뀐 후
+  public <T> int fogo(java.util.function.Function<Integer, Vector<T>> lambda) { // extract 된 것
+    System.out.println("hihihi");
+    Vector<T> A = lambda.apply(10);
+    return 10;
+  }
+
+  // ePrint 실제 예제 타입 toyex TODO:
+  public int epf() {
+    System.out.println("hihihi");
+    Vector<Integer> A = hi1(10);
+    System.out.println("function f!");
+    return 10;
+  }
+
+  public int epg() {
+    System.out.println("hihihi");
+    Vector<Float> A = hi2(10);
+    System.out.println("function g!");
+    return 10;
+  }  
+
+  ////// 바뀐 후
+  public <T> int epfepg(java.util.function.Function<Integer, Vector<T>> fptr, String s) { // extract 된 것
+    System.out.println("hihihi");
+    Vector<T> A = fptr.apply(10);
+    System.out.println(s);
+    return 10;
+  }
+
     public static void main(String[] args) {
 
         HelloWorld hw = new HelloWorld();
@@ -196,13 +244,11 @@ public class HelloWorld {
         long[] l = null;
         l = new long[] {123, 456, 789};
 
-        //System.out.println("f() returns "+hw.ffgg2(a -> hw.hi3(a)));
-        //System.out.println("g() returns "+hw.ffgg2(a -> hw.hi4(a)));
+        System.out.println("epf() returns "+hw.epf());
+        System.out.println("epg() returns "+hw.epg());
+        System.out.println("epf() returns "+hw.epfepg((a) -> hw.hi1(a), "function f!"));
+        System.out.println("epg() returns "+hw.epfepg((a) -> hw.hi2(a), "function g!"));
 
-        System.out.println("foo3() returns "+hw.foo3());
-        System.out.println("goo3() returns "+hw.goo3());
-        System.out.println("foo3() returns "+hw.foo3goo3((a) -> hw.hi7()));
-        System.out.println("goo3() returns "+hw.foo3goo3((a) -> hw.hi8()));
 
     }
 

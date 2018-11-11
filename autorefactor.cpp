@@ -1083,9 +1083,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
                 tokSame2.push_back(j);
             }
         }
-        //cout << tokSame1.size() << tokSame2.size() << endl;
         
-        // TODO: diffInfo 채우기.
         // testNdVec : 해당 라인에 해당하는 노드 벡터
         // testNdVec 이용해서 stmt 구분 먼저 
         // 23-145 : var_decl, 162 : return, 나머지 : others
@@ -1157,7 +1155,7 @@ void mergeMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
 
     vector<DiffInfo> diffInfo;
 
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 2, normalCompletion); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 2, normalCompletion);
     if(diffLine.empty()) {
         cerr << "Diff line empty. Merging method aborted." << endl;
         nc = false;
@@ -1655,27 +1653,13 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
     vector<FtnData> fdVec;    
     getAllFtnData(fileName, fdVec);
 
-    // TODO: 확인하고 내용 문제 없으면 리팩토링하기.
-    // 함수 타입만 확인하고 파싱은 나중에 일치하는 것 있을 때.
-    /* vector<FtnType> ftVec; // 파일 내 함수의 모든 타입 파싱
-    for(int i=0; i<fdVec.size(); i++){
-        FtnType ft;
-        vector<NodeData> ndVec;
-        getFtnSubtree(c1.fileName, fdVec.at(i).ftnName, ndVec);
-        parseFtnType(c1.fileName, fdVec.at(i).ftnName, ft, ndVec);
-
-        ftVec.push_back(ft);
-    } */
-
     // 2-a. diff되는 부분이 var decl의 rhs에 있는 assignment인지 확인한다. (일단 1개짜리만)
     // 2-b. diff되는 부분이 var decl인데 변수의 이름이 같고 제네릭 타입 인자만 다르면서 rhs의 assignment만 다른지 확인.
     vector<DiffInfo> diffInfo;
-    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 3, normalCompletion); // TODO: refactor this?
+    vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 3, normalCompletion);
 
     if(errCheck(diffLine.empty(), nc, "Diff line empty. T3 code patch aborted.")) return;
-    if(errCheck(diffInfo.size() != diffLine.size(), nc, "Diff Info parsing error. Merging method aborted.")) return;
-    // TODO: 일단 현재 구현은 1라인 Diff만, 추후 구현 확장할 것.
-    //if(errCheck(diffLine.size() > 1, nc, "T3 can only patch one line diff yet.")) return;
+    if(errCheck(diffInfo.size() != diffLine.size(), nc, "Diff Info parsing error. Merging method aborted.")) return;    //if(errCheck(diffLine.size() > 1, nc, "T3 can only patch one line diff yet.")) return;
     bool allDiffAssign = true;
     for(int i=0; i<diffInfo.size(); i++) allDiffAssign &= ((diffInfo.at(i).diffType == 2) || (diffInfo.at(i).diffType == 3));
     if(errCheck(!allDiffAssign, nc, "T3 can only var decl && assign expr line diff")) return;
@@ -1812,7 +1796,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
                 // 해당 람다 함수 적용 라인 가지고 있다가 추후, 패치시 넣기
             } else if(diffInfo.at(i).diffType == 3){
                 // diff line이 Assign Expr 일 경우
-                cout << c1.cloneSnippet.at(diffLine.at(i)) << endl;
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
                 string tabStr2 = c1.cloneSnippet.at(diffLine.at(i)).substr(0, tabIdx2);
                 if (f1type.ftnArgs.size() == 0) {
@@ -1826,9 +1809,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         }
     }
 
-    // TODO: 여기에 diff 부분 분석해서 함수 빼오는 것 넣기?
-    // TODO: 함수 Caller 패치 정보용 함수 이름 변수 저장부 구현하기
-
     // 함수 정의부 새로 선언
     string ftnDecl = tabStr;
     for(int i=0; i<f1.modifiers.size(); i++){
@@ -1841,7 +1821,7 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         ftnDecl += f1.ftnArgs[i].second;
         ftnDecl += ", ";
     }
-    ftnDecl += passArg + ")"; // TODO: 이 부분 람다 함수 정의로 패치하기.
+    ftnDecl += passArg + ")"; 
     
     // 함수 정의부 뒤 Exception throw 부분
     if(f1.exceptions.empty() && f1.bopenLine == 0) ftnDecl += " {";
@@ -1861,8 +1841,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
         }
         ftnDecl += f1.exceptions.back();
     }
-
-    // TODO: maybe need to refactor b.c. parenthesis not in first line?
     tempClone.push_back(ftnDecl);
 
     int asnCnt = 0;
@@ -1876,7 +1854,6 @@ void t3CodePatch(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, Ftn
             }
             tempClone.push_back(c1.cloneSnippet[i]);
         } else {
-
             // TODO: T2에서는 분기 삽입부. T3에서 Lambda 함수 호출로 구분
             // TODO: 다른 값이 : 1) Ftn Call 2) Var Type 이 세개 잘 구분해서 구현하기
             // 일단 초기 버전으로는 1) Ftn Call이 다른 경우, 함수 인자 전달 방식으로 구현하기. 18.11.01
