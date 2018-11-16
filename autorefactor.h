@@ -68,6 +68,18 @@ typedef struct{
     string patchLine; // diff line to patch
 }DiffInfo;
 
+typedef struct{
+  int patchtype; // 0 : rhs diff만 있는 경우. 1 : lhs diff가 있는데 제네릭 타입인 경우.
+  int diffNum; // 다른 diff token의 갯수(= Arg Pass 방식에서 전달할 인자 갯수)
+  vector<string> diffTokVec; // Diff 토큰 벡터 
+  string retGenWrap; // patchtype = 1인 경우 사용. 반환 제네릭스의 Wrapper 타입 ex. List<T>에서 List에 해당
+  vector<string> argTokVec; // patchtype = 1인 경우 사용. 함수 패치시 실제 코드에 들어있는 인자 토큰 리스트.
+  vector<int> tokTypes; // 1: ftn 이름, 2: string constant 값
+  vector<string> tokTypeVec; // 인자 전달 토큰 벡터
+  string argType; // 인자 전달할 토큰의 타입
+  string argVal; // 인자 전달할 토큰의 값
+}PatchData;
+
 typedef enum {
     T1,
     T2,
