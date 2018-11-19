@@ -1,6 +1,11 @@
 # out file
 *.out
 
+# object file
+*.o
+
 # directories
 casestudy
 test
+exp
+.vscode

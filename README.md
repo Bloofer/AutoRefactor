@@ -1,6 +1,6 @@
 ### AutoRefactor  
 
-AutoRefactor is a tool which uses Deckard as a front-end to automatically refactor duplicates found in Java projects.
+AutoRefactor is a tool which uses Deckard as a front-end to automatically refactor duplicates found in JAVA projects.
 
 Please read the instructions below to use.
 
@@ -24,7 +24,7 @@ $ make all
 
 ##### 1.3 Run AutoRefactor
 ```
-$ ./autorecfactor OPTIONS ALARMFILE [DOTFILE]
+$ ./autorefactor OPTIONS ALARMFILE [DOTFILE]
 // OPTIONS : -a/-r/-c[3]
 // ALARMFILE : Please read 1.2 and follow the format strictly
 // DOTFILE : .dot file (CallGraph) from your project repository
