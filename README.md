@@ -6,14 +6,14 @@ Please read the instructions below to use.
 
 #### 1. Usage
 
-##### 1.1 To Build
+##### 1.1 Build
 
 ```
 $ git clone https://github.com/Bloofer/AutoRefactor.git
 $ make all
 ```
 
-##### 1.2 To Prepare (Use Deckard Alarms)
+##### 1.2 Detect Clone (Use Deckard Alarms)
 
 **Alarm file format**
 ```
@@ -22,17 +22,13 @@ $ make all
 [Filename (including absolute path) of clone#2 from to]  
 ```
 
-##### 1.3 To Patch
+##### 1.3 Run AutoRefactor
 ```
 $ ./autorecfactor OPTIONS ALARMFILE [DOTFILE]
 // OPTIONS : -a/-r/-c[3]
 // ALARMFILE : Please read 1.2 and follow the format strictly
 // DOTFILE : .dot file (CallGraph) from your project repository
 ```
-
-##### 1.4 Restrictions
-* TODO
-* TODO
 
 #### 2. Big Picture
 
@@ -69,4 +65,7 @@ TODO
 TODO
 
 #### 4. Trouble Shooting
+TODO
+
+#### 5. Restrictions
 TODO
