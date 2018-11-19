@@ -1,0 +1,9 @@
+    public String f() {
+
+        System.out.println("hi");
+
+        Vector<Integer> A = k("get vector");
+        
+        return "f";
+
+    }

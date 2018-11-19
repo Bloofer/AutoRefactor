@@ -1,0 +1,3 @@
+2
+/home/yang/Sources/AutoRefactor/demo/t3/4/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsTcoAction.java 117 154
+/home/yang/Sources/AutoRefactor/demo/t3/4/ePrint.com.fasoo.drmone.fsp.statistics.struts.FutMotionStatsTcoAction.java 156 193

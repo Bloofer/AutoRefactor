@@ -1,0 +1,13 @@
+    public int f() {
+
+        int a;
+        
+        a = 0;
+
+        hw_printer()
+
+        System.out.println("Method f()!");
+
+        return a;
+
+    }

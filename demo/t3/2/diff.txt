@@ -1,0 +1,68 @@
+1c1
+< 	public void put_h264_chroma_mc8_c(int[] dst_base/*align 8*/, int dst_offset, 
+---
+> 	public void avg_h264_chroma_mc8_c(int[] dst_base/*align 8*/, int dst_offset, 
+21c21
+< 	            dst_base[dst_offset + 0] = OP_PUT(dst_base[dst_offset + 0], (A*src_base[src_offset + 0] + B*src_base[src_offset + 1] + C*src_base[src_offset + stride+0] + D*src_base[src_offset + stride+1]));
+---
+> 	        	dst_base[dst_offset + 0] = OP_AVG(dst_base[dst_offset + 0], (A*src_base[src_offset + 0] + B*src_base[src_offset + 1] + C*src_base[src_offset + stride+0] + D*src_base[src_offset + stride+1]));
+23c23
+< 	            dst_base[dst_offset + 1] = OP_PUT(dst_base[dst_offset + 1], (A*src_base[src_offset + 1] + B*src_base[src_offset + 2] + C*src_base[src_offset + stride+1] + D*src_base[src_offset + stride+2]));
+---
+> 	        	dst_base[dst_offset + 1] = OP_AVG(dst_base[dst_offset + 1], (A*src_base[src_offset + 1] + B*src_base[src_offset + 2] + C*src_base[src_offset + stride+1] + D*src_base[src_offset + stride+2]));
+25c25
+< 	            dst_base[dst_offset + 2] = OP_PUT(dst_base[dst_offset + 2], (A*src_base[src_offset + 2] + B*src_base[src_offset + 3] + C*src_base[src_offset + stride+2] + D*src_base[src_offset + stride+3]));
+---
+> 	        	dst_base[dst_offset + 2] = OP_AVG(dst_base[dst_offset + 2], (A*src_base[src_offset + 2] + B*src_base[src_offset + 3] + C*src_base[src_offset + stride+2] + D*src_base[src_offset + stride+3]));
+27c27
+< 	            dst_base[dst_offset + 3] = OP_PUT(dst_base[dst_offset + 3], (A*src_base[src_offset + 3] + B*src_base[src_offset + 4] + C*src_base[src_offset + stride+3] + D*src_base[src_offset + stride+4]));
+---
+> 	        	dst_base[dst_offset + 3] = OP_AVG(dst_base[dst_offset + 3], (A*src_base[src_offset + 3] + B*src_base[src_offset + 4] + C*src_base[src_offset + stride+3] + D*src_base[src_offset + stride+4]));
+29c29
+< 	            dst_base[dst_offset + 4] = OP_PUT(dst_base[dst_offset + 4], (A*src_base[src_offset + 4] + B*src_base[src_offset + 5] + C*src_base[src_offset + stride+4] + D*src_base[src_offset + stride+5]));
+---
+> 	        	dst_base[dst_offset + 4] = OP_AVG(dst_base[dst_offset + 4], (A*src_base[src_offset + 4] + B*src_base[src_offset + 5] + C*src_base[src_offset + stride+4] + D*src_base[src_offset + stride+5]));
+31c31
+< 	            dst_base[dst_offset + 5] = OP_PUT(dst_base[dst_offset + 5], (A*src_base[src_offset + 5] + B*src_base[src_offset + 6] + C*src_base[src_offset + stride+5] + D*src_base[src_offset + stride+6]));
+---
+> 	        	dst_base[dst_offset + 5] = OP_AVG(dst_base[dst_offset + 5], (A*src_base[src_offset + 5] + B*src_base[src_offset + 6] + C*src_base[src_offset + stride+5] + D*src_base[src_offset + stride+6]));
+33c33
+< 	            dst_base[dst_offset + 6] = OP_PUT(dst_base[dst_offset + 6], (A*src_base[src_offset + 6] + B*src_base[src_offset + 7] + C*src_base[src_offset + stride+6] + D*src_base[src_offset + stride+7]));
+---
+> 	        	dst_base[dst_offset + 6] = OP_AVG(dst_base[dst_offset + 6], (A*src_base[src_offset + 6] + B*src_base[src_offset + 7] + C*src_base[src_offset + stride+6] + D*src_base[src_offset + stride+7]));
+35c35
+< 	            dst_base[dst_offset + 7] = OP_PUT(dst_base[dst_offset + 7], (A*src_base[src_offset + 7] + B*src_base[src_offset + 8] + C*src_base[src_offset + stride+7] + D*src_base[src_offset + stride+8]));
+---
+> 	        	dst_base[dst_offset + 7] = OP_AVG(dst_base[dst_offset + 7], (A*src_base[src_offset + 7] + B*src_base[src_offset + 8] + C*src_base[src_offset + stride+7] + D*src_base[src_offset + stride+8]));
+51c51
+< 	            dst_base[dst_offset + 0] = OP_PUT(dst_base[dst_offset + 0], (A*src_base[src_offset + 0] + E*src_base[src_offset + step+0]));
+---
+> 	        	dst_base[dst_offset + 0] = OP_AVG(dst_base[dst_offset + 0], (A*src_base[src_offset + 0] + E*src_base[src_offset + step+0]));
+53c53
+< 	            dst_base[dst_offset + 1] = OP_PUT(dst_base[dst_offset + 1], (A*src_base[src_offset + 1] + E*src_base[src_offset + step+1]));
+---
+> 	        	dst_base[dst_offset + 1] = OP_AVG(dst_base[dst_offset + 1], (A*src_base[src_offset + 1] + E*src_base[src_offset + step+1]));
+55c55
+< 	            dst_base[dst_offset + 2] = OP_PUT(dst_base[dst_offset + 2], (A*src_base[src_offset + 2] + E*src_base[src_offset + step+2]));
+---
+> 	        	dst_base[dst_offset + 2] = OP_AVG(dst_base[dst_offset + 2], (A*src_base[src_offset + 2] + E*src_base[src_offset + step+2]));
+57c57
+< 	            dst_base[dst_offset + 3] = OP_PUT(dst_base[dst_offset + 3], (A*src_base[src_offset + 3] + E*src_base[src_offset + step+3]));
+---
+> 	        	dst_base[dst_offset + 3] = OP_AVG(dst_base[dst_offset + 3], (A*src_base[src_offset + 3] + E*src_base[src_offset + step+3]));
+59c59
+< 	            dst_base[dst_offset + 4] = OP_PUT(dst_base[dst_offset + 4], (A*src_base[src_offset + 4] + E*src_base[src_offset + step+4]));
+---
+> 	        	dst_base[dst_offset + 4] = OP_AVG(dst_base[dst_offset + 4], (A*src_base[src_offset + 4] + E*src_base[src_offset + step+4]));
+61c61
+< 	            dst_base[dst_offset + 5] = OP_PUT(dst_base[dst_offset + 5], (A*src_base[src_offset + 5] + E*src_base[src_offset + step+5]));
+---
+> 	        	dst_base[dst_offset + 5] = OP_AVG(dst_base[dst_offset + 5], (A*src_base[src_offset + 5] + E*src_base[src_offset + step+5]));
+63c63
+< 	            dst_base[dst_offset + 6] = OP_PUT(dst_base[dst_offset + 6], (A*src_base[src_offset + 6] + E*src_base[src_offset + step+6]));
+---
+> 	        	dst_base[dst_offset + 6] = OP_AVG(dst_base[dst_offset + 6], (A*src_base[src_offset + 6] + E*src_base[src_offset + step+6]));
+65c65
+< 	            dst_base[dst_offset + 7] = OP_PUT(dst_base[dst_offset + 7], (A*src_base[src_offset + 7] + E*src_base[src_offset + step+7]));
+---
+> 	        	dst_base[dst_offset + 7] = OP_AVG(dst_base[dst_offset + 7], (A*src_base[src_offset + 7] + E*src_base[src_offset + step+7]));

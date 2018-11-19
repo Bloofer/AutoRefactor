@@ -1,0 +1,9 @@
+    public String g() {
+
+        System.out.println("hi");
+
+        Vector<Float> A = h("get vector");
+
+        return "g";
+
+    }

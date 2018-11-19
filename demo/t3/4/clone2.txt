@@ -1,6 +1,6 @@
-	public ActionForward statsDate( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+	public ActionForward statsDeptToner( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
 	{
-		FutMotionStatsPPForm statsForm = (FutMotionStatsPPForm)form;
+		FutMotionStatsTcoForm statsForm = (FutMotionStatsTcoForm)form;
 		checkDayCondition( statsForm );
 		
 		/*
@@ -24,14 +24,15 @@
 		searchMap.put( "startDay", statsForm.getStartDay() );
 		searchMap.put( "endDay", statsForm.getEndDay() );
 		searchMap.put( "sortItem", statsForm.getSortItem() );
-		// searchMap.put( "limitRowSize", Integer.parseInt( statsForm.getLimitRowSize() ) );
-
+		searchMap.put( "limitRowSize", Integer.parseInt( statsForm.getLimitRowSize() ) );
+		TimeZone timezone = (TimeZone) httpSession.getAttribute( "USERTIMEZONE" );
+		searchMap.put( "timeZoneId", timezone.getID() );
+		
 		TcoStats statsTcoApi = new TcoStats();
-		List<TcoStatsDate> statsList = statsTcoApi.selectDateDay( searchMap );
+		List<TcoStatsDept> statsList = statsTcoApi.selectTopDept( searchMap );
 
 		request.setAttribute( "ACTIONFORM", form );
 		request.setAttribute( "STATSLIST", statsList );
 
-		return mapping.findForward( "fsp.motionstats.pp.date" );
+		return mapping.findForward( "fsp.motionstats.tco.dept" );
 	}
-

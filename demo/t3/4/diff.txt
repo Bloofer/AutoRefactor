@@ -1,0 +1,12 @@
+1c1
+< 	public ActionForward statsUserToner( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+---
+> 	public ActionForward statsDeptToner( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+32c32
+< 		List<TcoStatsUser> statsList = statsTcoApi.selectTopUser( searchMap );
+---
+> 		List<TcoStatsDept> statsList = statsTcoApi.selectTopDept( searchMap );
+37c37
+< 		return mapping.findForward( "fsp.motionstats.tco.user" );
+---
+> 		return mapping.findForward( "fsp.motionstats.tco.dept" );

@@ -1,0 +1,15 @@
+    public float g() {
+    
+        for(int i=0; i<10; i++){
+            
+            int log = i;
+            
+            System.out.println(i);
+
+            hw_printer();
+
+        }
+
+        return 1;
+    
+    }

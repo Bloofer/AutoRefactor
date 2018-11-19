@@ -1,0 +1,12 @@
+1c1
+<     public int f() {
+---
+>     public int g() {
+5c5
+<         a = 0;
+---
+>         a = 1;
+9c9
+<         System.out.println("Method f()!");
+---
+>         System.out.println("Method g()!");

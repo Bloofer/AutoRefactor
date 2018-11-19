@@ -1620,10 +1620,6 @@ bool getDiffTokData(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vect
             }
             diffInfo.genWrapper = lhsNdVec1.front().label; // 제네릭 타입의 래퍼
 
-            testPrintFtnType(f1type);
-            testPrintFtnType(f2type);
-            cout << ltype1 << " " << ltype2 << endl;
-
             if (f1type.returnType != ltype1 || f2type.returnType != ltype2) {
                 cout << "T3 patching error : T3 can only patch ftn which has same lhs type" << endl;
                 return false;

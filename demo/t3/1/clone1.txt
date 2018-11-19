@@ -1,0 +1,9 @@
+    public float f() {
+
+        float x;
+
+        x = k(10);
+
+        return x;
+
+    }

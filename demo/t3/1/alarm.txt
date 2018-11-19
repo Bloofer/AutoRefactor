@@ -1,0 +1,3 @@
+2
+/home/yang/Sources/AutoRefactor/demo/t3/1/HelloWorld.java 8 16
+/home/yang/Sources/AutoRefactor/demo/t3/1/HelloWorld.java 18 26

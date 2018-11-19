@@ -1,0 +1,8 @@
+1c1
+<     public float f() {
+---
+>     public float g() {
+5c5
+<         x = k(10);
+---
+>         x = h(10);

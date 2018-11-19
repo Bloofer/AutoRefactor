@@ -1,0 +1,12 @@
+1c1
+<     public String f() {
+---
+>     public String g() {
+5,7c5,7
+<         Vector<Integer> A = k("get vector");
+<         
+<         return "f";
+---
+>         Vector<Float> A = h("get vector");
+> 
+>         return "g";

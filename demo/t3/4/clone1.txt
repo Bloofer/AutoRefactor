@@ -1,9 +1,7 @@
-	public ActionForward statsMonth( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
+	public ActionForward statsUserToner( ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response ) throws Exception
 	{
-		FutMotionStatsUsageForm statsForm = (FutMotionStatsUsageForm)form;
-		HttpSession httpSession = request.getSession();
-		
-		checkDayCondition( statsForm, (TimeZone) httpSession.getAttribute( "USERTIMEZONE" ) );
+		FutMotionStatsTcoForm statsForm = (FutMotionStatsTcoForm)form;
+		checkDayCondition( statsForm );
 		
 		/*
 		 * hyhan - 2012.03.16
@@ -11,6 +9,7 @@
 		 */
 		statsForm.setLimitRowSize( ServerConfig.getInstance().getValue( "STATIATICS_TOP_COUNT", "10" ) );
 		
+		HttpSession httpSession = request.getSession();
 		String userID = (String)httpSession.getAttribute( "USERID" );
 		String dsdCode = statsForm.getDsdCode();
 
@@ -25,15 +24,15 @@
 		searchMap.put( "startDay", statsForm.getStartDay() );
 		searchMap.put( "endDay", statsForm.getEndDay() );
 		searchMap.put( "sortItem", statsForm.getSortItem() );
-		// searchMap.put( "limitRowSize", Integer.parseInt( statsForm.getLimitRowSize() ) );
+		searchMap.put( "limitRowSize", Integer.parseInt( statsForm.getLimitRowSize() ) );
 		TimeZone timezone = (TimeZone) httpSession.getAttribute( "USERTIMEZONE" );
 		searchMap.put( "timeZoneId", timezone.getID() );
 		
-		UsageStats statsUsageApi = new UsageStats();
-		List<UsageStatsDate> statsList = statsUsageApi.selectDateMonth( searchMap );
+		TcoStats statsTcoApi = new TcoStats();
+		List<TcoStatsUser> statsList = statsTcoApi.selectTopUser( searchMap );
 
 		request.setAttribute( "ACTIONFORM", form );
 		request.setAttribute( "STATSLIST", statsList );
 
-		return mapping.findForward( "fsp.motionstats.usage.month" );
+		return mapping.findForward( "fsp.motionstats.tco.user" );
 	}
