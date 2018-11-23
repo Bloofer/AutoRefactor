@@ -426,8 +426,8 @@ string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
     bool found = false;
     int idx;
     for(int i=0; i<fdVec.size(); i++){
-        if(frt >= fdVec.at(i).from && frt <= fdVec.at(i).to && 
-           bck >= fdVec.at(i).from && bck <= fdVec.at(i).to) {
+        if(frt >= fdVec.at(i).from - 2 && frt <= fdVec.at(i).to && 
+           bck >= fdVec.at(i).from && bck <= fdVec.at(i).to + 2) {
                found = true;
                idx = i;   
             }
@@ -451,6 +451,10 @@ clone_type getCloneType(){
     CloneData c1, c2;
     c1 = cloneDatas.front();
     c2 = cloneDatas.back();
+    c1.from = cloneDatas.front().from;
+    c1.to = cloneDatas.front().to;
+    c2.from = cloneDatas.back().from;
+    c2.to = cloneDatas.back().to;
 
     vector<FtnData> fdVec;
     getAllFtnData(c1.fileName, fdVec);

@@ -40,9 +40,6 @@ TODO
 **All directories/files in AutoRefactor**
 ```
 └── AutoRefactor
-    ├── ptgen               // for parse tree gen
-    │   └── java
-    ├── treeTra     
     ├── include             // headers
     ├── dtl                 // diff library
     ├── demo                // demos you can try

@@ -237,6 +237,18 @@ public class HelloWorld {
     return s;
   }
 
+  public String epfg(int flag) {
+    System.out.println("hihihi");
+    Vector A = null;
+    if(flag == 0) A = hi1(10);
+    else if(flag == 1) A = hi2(10);
+
+    System.out.println("function f!");
+    if(flag == 0) return "fffff";
+    else if(flag == 1) return "ggggg";
+    return "";
+  }
+
     public static void main(String[] args) {
 
         HelloWorld hw = new HelloWorld();
@@ -245,9 +257,14 @@ public class HelloWorld {
         l = new long[] {123, 456, 789};
 
         System.out.println("epf() returns "+hw.epf());
+        System.out.println();
         System.out.println("epg() returns "+hw.epg());
-        System.out.println("epf() returns "+hw.epfepg((a) -> hw.hi1(a), "function f!"));
-        System.out.println("epg() returns "+hw.epfepg((a) -> hw.hi2(a), "function g!"));
+        System.out.println();
+        System.out.println("epfg() returns "+hw.epfg(0));
+        System.out.println();
+        System.out.println("epfg() returns "+hw.epfg(1));
+        //System.out.println("epf() returns "+hw.epfepg((a) -> hw.hi1(a), "function f!"));
+        //System.out.println("epg() returns "+hw.epfepg((a) -> hw.hi2(a), "function g!"));
 
 
     }
