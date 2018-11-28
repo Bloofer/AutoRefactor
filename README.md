@@ -30,12 +30,7 @@ $ ./autorefactor OPTIONS ALARMFILE [DOTFILE]
 // DOTFILE : .dot file (CallGraph) from your project repository
 ```
 
-#### 2. Big Picture
-
-##### 2.1 Auto-Refactoring for Function Unit Code Clones
-TODO
-
-##### 2.2 Implementation
+##### 2. AutoRefactor Structure
 
 **All directories/files in AutoRefactor**
 ```
@@ -53,16 +48,14 @@ TODO
     └── Makefile
 ```
 
-#### 3. In Practice
+#### 3. Restrictions
 
-##### 3.1 Demos
-TODO
+* Two input clones should be formatted before process.
+  * Use JAVA code formatter before running autorefactor
 
-##### 3.2 Real World Examples
-TODO
+* Use output from [Deckard](https://github.com/skyhover/Deckard) code clone detector
+  * Config : MIN_TOKENS='200', STRIDE='50', SIMILARITY='1'(To find 100% structural clone)
 
 #### 4. Trouble Shooting
-TODO
 
-#### 5. Restrictions
-TODO
+Please [email](mailto:jmyang@ropas.snu.ac.kr) me or write a github issue if you have any trouble using AutoRefactor.

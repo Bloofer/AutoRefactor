@@ -138,7 +138,7 @@ int beforePatchLoc;
 int afterPatchLoc;
 int reducedLoc;
 
-void readFile(char* alarmFile); // reads input file including clone data
+bool readFile(char* alarmFile); // reads input file including clone data
 int getFileLine(string fileName);
 void refactor(clone_type ct); // the main function for auto refactor
 

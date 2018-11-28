@@ -62,7 +62,7 @@ void fetchClassHierarchy(string &file_name, string &classname, string &parent_cl
 
   ParseTree* pt = parseFile(file_name.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << file_name << endl;
+    cout << "Error: no parse tree created for file: " << file_name << endl;
     return;
   }
 
@@ -77,7 +77,7 @@ void fetchClassName(string &file_name, string &classname){
 
   ParseTree* pt = parseFile(file_name.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << file_name << endl;
+    cout << "Error: no parse tree created for file: " << file_name << endl;
     return;
   }
 
@@ -127,7 +127,7 @@ vector<NodeData> findNodeByLineWithNt(vector<NodeData> &ndVec, int lineNum){
     }
   }
 
-  if (!bckFnd) cerr << "Error during analysis on parse tree data" << endl;
+  if (!bckFnd) cout << "Error during analysis on parse tree data" << endl;
 
   outVec = getSubNdVec(ndVec, frt + 1, bck);
   return outVec;
@@ -241,7 +241,7 @@ void ss2NodeVec(vector<NodeData> &ndVec, stringstream &ss){
       ndVec.push_back(tNode);
     } else {
       // return error if found exceptional token in ss
-      cerr << "Error : Abnormal token found in the string stream. Token : " << tok << endl;
+      cout << "Error : Abnormal token found in the string stream. Token : " << tok << endl;
       return;
     }
 
@@ -318,7 +318,7 @@ pair<int, int> findBiggestBracketInScope(vector<NodeData> &ndVec, pair<int, int>
 
   pair<int, int> emptyPair = pair<int, int>(0, 0);
   if(stmtScopeVec.empty()) {
-    cerr << "Error : Couldn't get bracket in the scope. Abort method extraction." << endl;
+    cout << "Error : Couldn't get bracket in the scope. Abort method extraction." << endl;
     normalCompletion = false;
     return emptyPair;
   }
@@ -357,7 +357,7 @@ vector< pair<string, string> > findPrmtvLocVarInScope(vector<NodeData> &ndVec, p
 
   //cout << "scope : " << ndVec.at(abv-1).lineNo << " " << ndVec.at(blw).lineNo << endl;
 
-  if(!abvChk) cerr << "Error : Se Loc var scope not found." << endl;
+  if(!abvChk) cout << "Error : Se Loc var scope not found." << endl;
 
   vector< pair<string, string> > locVars;
   bool tfound = false;
@@ -423,7 +423,7 @@ vector< pair<string, string> > findLocVarInScope(vector<NodeData> &ndVec, pair<i
 
   //cout << "scope : " << ndVec.at(abv-1).lineNo << " " << ndVec.at(blw).lineNo << endl;
 
-  if(!abvChk || !blwChk) cerr << "Error : Loc var scope not found." << endl;
+  if(!abvChk || !blwChk) cout << "Error : Loc var scope not found." << endl;
 
   vector< pair<string, string> > locVars;
   bool tfound = false;
@@ -576,7 +576,7 @@ vector<NodeData> getLhsTnodeVec(vector<NodeData> &ndVec) {
 
 vector<string> getTnodeLabelInNdVec(vector<NodeData> &ndVec){
 
-  if(ndVec.empty()) cerr << "Error : ndVec is empty. tnode cannot be found. @ getTnodeLabelInNdVec()" << endl;
+  if(ndVec.empty()) cout << "Error : ndVec is empty. tnode cannot be found. @ getTnodeLabelInNdVec()" << endl;
   vector<string> tnodeLabelVec;
   for(int i=0; i<ndVec.size(); i++){
     if (ndVec.at(i).isTerminal) tnodeLabelVec.push_back(ndVec.at(i).label);
@@ -616,7 +616,7 @@ vector<string> getAnnotListFromModNdVec(vector<NodeData> &ndVec, int annotCnt){
   if(annotList.size() == annotCnt){
     return annotList;
   } else {
-    cerr << "Error : ftn annotation parsing error. @ getAnnotListFromModNdVec()" << endl;
+    cout << "Error : ftn annotation parsing error. @ getAnnotListFromModNdVec()" << endl;
     return annotList;
   }
 
@@ -669,7 +669,7 @@ vector< pair<string, string> > getArgListFromArgNdVec(vector<NodeData> &ndVec, i
   if(found == argCnt){
     return argList;
   } else {
-    cerr << "Error : ftn arg parsing error. @ getArgListFromArgNdVec()" << endl;
+    cout << "Error : ftn arg parsing error. @ getArgListFromArgNdVec()" << endl;
     return argList;
   }
 
@@ -681,7 +681,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -705,7 +705,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     }
   }
   if(ftnDeclLine == -1 || ftnBopenLine == -1){
-    cerr << "Error : parsing error during ftn decl line & bracket opener line parse @ parseFtnType" << endl;
+    cout << "Error : parsing error during ftn decl line & bracket opener line parse @ parseFtnType" << endl;
     return;
   }
   ftype.bopenLine = ftnBopenLine - ftnDeclLine;
@@ -758,7 +758,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       vector<string> rType = getTnodeLabelInNdVec(tmpNdVec);
       string rTypeStr = "";
       if(rType.size() == 0){
-        cerr << "Error : return type not parsed @ ftn : " << ftnName << endl;
+        cout << "Error : return type not parsed @ ftn : " << ftnName << endl;
         return;
       } else{
         for(int i=0; i<rType.size(); i++){
@@ -774,7 +774,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       ss2NodeVec(tmpNdVec, tmpSs);
       vector<string> fname = getTnodeLabelInNdVec(tmpNdVec);
       if(fname.size() != 1){
-        cerr << "Error : ftn name not parsed @ ftn : " << ftnName << endl;
+        cout << "Error : ftn name not parsed @ ftn : " << ftnName << endl;
         return;
       } else{
         ftype.ftnName = fname.front();
@@ -785,7 +785,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       // 4. delimeter line. this line should be compose of '|'. else return error.
       if(line == "|") fstDeli = true;
       else {
-        cerr << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
+        cout << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
         return;
       }
     } else if(lineCnt > 4 && fstDeli && !argParsed && !sndDeli && !exctParsed) {
@@ -820,7 +820,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
             string argN = labels.back();
             ftype.ftnArgs.push_back(pair<string, string>(argT, argN));
           } else {
-            cerr << "Error : parsing error in processing ftn return type." << endl;
+            cout << "Error : parsing error in processing ftn return type." << endl;
             return;
           }
           tmpSs.str("");
@@ -839,7 +839,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
     } else if(lineCnt > 4 && fstDeli && argParsed && !sndDeli && !exctParsed) {
       if(line == "|") sndDeli = true;
       else {
-        cerr << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
+        cout << "Error : arg not parsed #1 @ ftn : " << ftnName << endl;
         return;
       }
     } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && !exctParsed) {
@@ -852,7 +852,7 @@ void parseFtnType(string &fileName, string &ftnName, FtnType &ftype, vector<Node
       tmpNdVec.clear();
       tmpSs.str("");
     } else if(lineCnt > 4 && fstDeli && argParsed && sndDeli && exctParsed) {
-      //cerr << "Error : something left to parse after exct? @ ftn : " << ftnName << endl; 
+      //cout << "Error : something left to parse after exct? @ ftn : " << ftnName << endl; 
       //cout << line << endl;
       //cout << ftype.ftnName << " " << ftype.ftnArgs.front().first << endl;
       return;
@@ -870,7 +870,7 @@ NodeData findFstTnodeInNdvec(vector<NodeData> &ndVec){
   bool found = false;
   NodeData fstNode;
   if(ndVec.size() == 0) {
-    cerr << "Error : ndVec is empty. cannot find first node." << endl;
+    cout << "Error : ndVec is empty. cannot find first node." << endl;
     return fstNode;
   }
 
@@ -884,7 +884,7 @@ NodeData findFstTnodeInNdvec(vector<NodeData> &ndVec){
 
   if(found) return fstNode;
   else {
-    cerr << "Error : cannot find first node." << endl;
+    cout << "Error : cannot find first node." << endl;
     return fstNode;
   }
 
@@ -895,7 +895,7 @@ NodeData findLstTnodeInNdvec(vector<NodeData> &ndVec){
   bool found = false;
   NodeData lstNode;
   if(ndVec.size() == 0) {
-    cerr << "Error : ndVec is empty. cannot find last node." << endl;
+    cout << "Error : ndVec is empty. cannot find last node." << endl;
     return lstNode;
   }
 
@@ -909,7 +909,7 @@ NodeData findLstTnodeInNdvec(vector<NodeData> &ndVec){
 
   if(found) return lstNode;
   else {
-    cerr << "Error : Cannot find last node." << endl;
+    cout << "Error : Cannot find last node." << endl;
     return lstNode;
   }
 
@@ -927,7 +927,7 @@ void getAllFtnData(string &fileName, vector<FtnData> &fdVec){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -948,7 +948,7 @@ void getAllFtnData(string &fileName, vector<FtnData> &fdVec){
 
     // 3. 가져온 ndVec에서 앞 뒤 노드 from, to에 이름과 함께 삽입.
     if(isEmptyNodeData(fstNode) || isEmptyNodeData(lstNode)) {
-      cerr << "Error: parsed ftn subtree cannot find first | last node on ftn : " << fname << endl;
+      cout << "Error: parsed ftn subtree cannot find first | last node on ftn : " << fname << endl;
       return;
     }
 
@@ -978,7 +978,7 @@ void getPtree(string &fileName, stringstream &ss){
   ParseTree* pt = parseFile(fileName.c_str());
   
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
 
@@ -993,7 +993,7 @@ void dumpPtree(string &fileName){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
 
@@ -1007,7 +1007,7 @@ void getFtnSubtree(string &fileName, string &ftnName, vector<NodeData> &ndVec){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -1024,7 +1024,7 @@ void getConstSubtree(string &fileName, string &cName, vector<NodeData> &ndVec){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -1159,7 +1159,7 @@ void getPtreeVec(string &fileName, vector<NodeData> &ndVec){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -1176,7 +1176,7 @@ void printss(string &fileName){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   
@@ -1193,7 +1193,7 @@ void print2ssFtnSubtree(string &fileName, string &ftnName){
 
   ParseTree* pt = parseFile(fileName.c_str());
   if ( pt==NULL ) {
-    cerr << "Error: no parse tree created for file: " << fileName << endl;
+    cout << "Error: no parse tree created for file: " << fileName << endl;
     return;
   }
   

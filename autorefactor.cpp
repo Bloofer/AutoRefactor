@@ -7,7 +7,7 @@
  */
 
 // maybe replace with merging the code to refactor_guide?
-void readFile(char* alarmFile){
+bool readFile(char* alarmFile){
 
     ifstream cfile(alarmFile);
     cfile >> n;
@@ -40,6 +40,10 @@ void readFile(char* alarmFile){
         tmpCdata.cloneSnippet.clear();
     }
 
+    if((cloneDatas.front().to - cloneDatas.front().from) != (cloneDatas.back().to - cloneDatas.back().from)) {
+        cout << "Error : Clone alarm file scope is not in the method declaration." << endl;
+        return false;
+    } else return true;
 }
 
 int getFileLine(string fileName){
@@ -157,7 +161,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
     }
 
     if(cdeclLine == 0) {
-        cerr << "Error getting class decl line for ndVec offset usage." << endl;
+        cout << "Error getting class decl line for ndVec offset usage." << endl;
         return;
     }
 
@@ -177,7 +181,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
     }
 
     if(!nodeFnd || ptreeCline == 0) {
-        cerr << "Error getting class decl line in ndVec for getting line offset." << endl;
+        cout << "Error getting class decl line in ndVec for getting line offset." << endl;
         return;
     }
 
@@ -207,14 +211,14 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
         }
 
         if(!cFnd) {
-            cerr << "Error finding constructor in the constNdVec." << endl;
+            cout << "Error finding constructor in the constNdVec." << endl;
             return;
         }
 
         // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
         vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(cndVec, fname);
         if(tNdVec.empty()) {
-            cerr << "Error finding method invocation line in cndVec." << endl;
+            cout << "Error finding method invocation line in cndVec." << endl;
             return;
         }
 
@@ -240,13 +244,13 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
 
         size_t fpos = patchLine.find("."+fname);
         if(fpos == string::npos) {
-            cerr << "Error finding method invocation token in the patch code line." << endl;
+            cout << "Error finding method invocation token in the patch code line." << endl;
             return;
         }
         // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
         size_t bpos = patchLine.find(")", fpos);
         if(bpos == string::npos) {
-            cerr << "Error finding method bracket closure token in the patch code line." << endl;
+            cout << "Error finding method bracket closure token in the patch code line." << endl;
             return;
         }
 
@@ -276,7 +280,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
         // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
         vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(fndVec, fname);
         if(tNdVec.empty()) {
-            cerr << "Error finding method invocation line in cndVec." << endl;
+            cout << "Error finding method invocation line in cndVec." << endl;
             return;
         }
 
@@ -302,13 +306,13 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
 
         size_t fpos = patchLine.find("."+fname);
         if(fpos == string::npos) {
-            cerr << "Error finding method invocation token in the patch code line." << endl;
+            cout << "Error finding method invocation token in the patch code line." << endl;
             return;
         }
         // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
         size_t bpos = patchLine.find(")", fpos);
         if(bpos == string::npos) {
-            cerr << "Error finding method bracket closure token in the patch code line." << endl;
+            cout << "Error finding method bracket closure token in the patch code line." << endl;
             return;
         }
 
@@ -426,8 +430,8 @@ string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
     bool found = false;
     int idx;
     for(int i=0; i<fdVec.size(); i++){
-        if(frt >= fdVec.at(i).from - 2 && frt <= fdVec.at(i).to && 
-           bck >= fdVec.at(i).from && bck <= fdVec.at(i).to + 2) {
+        if(frt >= fdVec.at(i).from - 2 && frt <= fdVec.at(i).from + 2 && 
+           bck >= fdVec.at(i).to - 2 && bck <= fdVec.at(i).to + 2) {
                found = true;
                idx = i;   
             }
@@ -435,7 +439,7 @@ string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
 
     if(found) return fdVec.at(idx).ftnName;
     else {
-        cerr << "Error : clone scope is not inside the ftn def part." << endl;
+        cout << "Error : clone scope is not inside the ftn def part." << endl;
         return "";
     }
 
@@ -444,7 +448,7 @@ string getFnameInScope(int frt, int bck, vector<FtnData> &fdVec){
 clone_type getCloneType(){
 
     if(cloneDatas.size() < 2){
-        cerr << "Clone datas not parsed. Abort process." << endl;
+        cout << "Clone datas not parsed. Abort process." << endl;
         return ERR;
     }
 
@@ -461,7 +465,7 @@ clone_type getCloneType(){
     // 1. CloneData 내 알람 정보의 중복이 함수 정의부에 속하는 지 확인. 벗어난 경우 종료.
 
     if(fdVec.empty()) {
-        cerr << "Error : ftn data vector is empty." << endl;
+        cout << "Error : ftn data vector is empty." << endl;
         return ERR;
     }
 
@@ -472,9 +476,14 @@ clone_type getCloneType(){
     cloneDatas.back().ftnName = f2.ftnName;
 
     if(f1.ftnName == "" || f2.ftnName == "") {
-        cerr << "Error : clone scope is not inside the ftn def part." << endl;
+        cout << "Error : clone scope is not inside the ftn def part." << endl;
         return ERR;
     }
+
+    /* if(abs(f1.c1.from) c1.to) {
+        cout << "Error : clone scope is not inside the ftn def part." << endl;
+        return ERR;
+    } */
 
     vector<NodeData> ndVec1;
     vector<NodeData> ndVec2;
@@ -677,7 +686,7 @@ vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType
     // prune for primitive type vars (to return)
 
     if(!cmpSsPairVec(seVarSet1, seVarSet2)) {
-        cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        cout << "Error : em arguments doesn't match between two clone parts." << endl;
         normalCompletion = false;
         return seVarSet;
     }
@@ -764,7 +773,7 @@ vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &
     }
 
     if(!cmpSsPairVec(varSet1, varSet2)) {
-        cerr << "Error : em arguments doesn't match between two clone parts." << endl;
+        cout << "Error : em arguments doesn't match between two clone parts." << endl;
         normalCompletion = false;
         return varSet;
     }
@@ -780,6 +789,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
 
     // 1. make new method name and decl line
     string newFtnName = f1.ftnName + f2.ftnName;
+    if(newFtnName.length() > 100) newFtnName = "extracted_" + f1.ftnName; // 함수 이름이 너무 길면 첫번째 함수 이름으로 대체
 
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
@@ -788,7 +798,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
     string fstLine;
     if (seVarSet.empty()) fstLine = tabStr + "public void " + newFtnName + "(";
     else if (seVarSet.size()==1) fstLine = tabStr + "public " + seVarSet.front().first + " " + newFtnName + "(";
-    else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
+    else cout << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
     for(int i=0; i<varSet.size(); i++){
         fstLine += varSet.at(i).first + " " + varSet.at(i).second;
         if(i<varSet.size()-1) fstLine += ", ";
@@ -808,7 +818,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
     string seVarSetRet;
     if (seVarSet.empty()) { // if empty. skip this stage. (inserting return statement)
     } else if (seVarSet.size()==1) seVarSetRet = retTabStr + "return " + seVarSet.front().second + ";";
-    else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
+    else cout << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
     tempClone.push_back(seVarSetRet);
     tempClone.push_back(tabStr + "}");
 
@@ -829,7 +839,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
             string newFtnCall;
             if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
             else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
-            else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
+            else cout << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
             for(int i=0; i<varSet.size(); i++){
                 newFtnCall += varSet.at(i).second;
                 if (i<varSet.size()-1) newFtnCall += ", ";
@@ -859,7 +869,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
             string newFtnCall;
             if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
             else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
-            else cerr << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
+            else cout << "AutoRefactor cannot refactor more than 1 SeVarSet now. It will be implemented soon." << endl;
             for(int i=0; i<varSet.size(); i++){
                 newFtnCall += varSet.at(i).second;
                 if (i<varSet.size()-1) newFtnCall += ", ";
@@ -1005,7 +1015,7 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
             } else assignIdx++;
         }
 
-        if(!asnFnd) cerr << "Error on DiffInfo parsing. Cannot parse stmt var types." << endl;
+        if(!asnFnd) cout << "Error on DiffInfo parsing. Cannot parse stmt var types." << endl;
         else {
             string varType = "";
             for(int i=0; i<assignIdx-1; i++) varType += tnodeVec.at(i);
@@ -1025,7 +1035,7 @@ DiffInfo getDiffInfo(vector<NodeData> &ndVec) {
             } else assignIdx++;
         }
 
-        if(!asnFnd) cerr << "Error on DiffInfo parsing. Cannot parse assign expr lhs." << endl;
+        //if(!asnFnd) cout << "Error on DiffInfo parsing. Cannot parse assign expr lhs." << endl;
         string varName = "";
         for(int i=0; i<assignIdx; i++) varName += tnodeVec.at(i);
         dinfo.varName = varName;
@@ -1105,7 +1115,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         for(int j=0; j<tmpVec1.size(); j++){
             if(intVecContains(tokSame1, j)) continue;
             if(patchType==2 && isLvalueNode(ndVec1, tmpVec1.at(j).second)) {
-                cerr << "Error : Var decl diff(Lvalue diff) found on vec1 diff line. Merging aborted." << endl;
+                cout << "Error : Var decl diff(Lvalue diff) found on vec1 diff line. Merging aborted." << endl;
                 normalCompletion = false;
                 hasLvalue |= isLvalueNode(ndVec1, tmpVec1.at(j).second);
             }
@@ -1113,7 +1123,7 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
         for(int j=0; j<tmpVec2.size(); j++){
             if(intVecContains(tokSame2, j)) continue;
             if(patchType==2 && isLvalueNode(ndVec2, tmpVec2.at(j).second)) {
-                 cerr << "Error : Var decl diff(Lvalue diff) found on vec2 diff line. Merging aborted." << endl;
+                 cout << "Error : Var decl diff(Lvalue diff) found on vec2 diff line. Merging aborted." << endl;
                  normalCompletion = false;
                  hasLvalue |= isLvalueNode(ndVec2, tmpVec2.at(j).second);
             }
@@ -1156,19 +1166,20 @@ vector<int> getDiff(CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, vect
 void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, FtnType &f2, bool &normalCompletion){
     
     string newFtnName = f1.ftnName + f2.ftnName;
+    if(newFtnName.length() > 100) newFtnName = f1.ftnName; // 함수 이름이 너무 길면 첫번째 함수 이름으로 대체
     // 1. substitute caller function name with new one.
 
     vector<DiffInfo> diffInfo;
 
     vector<int> diffLine = getDiff(cloneDatas.front(), cloneDatas.back(), f1, f2, diffInfo, 2, normalCompletion);
     if(diffLine.empty()) {
-        cerr << "Diff line empty. Merging method aborted." << endl;
+        cout << "Diff line empty. Merging method aborted." << endl;
         nc = false;
         return;
     }
 
     if(diffInfo.size() != diffLine.size()) {
-        cerr << "Diff Info parsing error. Merging method aborted." << endl;
+        cout << "Diff Info parsing error. Merging method aborted." << endl;
         nc = false;
         return;
     }
@@ -1228,7 +1239,7 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
         if (!intVecContains(diffLine, i)) {
             // Flag 값에 대한 Assertion 삽입
             // Merge case가 2개인 경우에 대한 Flag Assertion
-            if(!asserted && f1.bopenLine == 0) {
+            /* if(!asserted && f1.bopenLine == 0) {
                 bool strFnd = false;
                 int strIdx = i;
                 while(!strFnd && strIdx<c1.cloneSize){
@@ -1236,7 +1247,7 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
                     else strFnd = true;
                 }
                 if(!strFnd) { 
-                    cerr << "Error : String parse error on processing assertion insertion." << endl;
+                    cout << "Error : String parse error on processing assertion insertion." << endl;
                     return;
                 }
                 tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
@@ -1252,7 +1263,7 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
                     else strFnd = true;
                 }
                 if(!strFnd) { 
-                    cerr << "Error : String parse error on processing assertion insertion." << endl;
+                    cout << "Error : String parse error on processing assertion insertion." << endl;
                     return;
                 }
                 tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
@@ -1260,7 +1271,7 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
                 string assertStr = tabStr + "assert flag >= 0 && flag <= 1;";
                 tempClone.push_back(assertStr);
                 asserted = true;
-            }
+            } */
 
             tempClone.push_back(c1.cloneSnippet[i]);
         }
@@ -1503,7 +1514,7 @@ bool errCheck(bool condition, bool &nc, string errMessage){
     // 에러 컨디션 체크 위한 함수.
     // condition이 true면 true 반환, 받아서 함수 종료.
     if(condition) {
-        cerr << errMessage << endl;
+        cout << errMessage << endl;
         nc = false;
         return true; // return true if error.
     } else {
@@ -1560,7 +1571,7 @@ bool getDiffTokData(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vect
         }
 
         if(diffTokCnt > 1 && diffTypeTokCnt > 1){
-            cerr << "T3 type patch can only patch rhs code with one ftn call diff" << endl;
+            cout << "T3 type patch can only patch rhs code with one ftn call diff" << endl;
             return false;
         }
 
@@ -1736,6 +1747,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
 
     // T2 merge method와 병합된 알고리즘 
     string newFtnName = f1.ftnName + f2.ftnName; // 새 함수 이름
+    if(newFtnName.length() > 100) newFtnName = f1.ftnName; // 함수 이름이 너무 길면 첫번째 함수 이름으로 대체
     PatchData patchData; // T3 패치 정보를 가진 구조체
     
     // 코드 포맷 맞추기용 whitespace string
@@ -1856,7 +1868,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
                 }
                 
             } else {
-                cerr << "T3 cannot patch diff line ftn with more than 2 args" << endl;
+                cout << "T3 cannot patch diff line ftn with more than 2 args" << endl;
                 nc = false;
                 return;
             }
@@ -1907,7 +1919,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
                     }
                     
                 } else {
-                    cerr << "T3 cannot patch diff line ftn with more than 2 args" << endl;
+                    cout << "T3 cannot patch diff line ftn with more than 2 args" << endl;
                     nc = false;
                     return;
                 }
@@ -2175,7 +2187,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
     // 첫 번째 함수부분 패치 
     if(f1.bopenLine != 0){
         // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
-        cerr << "Error : f1 code pre-format error. bracket opener line not found." << endl;
+        cout << "Error : f1 code pre-format error. bracket opener line not found." << endl;
         nc = false;
         return;
     }
@@ -2205,7 +2217,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
     // 두 번째 함수부분 패치
     if(f2.bopenLine != 0){
         // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
-        cerr << "Error : f2 code pre-format error. bracket opener line not found." << endl;
+        cout << "Error : f2 code pre-format error. bracket opener line not found." << endl;
         nc = false;
         return;
     }
@@ -2292,25 +2304,25 @@ void patchT1(){
         f1 = cloneFtnTypes.at(0);
         f2 = cloneFtnTypes.at(1);
     } else {
-        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        cout << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
         return;
     }
 
     pair<int, int> p = getCommonPart(c1, c2, f1, f2, nc);
     if(!nc) {
-        cerr << "Error getting common part. Aborting refactor..." << endl;
+        cout << "Error getting common part. Aborting refactor..." << endl;
         return;
     }
     tempCodeLine = p.second - p.first + 1;
     
     if(p.first == 0 && p.second == 0) {
-        cerr << "Error getting bracket scope. Aborting refactor..." << endl;
+        cout << "Error getting bracket scope. Aborting refactor..." << endl;
         return;
     }
 
     if(p.second - p.first < 10) {
         // this is heuristic. maybe need to improve this?
-        cerr << "Bracket scope too small(less than 10 line). Aborting refactor..." << endl;
+        cout << "Bracket scope too small(less than 10 line). Aborting refactor..." << endl;
         return;
     }
 
@@ -2319,7 +2331,7 @@ void patchT1(){
     // a. 구간 내 인자로 뽑을 변수 선택하기; vector<pair<string, string>>로 반환
     vector< pair<string, string> > varSet = getVarSet(c1, c2, f1, f2, p, nc);
     if(!nc) {
-        cerr << "Error getting var set from clone method. Aborting refactor..." << endl;
+        cout << "Error getting var set from clone method. Aborting refactor..." << endl;
         return;
     }
 
@@ -2328,12 +2340,12 @@ void patchT1(){
     scopeUp.second = c1.cloneSnippet.size();
     vector< pair<string, string> > seVarSet = getSeVarSet(c1, c2, f1, f2, scopeUp, nc);
     if(!nc) {
-        cerr << "Error getting se var set from clone method. Aborting refactor..." << endl;
+        cout << "Error getting se var set from clone method. Aborting refactor..." << endl;
         return;
     }
 
     if(seVarSet.size()>1){
-        cerr << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
+        cout << "AutoRefactor cannot handle more than two seVarSet vars. It will be implemented soon." << endl;
         return;
     }
 
@@ -2373,7 +2385,7 @@ void patchT2(){
         f1 = cloneFtnTypes.at(0);
         f2 = cloneFtnTypes.at(1);
     } else {
-        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        cout << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
         return;
     }
 
@@ -2418,7 +2430,7 @@ void patchT3(){
         f1 = cloneFtnTypes.at(0);
         f2 = cloneFtnTypes.at(1);
     } else {
-        cerr << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
+        cout << "Error : Ftn Type not parsed. Code patch aborting..." << endl;
         return;
     }
 
@@ -2674,24 +2686,24 @@ int main(int argc, char** argv){
 
     // USAGE :  ./autorefactor OPTION CLONEDATA [ DOTFILE DIRPATH ]
     if (argc < 3) {
-        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        cout << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
         return 1;
     } else if (argc == 4) {
-        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
-        cerr << "Only 3 arguments are passed. Need to pass directory path to trigger caller patch mode." << endl;
+        cout << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        cout << "Only 3 arguments are passed. Need to pass directory path to trigger caller patch mode." << endl;
         return 1;
     } else if (argc == 5) {
         dotfile = string(argv[3]);
         dirname = string(argv[4]);
         if(dotfile.find(".dot") == string::npos) {
-            cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
-            cerr << "DOTFILE must be '.dot' format file." << endl;
+            cout << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+            cout << "DOTFILE must be '.dot' format file." << endl;
             return 1;
         }
         callerPatchOn = true;
     } else if (argc > 5) {
-        cerr << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
-        cerr << "Too many args passed." << endl;
+        cout << "Usage : " << argv[0] << " OPTION(-a, -r, -c) ALARMFILE [ DOTFILE DIRPATH ]" << endl;
+        cout << "Too many args passed." << endl;
         return 1;
     } else {
         callerPatchOn = false;
@@ -2703,11 +2715,15 @@ int main(int argc, char** argv){
     else if (opt.find("-r") != string::npos) runOption = RST;
     else if (opt.find("-c") != string::npos) runOption = COD;
     else {
-        cerr << "Error : run option not proper." << endl;
+        cout << "Error : run option not proper." << endl;
         return 1;
     }
 
-    readFile(argv[2]); // 1. reads input data
+    if(!readFile(argv[2])) {
+        cout << "Error : while reading input file." << endl; 
+        return 1;
+    }
+    // 1. reads input data
 
     // TODO: 여기에 CallGraph 파싱 및 디렉토리 (파일명->클래스명) 맵 생성 함수 호출부 삽입하기
     // TODO: 알람에 따른 코드 패치는 인스턴스 여러번 수행하고 위 전체 디렉토리 정보 생성은 한번만 하도록
