@@ -1,6 +1,6 @@
 ### AutoRefactor  
 
-AutoRefactor is a tool which uses Deckard as a front-end to automatically refactor duplicates found in JAVA projects.
+AutoRefactor is a tool which uses [Deckard](https://github.com/skyhover/Deckard) as a front-end to automatically refactor duplicates found in JAVA projects.
 
 Please read the instructions below to use.
 
@@ -30,7 +30,7 @@ $ ./autorefactor OPTIONS ALARMFILE [DOTFILE]
 // DOTFILE : .dot file (CallGraph) from your project repository
 ```
 
-##### 2. AutoRefactor Structure
+#### 2. AutoRefactor Structure
 
 **All directories/files in AutoRefactor**
 ```
@@ -50,11 +50,14 @@ $ ./autorefactor OPTIONS ALARMFILE [DOTFILE]
 
 #### 3. Restrictions
 
-* Two input clones should be formatted before process.
-  * Use JAVA code formatter before running autorefactor
+* Two input clones should be formatted before process
+  * Use JAVA code formatter before running AutoRefactor
 
-* Use output from [Deckard](https://github.com/skyhover/Deckard) code clone detector
+* Use output from Deckard code clone detector
   * Config : MIN_TOKENS='200', STRIDE='50', SIMILARITY='1'(To find 100% structural clone)
+
+* Function-level clone alarm must be tight for AutoRefactor
+  * Adjust alarm format, 'from'/'to', tightly(to fit in function bracket opener/closer) to run properly 
 
 #### 4. Trouble Shooting
 
