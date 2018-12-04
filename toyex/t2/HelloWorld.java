@@ -166,30 +166,47 @@ public class HelloWorld {
     return x + y + z;
   }
 
-  public float hi7() { return 10; }
-  public float hi8() { return 20; }
+  public float hi7(int x) { return 10; }
+  public float hi8(int x) { return 20; }
 
   public float foo3() {
-    System.out.println("hihihihihihi");
-    float x = hi7();
-    float y = hi7();
-    float z = hi7();
+    System.out.print("hihihihihihi");
+    float x = hi7(1);
+    float y = hi7(1);
+    float z = hi7(1);
     return x + y + z;
   }
   public float goo3() {
-    System.out.println("hihihihihihi");
-    float x = hi8();
-    float y = hi8();
-    float z = hi8();
+    System.out.print("hihihihihihi");
+    float x = hi8(1);
+    float y = hi8(1);
+    float z = hi8(1);
     return x + y + z;
   }
 
   ////// 바뀐 후
-  public float foo3goo3(java.util.function.Function<Void, Float> lambda) { 
-    System.out.println("hihihihihihi");
-    float x = lambda.apply(null);
-    float y = lambda.apply(null);
-    float z = lambda.apply(null);
+  public float foo3goo3(java.util.function.Function<Integer, Float> lambda) { 
+    System.out.print("hihihihihihi");
+    float x = lambda.apply(1);
+    float y = lambda.apply(1);
+    float z = lambda.apply(1);
+    return x + y + z;
+  }
+
+  public float foogoo3(int flag) { 
+    System.out.print("hihihihihihi");
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    if(flag == 0){
+      x = hi7(1);
+      y = hi7(1);
+      z = hi7(1);
+    } else if (flag == 1){
+      x = hi8(1);
+      y = hi8(1);
+      z = hi8(1);
+    }
     return x + y + z;
   }
 
@@ -214,36 +231,38 @@ public class HelloWorld {
     return 10;
   }
 
+  
+
   // ePrint 실제 예제 타입 toyex TODO:
   public String epf() {
-    System.out.println("hihihi");
+    System.out.print("hihihi");
     Vector<Integer> A = hi1(10);
-    System.out.println("function f!");
+    System.out.print("function f!");
     return "fffff";
   }
 
   public String epg() {
-    System.out.println("hihihi");
+    System.out.print("hihihi");
     Vector<Float> A = hi2(10);
-    System.out.println("function f!");
+    System.out.print("function f!");
     return "ggggg";
   }
 
   ////// 바뀐 후
   public <T> String epfepg(java.util.function.Function<Integer, Vector<T>> fptr, String s) { // extract 된 것
-    System.out.println("hihihi");
+    System.out.print("hihihi");
     Vector<T> A = fptr.apply(10);
-    System.out.println("function f!");
+    System.out.print("function f!");
     return s;
   }
 
   public String epfg(int flag) {
-    System.out.println("hihihi");
+    System.out.print("hihihi");
     Vector A = null;
     if(flag == 0) A = hi1(10);
     else if(flag == 1) A = hi2(10);
 
-    System.out.println("function f!");
+    System.out.print("function f!");
     if(flag == 0) return "fffff";
     else if(flag == 1) return "ggggg";
     return "";
@@ -251,21 +270,29 @@ public class HelloWorld {
 
     public static void main(String[] args) {
 
-        HelloWorld hw = new HelloWorld();
-        char c = 0;
-        long[] l = null;
-        l = new long[] {123, 456, 789};
+      float startTime = System.nanoTime();
+        
+        for(int i=0; i<1000; i++){
 
-        System.out.println("epf() returns "+hw.epf());
-        System.out.println();
-        System.out.println("epg() returns "+hw.epg());
-        System.out.println();
-        System.out.println("epfg() returns "+hw.epfg(0));
-        System.out.println();
-        System.out.println("epfg() returns "+hw.epfg(1));
-        //System.out.println("epf() returns "+hw.epfepg((a) -> hw.hi1(a), "function f!"));
-        //System.out.println("epg() returns "+hw.epfepg((a) -> hw.hi2(a), "function g!"));
+          HelloWorld hw = new HelloWorld();
 
+          //float t1 = hw.foogoo3(0);
+          //float t2 = hw.foogoo3(0);
+
+          //String tmp1 = hw.epfg(0);
+          //String tmp2 = hw.epfg(1);
+          //System.out.println("epf() returns "+hw.epfepg((a) -> hw.hi1(a), "function f!"));
+          //System.out.println("epg() returns "+hw.epfepg((a) -> hw.hi2(a), "function g!"));
+          //String tmp3 = hw.epfepg((a) -> hw.hi1(a), "function f!");
+          //String tmp4 = hw.epfepg((a) -> hw.hi2(a), "function g!");
+
+          float t1 = hw.foo3goo3((a) -> hw.hi7(a));
+          float t2 = hw.foo3goo3((a) -> hw.hi8(a));
+
+        }
+
+      float endTime = System.nanoTime();
+      System.out.println(endTime - startTime);
 
     }
 
