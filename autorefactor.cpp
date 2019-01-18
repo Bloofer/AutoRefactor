@@ -141,8 +141,6 @@ bool cmpSsPairVec(vector< pair<string, string> > &sv1, vector< pair<string, stri
 
 void patchCaller(Caller c, string fname, string newFname, int flag){
     // CallGraph에서 찾은 Caller의 Path와 함수 이름을 이용하여, 함수 내 Callee의 원래 이름을 새로운 이름으로 바꿔준다.
-    // TODO: 일단은 Callee 함수의 이름만으로 찾는 것 구현. 추후에 Callee Obj 이름 찾아서 이름이 호출하는 함수 위치 패치로 바꿔야할지도?
-    // TODO: 일단은 Caller 호출부가 하나인 케이스에 대해 구현. 추후 여러 호출에 대한 구현도 고려 확장할 것.
 
     bool isCallerConst;
     if(c.callerObjectFtnName == "<init>") isCallerConst = true;
@@ -198,8 +196,6 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
         // ndVec에서 모은 Const 노드 벡터를 각각 쪼갬.
         // pair.first : Const 노드 벡터, pair.second : Constructor 인자 갯수
         vector< pair< vector<NodeData>, int > > constNdVec = getConstNdVecFromNdVec(ndVec, c.callerObjectName); 
-        
-        // TODO: 노드 벡터내 method invocation 찾고, 해당 라인(오프셋 뺀) 구하기
 
         vector<NodeData> cndVec;
         bool cFnd = false;
@@ -215,7 +211,6 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
             return;
         }
 
-        // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
         vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(cndVec, fname);
         if(tNdVec.empty()) {
             cout << "Error finding method invocation line in cndVec." << endl;
@@ -247,7 +242,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
             cout << "Error finding method invocation token in the patch code line." << endl;
             return;
         }
-        // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
+        
         size_t bpos = patchLine.find(")", fpos);
         if(bpos == string::npos) {
             cout << "Error finding method bracket closure token in the patch code line." << endl;
@@ -277,7 +272,6 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
         int flineOffset = l1 - l2;
         // 새로 파싱한 ftn ndVec과 기존 ndVec의 라인 오프셋. 이걸 ndVec의 오프셋에 더해서 ftn ndVec의 오프셋을 구함.
 
-        // TODO: method invocation 찾고 파일 라인 찾아서 대치. 이 부분 모듈화 해서 빼기()
         vector<NodeData> tNdVec = getFtnCallTNdVecFromNdVec(fndVec, fname);
         if(tNdVec.empty()) {
             cout << "Error finding method invocation line in cndVec." << endl;
@@ -300,7 +294,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
         //cout << args << endl;
 
         // 2. 함수 호출 string 내 .ftn(args) 부분을 .newFtn(args, flag)로 대치
-        int ftnCallLine = tNdVec.front().lineNo + lineOffset + flineOffset; // TODO: fix line offset.
+        int ftnCallLine = tNdVec.front().lineNo + lineOffset + flineOffset; 
         // 실제 파일 내 함수 호출 라인(Caller가 호출하는 Callee 함수 부분)
         string patchLine = tempCode.at(ftnCallLine-1);
 
@@ -309,7 +303,7 @@ void patchCaller(Caller c, string fname, string newFname, int flag){
             cout << "Error finding method invocation token in the patch code line." << endl;
             return;
         }
-        // TODO: 함수 패칭시 bclose 찾을 때, 인자 내부에 ftn call 있는 것 고려하여 구현 확장해야함.
+        
         size_t bpos = patchLine.find(")", fpos);
         if(bpos == string::npos) {
             cout << "Error finding method bracket closure token in the patch code line." << endl;
@@ -644,7 +638,6 @@ vector< pair<string, string> > getSeVarSet(CloneData &c1, CloneData &c2, FtnType
     }
 
     // 4. USED : 구간 내 사용된 변수 이름 모으기
-    // TODO: refactor this and extract to function
     vector<string> usedVars1;
     int brktScopeFrt1 = c1.from + scope.first - lineOffset1;
     int brktScopeRear1 = c1.from + scope.second - lineOffset1;
@@ -735,7 +728,6 @@ vector< pair<string, string> > getVarSet(CloneData &c1, CloneData &c2, FtnType &
     varAboveScope2.insert(varAboveScope2.end(), f2.ftnArgs.begin(), f2.ftnArgs.end());
 
     // 4. USED : 구간 내 사용된 변수 이름 모으기
-    // TODO: refactor this and extract to function
     vector<string> usedVars1;
     int brktScopeFrt1 = c1.from + scope.first - lineOffset1;
     int brktScopeRear1 = c1.from + scope.second - lineOffset1;
@@ -793,8 +785,6 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
 
     int tabIdx = c1.cloneSnippet.front().find_first_not_of(" \t\r\n"); // this is for code formatting
     string tabStr = c1.cloneSnippet.front().substr(0, tabIdx);
-    // TODO: seVarSet.front().first --> should be refactored.
-    // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
     string fstLine;
     if (seVarSet.empty()) fstLine = tabStr + "public void " + newFtnName + "(";
     else if (seVarSet.size()==1) fstLine = tabStr + "public " + seVarSet.front().first + " " + newFtnName + "(";
@@ -813,8 +803,6 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
     // 2-2 insert return statement to pass effected seVarSet
     int retTabIdx = c1.cloneSnippet.at(scope.second).find_first_not_of(" \t\r\n");
     string retTabStr = c1.cloneSnippet.at(scope.second).substr(0, retTabIdx);
-    // TODO: seVarSet --> should be refactored.
-    // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
     string seVarSetRet;
     if (seVarSet.empty()) { // if empty. skip this stage. (inserting return statement)
     } else if (seVarSet.size()==1) seVarSetRet = retTabStr + "return " + seVarSet.front().second + ";";
@@ -834,8 +822,6 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
         if(i >= scope.first && i <= scope.second && !inserted1){
             int tabIdxIn = c1.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
             string tabStrIn = c1.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
-            // TODO: seVarSet.front().second --> should be refactored.
-            // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
             string newFtnCall;
             if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
             else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
@@ -864,8 +850,6 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
         if(i >= scope.first && i <= scope.second && !inserted2){
             int tabIdxIn = c2.cloneSnippet.at(scope.first).find_first_not_of(" \t\r\n"); // this is for code formatting
             string tabStrIn = c2.cloneSnippet.at(scope.first).substr(0, tabIdxIn);
-            // TODO: seVarSet.front().second --> should be refactored.
-            // this impl only accepts one/no seVarSet. but it should be expanded to accept multiple seVarSets using tuples. 
             string newFtnCall;
             if (seVarSet.empty()) newFtnCall = tabStrIn + newFtnName + "(";
             else if (seVarSet.size()==1) newFtnCall = tabStrIn + seVarSet.front().second + " = " + newFtnName + "(";
@@ -927,9 +911,7 @@ void extractMethod(string fileName, CloneData &c1, CloneData &c2, FtnType &f1, F
  * ====================================================
  */
 
-// TODO: finish caller patching. (in progress)
 void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vector<Caller> &callerVec){
-    // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
     // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
 
     for(int i=0; i<cgVec.size(); i++){
@@ -944,30 +926,6 @@ void getCallerInfo(string &cname, string &fname, vector<CallGraph> &cgVec, vecto
     }
 
     // sort callerVec to count caller ftn invocation
-    // TODO: sort(callerVec.begin(), callerVec.end(), compare_cg);
-
-    /* vector<string> cname_lst;
-    cname_lst.push_back("FasooMessageParser");
-    
-    vector<CallGraph> cg_lst;
-
-    //getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
-    string cname = "FasooMessageParser";
-    string fname = "parse2";
-    getFtnCallerData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname, fname);
-    
-    sort(cg_lst.begin(), cg_lst.end(), compare_cg);
-    
-    // make unique (i think this should be deprecated)
-    //vector<CallGraph>::iterator it;
-    //it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
-    //cg_lst.resize(distance(cg_lst.begin(), it));
-
-    cout << cg_lst.size() << endl;
-    for(int i=0; i<cg_lst.size(); i++){
-        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).callee_fname << " " << cg_lst.at(i).caller_path << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
-    } */
-
 }
 
 
@@ -1237,42 +1195,6 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
 
     for(int i=1; i<c1.cloneSize; i++){
         if (!intVecContains(diffLine, i)) {
-            // Flag 값에 대한 Assertion 삽입
-            // Merge case가 2개인 경우에 대한 Flag Assertion
-            /* if(!asserted && f1.bopenLine == 0) {
-                bool strFnd = false;
-                int strIdx = i;
-                while(!strFnd && strIdx<c1.cloneSize){
-                    if(strOnlySpaces(c1.cloneSnippet[strIdx])) strIdx++;
-                    else strFnd = true;
-                }
-                if(!strFnd) { 
-                    cout << "Error : String parse error on processing assertion insertion." << endl;
-                    return;
-                }
-                tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
-                tabStr = c1.cloneSnippet[strIdx].substr(0, tabIdx);
-                string assertStr = tabStr + "assert flag >= 0 && flag <= 1;";
-                tempClone.push_back(assertStr);
-                asserted = true;
-            } else if(!asserted && f1.bopenLine != 0 && i>1) {
-                bool strFnd = false;
-                int strIdx = i;
-                while(!strFnd && strIdx<c1.cloneSize){
-                    if(strOnlySpaces(c1.cloneSnippet[strIdx])) strIdx++;
-                    else strFnd = true;
-                }
-                if(!strFnd) { 
-                    cout << "Error : String parse error on processing assertion insertion." << endl;
-                    return;
-                }
-                tabIdx = c1.cloneSnippet[strIdx].find_first_not_of(" \t\r\n"); // this is for code formatting
-                tabStr = c1.cloneSnippet[strIdx].substr(0, tabIdx);
-                string assertStr = tabStr + "assert flag >= 0 && flag <= 1;";
-                tempClone.push_back(assertStr);
-                asserted = true;
-            } */
-
             tempClone.push_back(c1.cloneSnippet[i]);
         }
         else {
@@ -1435,7 +1357,6 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
 
 
     // Caller patch 부분
-    // TODO: 옵션에 따라 실행되도록 분기 삽입
 
     string cname;
     fetchClassName(c1.fileName, cname);
@@ -1460,7 +1381,6 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
         }
         cout << callerVec1.at(i).argNum << endl;
 
-        // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
         patchCaller(callerVec1.at(i), fname1, newFtnName, 0);
     }
 
@@ -1476,7 +1396,6 @@ void mergeMethodBranching(string fileName, CloneData &c1, CloneData &c2, FtnType
         }
         cout << callerVec2.at(i).argNum << endl;
 
-        // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
         patchCaller(callerVec2.at(i), fname2, newFtnName, 1);
     }
 
@@ -1705,7 +1624,6 @@ bool getDiffTokData(CloneData &c1, CloneData &c2, vector<NodeData> &ndVec1, vect
         for(int i=0; i<rhsNdVec1.size(); i++){
             if(rhsNdVec1.at(i).label == rhsNdVec2.at(i).label) continue;
             else {
-                // TODO: 이제 얘네들 함수 인자로 넘겨서 실행하도록 만들기. 함수 인자 2개로 늘리기 +@
                 diffTokCnt++;
                 string token = rhsNdVec1.at(i).label;
                 if(token.at(0) == '\"' && token.at(token.size()-1) == '\"') patchData.tokTypes.push_back(2); 
@@ -1802,9 +1720,6 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
                                     diffLine.at(i), diffInfo.at(i), nc, f1nameVec, f2nameVec);
         }
         isMultiLinePatch = true;
-        // TODO: 여기서 마저 함수 라인 보고 패치 재개하기
-        // TODO: f1vec, f2vec은 같은 함수 이름이어야. 가드 넣을것
-        // TODO: Local 함수 인 것들만 받아들이도록. 가드 넣을것
     }
 
     if(errCheck(patchData.tokTypes.size()>2, nc, "T3 cannot patch arg pass type more than 2 args.")) return;
@@ -1948,7 +1863,6 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
             vector<NodeData> rhsNdVec1 = getRhsTnodeVec(diffNdVec1);
             vector<NodeData> rhsNdVec2 = getRhsTnodeVec(diffNdVec2);
 
-            // TODO: const값 확인하여 스트링 타입 전달하고, 인자에 추가하기
             asnStr = tabStr2 + "return s";
         } else if(diffInfo.front().diffType == 2){
             // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
@@ -2009,7 +1923,7 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
                 size_t f = asnStr.find(strTok1);
                 asnStr.replace(f, std::string(strTok1).length(), "s"); // s로 인자 넘겨서 전달
                 asnStrVec.push_back(asnStr);
-                // TODO: 이 경우에 대한 인자 전달 갯수 카운트와 넘기기
+
             } else if(diffInfo.at(i).diffType == 2){
                 // diff line에 Var decl lhs에 해당하는 타입이 반환 타입이 된다.
                 int tabIdx2 = c1.cloneSnippet.at(diffLine.at(i)).find_first_not_of(" \t\r\n");
@@ -2090,8 +2004,6 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
             }
             tempClone.push_back(c1.cloneSnippet[i]);
         } else {
-            // TODO: T2에서는 분기 삽입부. T3에서 Lambda 함수 호출로 구분
-            // TODO: 다른 값이 : 1) Ftn Call 2) Var Type 이 세개 잘 구분해서 구현하기
             // 일단 초기 버전으로는 1) Ftn Call이 다른 경우, 함수 인자 전달 방식으로 구현하기. 18.11.01
             if(!isMultiLinePatch) tempClone.push_back(asnStr);
             else { 
@@ -2162,116 +2074,6 @@ void mergeMethodArgPass(string fileName, CloneData &c1, CloneData &c2, FtnType &
     cout << " ===== Caller Ftn Args ===== " << endl;
     cout << " C#1 : " << ftnArg1 << endl;
     cout << " C#2 : " << ftnArg2 << endl;
-
-    // 6.2. Var decl에서 함수 호출 diff부분 전까지 중복을 추출하고, 마지막에 계산된 값을 리턴하도록.
-    /* for(int i=1; i<diffLine.front(); i++){
-        tempClone.push_back(c1.cloneSnippet.at(i));
-    }
-
-    tabIdx = c1.cloneSnippet.at(diffLine.front()-1).find_first_not_of(" \t\r\n"); // this is for code formatting
-    string tabStr2 = c1.cloneSnippet.at(diffLine.front()-1).substr(0, tabIdx);
-    string asnStr = tabStr2 + diffInfo.front().typeName + " " + diffInfo.front().varName
-                    + " = fptr.apply(" + argTok + ");";
-    tempClone.push_back(asnStr);
-    tempClone.push_back(tabStr2 + "return " + diffInfo.front().varName);
-    tempClone.push_back(tabStr + "}");
-
-    if(runOption != COD){
-        cout << endl << "========================================" << endl;
-        cout << "Extracting clone..." << endl;
-        cout << "Clone part extracted to ftn arg." << endl << endl;
-        testPrintCode(tempClone);
-    }
-
-    // 7. f,g의 중복부분을 fg call로 대치하고, 함수의 인자로 각각 hi3과 hi4를 준다.
-    // 첫 번째 함수부분 패치 
-    if(f1.bopenLine != 0){
-        // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
-        cout << "Error : f1 code pre-format error. bracket opener line not found." << endl;
-        nc = false;
-        return;
-    }
-        
-    orgClone1.push_back(c1.cloneSnippet.front());
-    for(int i=1; i<c1.cloneSnippet.size(); i++){
-        if(i<diffLine.front()) continue;
-        else if(i == diffLine.front()) {
-            tabIdx = c1.cloneSnippet.at(i).find_first_not_of(" \t\r\n"); // this is for code formatting
-            tabStr = c1.cloneSnippet.at(i).substr(0, tabIdx);
-            // TODO: 람다 함수 패치는 일단 f: a->a 타입의 인자 하나, 리턴타입 하나인 경우만 먼저 구현. 추후 확장 예정
-            string lmdCall = tabStr + diffInfo.front().typeName + " " + diffInfo.front().varName
-                             + " = " + newFtnName + "((a) -> " + ftVec.at(f1idx).ftnName + "(a));";
-            orgClone1.push_back(lmdCall);
-        } else{
-            orgClone1.push_back(c1.cloneSnippet.at(i));
-        }
-    }
-    
-    if(runOption != COD){
-        cout << endl << "========================================" << endl;
-        cout << "Patching clone..." << endl;
-        cout << "Clone part 1 patched with ftn call." << endl << endl;
-        testPrintCode(orgClone1);
-    }
-
-    // 두 번째 함수부분 패치
-    if(f2.bopenLine != 0){
-        // TODO: 일단은 bopenLine 0인 경우만 처리. 그 이상은 나중에 휴리스틱 추가.
-        cout << "Error : f2 code pre-format error. bracket opener line not found." << endl;
-        nc = false;
-        return;
-    }
-        
-    orgClone2.push_back(c2.cloneSnippet.front());
-    for(int i=1; i<c2.cloneSnippet.size(); i++){
-        if(i<diffLine.front()) continue;
-        else if(i == diffLine.front()) {
-            tabIdx = c2.cloneSnippet.at(i).find_first_not_of(" \t\r\n"); // this is for code formatting
-            tabStr = c2.cloneSnippet.at(i).substr(0, tabIdx);
-            // TODO: 람다 함수 패치는 일단 f: a->a 타입의 인자 하나, 리턴타입 하나인 경우만 먼저 구현. 추후 확장 예정
-            string lmdCall = tabStr + diffInfo.front().typeName + " " + diffInfo.front().varName
-                             + " = " + newFtnName + "((a) -> " + ftVec.at(f2idx).ftnName + "(a));";
-            orgClone2.push_back(lmdCall);
-        } else{
-            orgClone2.push_back(c2.cloneSnippet.at(i));
-        }
-    }
-
-    if(runOption != COD){
-        cout << endl << "========================================" << endl;
-        cout << "Patching clone..." << endl;
-        cout << "Clone part 2 patched with ftn call." << endl << endl;
-        testPrintCode(orgClone2);
-    }
-
-    // patch code to the entire file
-    ifstream pfile(c1.fileName.c_str());
-    string line;
-
-    int lineCnt = 1; // line counter
-    while(getline(pfile, line)) {
-        if(lineCnt == c1.from) { 
-            patchCode.insert(patchCode.end(), tempClone.begin(), tempClone.end());
-            patchCode.push_back("");
-            patchCode.insert(patchCode.end(), orgClone1.begin(), orgClone1.end());
-        } else if(lineCnt == c2.from){
-            patchCode.insert(patchCode.end(), orgClone2.begin(), orgClone2.end());
-        }
-        if(lineCnt == c2.to + 1) {
-            if(strOnlySpaces(line)) { lineCnt++; continue; }
-        }
-        if(!(lineCnt >= c1.from && lineCnt <= c1.to) && !(lineCnt >= c2.from && lineCnt <= c2.to)) patchCode.push_back(line);
-        
-        lineCnt++;
-    }
-
-    afterPatchLoc = patchCode.size();
-
-    if(runOption != RST){
-        cout << "Patching clones ...\n";
-        cout << "(This will be replaced with actual file write operations)\n";
-        testPrintCode(patchCode); 
-    }*/
 
 }
 
@@ -2354,17 +2156,7 @@ void patchT1(){
 
     reducedLoc = beforePatchLoc - afterPatchLoc;
     
-    reportResult();
-
-    // TODO: refactor below instruction
-    // 1. EM 구간 정하기 (휴리스틱 - 구간 일정 크기보다 작으면 알고리즘 종료하기. ex 10라인 미만은 em 크게 의미 x)
-    // 1.1. 함수 내 중복 부분 중 bracket(for문, if문) 큰 구간 찾고 적용 가능 한 구간 설정(이때 구간에 return문 제외)
-    // 1.2. 앞 쪽 선언된 지역 변수가 있는데 구간 밖에서 사용되면 그 부분 제외
-    // 2. EM 인자 모으기
-    // 2.1. 일단 전역(클래스 멤버 변수), 지역(함수 내부, but 구간 외부), 함수 Arg 변수들 전부 <type, name>쌍의 Set으로 모으기
-    // 2.2. 내부 구간에서 bracket 내(scope가 구간 내 사라지는 것) 변수 외에 사용된 변수들 중 지역과 Arg 인자들 모으기
-    // 2.3. 해당 모아진 변수들은 함수 추출시 새로운 Arg로 전달 및 사용.
-    // 3. 정의 만들고 중복 지운 후 Call로 대치.
+    //reportResult();
 
 }
 
@@ -2389,24 +2181,14 @@ void patchT2(){
         return;
     }
 
-    mergeMethodBranching(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
+    mergeMethodBranching(c1.fileName, c1, c2, f1, f2, nc); 
 
     if(nc){
         reducedLoc = beforePatchLoc - afterPatchLoc;
-        reportResult();
+        //reportResult();
     } else {
         cout << "Patch completed abnormally. Couldn't patch this clone pair." << endl;
     }
-
-    // TODO: refactor to below instruction
-    // 1. diff 부분 확인하기. R-value만, L-value는 diff에 포함된 경우 알고리즘 중단. TODO: 이거를 타입 분류 앞쪽으로 빼기?
-    // <diff 알고리즘>
-    // 1-1. 일단 syntatic하게 라인별로 비교
-    // 1-2. 불일치 라인 트리 벡터로 찾아가 토큰 하나씩 비교(여기서 토큰 일치시 불일치 아님)
-    // 1-3. 비교해서 다른 토큰 각각 짚기
-    // 1-4. 다른 토큰이 L-value인 경우 알고리즘 종료(찾는 방법은 nodeID를 보고)
-    // 1-5. R-value인 경우 정상.
-    // 2. caller 패칭하기.
 
 }
 
@@ -2418,7 +2200,6 @@ void patchT3(){
 
     beforePatchLoc = getFileLine(c1.fileName);
 
-    // TODO: 추후 타입 판정에 T3 추가하고 이 부분 T2_patch() 변경하기
     // 일단은 getCloneType() 결과와 상관없이 T3 타입으로 넣고 테스트
     FtnType f1, f2;
 
@@ -2434,11 +2215,11 @@ void patchT3(){
         return;
     }
 
-    mergeMethodArgPass(c1.fileName, c1, c2, f1, f2, nc); // TODO: need to refactor?
+    mergeMethodArgPass(c1.fileName, c1, c2, f1, f2, nc); 
 
     if(nc){
         reducedLoc = beforePatchLoc - afterPatchLoc;
-        reportResult();
+        //reportResult();
     } else {
         cout << "Patch completed abnormally. Couldn't patch this clone pair." << endl;
     }
@@ -2540,7 +2321,7 @@ void testPrintFtnType(FtnType &f){
         cout << f.exceptions.at(i) << " ";
     }
     cout << "\nBracket opener offset : " << f.bopenLine << endl;
-    //cout << "Def line# : " << f.lineNum << endl; // TODO: remove this from ftnType?
+
 }
 
 void testPrintArgCalls(CloneData &cd){
@@ -2674,7 +2455,6 @@ void init(string callGraphPath, string dirPath){
     getAllCallGraphData(callGraphPath, callGraphVec);
     
     // 디렉토리내 실제 파일경로와 클래스 이름 전역 맵을 생성
-    // TODO: 디렉토리 명 제대로 확인할 수 있게 가드 만들기. -> read_file로
     fetchFname2CnameVec(dirPath, fpath2CnamePairVec);
 
 }
@@ -2725,9 +2505,6 @@ int main(int argc, char** argv){
     }
     // 1. reads input data
 
-    // TODO: 여기에 CallGraph 파싱 및 디렉토리 (파일명->클래스명) 맵 생성 함수 호출부 삽입하기
-    // TODO: 알람에 따른 코드 패치는 인스턴스 여러번 수행하고 위 전체 디렉토리 정보 생성은 한번만 하도록
-
     clone_type ct = getCloneType();
     if(ct == T1){
         cout << "===== Clone patch type T1. Extract Method starting. =====" << endl << endl;
@@ -2741,71 +2518,6 @@ int main(int argc, char** argv){
     if(callerPatchOn) init(dotfile, dirname); // Caller 패치 모드가 켜진 경우 init()
     if(opt.find("3") != string::npos) refactor(T3); // 옵션을 -a|r|c|3 줄 경우 T3 Invoke
     else refactor(ct); // 2. refactor the code according to the clone datas
-
-    //string fname = "/home/yang/Sources/os/jpcsp_java/DSPContext.java";
-    //printss(fname);
-
-    // test for callgraph patching
-    // test with eprint/3/
-    /* vector<string> cname_lst;
-    cname_lst.push_back("FasooMessageParser");
-    
-    vector<CallGraph> cg_lst;
-
-    //getCallGraphData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname_lst);
-    string cname = "FasooMessageParser";
-    string fname = "parse2";
-    getFtnCallerData("/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/callgraphGeneralPhase.dot", cg_lst, cname, fname);
-    
-    sort(cg_lst.begin(), cg_lst.end(), compare_cg);
-    
-    // make unique (i think this should be deprecated)
-    //vector<CallGraph>::iterator it;
-    //it = unique(cg_lst.begin(), cg_lst.end(), same_cg);
-    //cg_lst.resize(distance(cg_lst.begin(), it));
-
-    cout << cg_lst.size() << endl;
-    for(int i=0; i<cg_lst.size(); i++){
-        cout << cg_lst.at(i).callee_cname << " " << cg_lst.at(i).callee_fname << " " << cg_lst.at(i).caller_path << " " << cg_lst.at(i).caller_cname << " " << cg_lst.at(i).caller_fname << endl;
-    } */
-
-    // test for method invocation checking
-    // method invocation : 122
-    /* string fileName = "/home/yang/Sources/AutoRefactor/casestudy/fasoo/eprint/6/ePrint.com.fasoo.sqlclient.SqlClient.java";
-    string ftnName = "queryForLong";
-
-    vector<NodeData> ndVec;
-    getFtnSubtree(fileName, ftnName, ndVec);
-    printNodeVector(ndVec); */
-
-    // TODO: 테스트에 해당 callee 이름 사용
-    /* string cname = "FasooMessageParser";
-    string fname = "parse";
-
-    // TODO: 3. 입력으로 Callee cname/fname을 주고 해당하는 Caller 정보 (call cnt, cname, fname) 모으기 
-    // getCallerInfo : ( calleeCname * calleeFname * callGraph ) -> ( Caller[] )
-    vector<Caller> callerVec;
-    // 해당 Callee에 대한 Caller 정보 모은 벡터. 추후 클론 인스턴스 별로 하나씩 생성하도록 리팩토링 할 것.
-    getCallerInfo(cname, fname, callGraphVec, callerVec);
-    testPrintCallerVec(callerVec);
-
-    // 4. 2번의 맵을 이용하여 Caller의 실제 경로를 찾기
-    string realPath;
-    int argCnt;
-    if(mapFullPath(fpath2CnamePairVec, callerVec.front().fileName, callerVec.front().callerObjectName, callerVec.front().realPath)) {
-        cout << "Path found! : " << realPath << endl;
-    }
-    cout << callerVec.front().argNum << endl;
-
-    // TODO: 5. 찾은 Caller의 실제 파일위치와 Caller 정보 이용해서 Caller 패치해주기
-    vector<NodeData> ndVec;
-    getPtreeVec(callerVec.front().realPath, ndVec);
-    //printNodeVector(ndVec);
-
-    //getConstSubtree(realPath, callerVec.front().callerObjectName, ndVec);
-    //printNodeVector(ndVec);
-
-    patchCaller(callerVec.front(), fname, "parseparse2", 1); */
 
     return 0;
 
